@@ -1,0 +1,71 @@
+services:
+  nginx:
+    image: nginx:1.27-alpine3.20
+    container_name: ons-nginx
+    ports:
+      - '8080:8080'
+    volumes:
+      - ./:/var/www/html:delegated
+      - php-socket:/etc/nginx/php:rw
+      - ${BASE_DIR:-./docker}/php/config/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - app
+
+  app:
+    build:
+      context: docker/php
+      args:
+        USER_ID: ${USER_ID}
+        GROUP_ID: ${GROUP_ID}
+    container_name: ons
+    ports: !override
+      - '9000'
+      - '9003'
+    volumes:
+      - ./:/var/www/html
+      - php-socket:/var/www/php:rw
+    user: ${USER_ID}:${GROUP_ID}
+    extra_hosts:
+      - host.docker.internal:host-gateway
+    env_file: # Remove this if you don't want local .env
+      - ./.env
+      - ./.env.local
+
+#  localstack:
+#    image: localstack/localstack:3.7
+#    container_name: ons-localstack
+#    ports:
+#      - '4566:4566'
+#      - '4510-4559:4510-4559'
+#    environment:
+#      DEBUG: '1'
+#      SERVICES: 'sqs,s3'
+#      AWS_DEFAULT_REGION: '${AWS_REGION:-us-east-1}'
+#      AWS_REGION: '${AWS_REGION:-us-east-1}'
+#      LOCALSTACK_HOST: '${LOCALSTACK_URL:-host.docker.internal}'
+#      SKIP_SSL_CERT_DOWNLOAD: '1'
+#      PERSISTENCE: '1'
+#    volumes:
+#      - ${BASE_DIR:-./docker}/localstack:/var/lib/localstack
+#      - /var/run/docker.sock:/var/run/docker.sock
+#    env_file:
+#      - ./.env.local
+#    networks:
+#      default:
+#        aliases:
+#          - ${LOCALSTACK_URL:-localstack}
+#          - sqs.us-east-1.${LOCALSTACK_URL:-localstack}
+#          - sqs.us-east-1.host.docker.internal
+
+#  maildev:
+#    image: axllent/mailpit:v1.20
+#    container_name: ons-maildev
+#    ports: !override
+#      - "1025:1025"
+#      - "8025:8025"
+#    environment:
+#      MP_SMTP_AUTH_ACCEPT_ANY: '1'
+#      MP_SMTP_AUTH_ALLOW_INSECURE: '1'
+
+volumes:
+  php-socket:
