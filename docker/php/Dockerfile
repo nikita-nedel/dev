@@ -55,8 +55,8 @@ RUN mkdir -p /init/ && ln -s /usr/bin/php8 /usr/bin/php
 # Configuration files
 COPY config/php-fpm.conf    /usr/local/etc/php-fpm.d/php-fpm.conf
 COPY config/www.conf        /usr/local/etc/php-fpm.d/www.conf
-RUN sed -i "s/USER_ID/${USER_ID}/" /usr/local/etc/php-fpm.d/www.conf && \
-    sed -i "s/GROUP_ID/${GROUP_ID}/" /usr/local/etc/php-fpm.d/www.conf
+RUN sed -i "s/USER_ID/1000/" /usr/local/etc/php-fpm.d/www.conf && \
+    sed -i "s/GROUP_ID/1000/" /usr/local/etc/php-fpm.d/www.conf
 COPY config/zz-docker.conf  /usr/local/etc/php-fpm.d/zz-docker.conf
 COPY config/php.ini      $PHP_INI_DIR/php.ini
 COPY config/xdebug.ini   $PHP_INI_DIR/conf.d/docker-php-ext-xdebug.ini
@@ -64,17 +64,19 @@ COPY config/xdebug.ini   $PHP_INI_DIR/conf.d/docker-php-ext-xdebug.ini
 COPY entrypoint.sh          /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
 
-RUN chown -R ${USER_ID}:${GROUP_ID} /tmp \
+RUN chown -R 1000:1000 /tmp \
     && chmod u+rwX,g+rwX,o+rw -R /tmp \
     && mkdir -p /var/www/php \
-    && chown -R ${USER_ID}:${GROUP_ID} /var/www/php \
+    && chown -R 1000:1000 /var/www/php \
     && chmod u+rwX,g+rwX,o+rw -R /var/www/php \
-    && chown -R ${USER_ID}:${GROUP_ID} /usr/local \
+    && chown -R 1000:1000 /usr/local \
     && mkdir -p /.cache \
-    && chown -R ${USER_ID}:${GROUP_ID} /.cache \
+    && chown -R 1000:1000 /.cache \
     && chmod u+rwX,g+rwX,o+rw -R /.cache
 
-USER ${USER_ID}:${GROUP_ID}
+USER 1000:1000
+
+EXPOSE 9000
 
 ENTRYPOINT ["entrypoint.sh"]
 CMD ["php-fpm"]
