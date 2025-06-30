@@ -20,7 +20,6 @@ services:
     container_name: ons
     ports:
       - '9000:9000'
-      - '9003:9003'
     volumes:
       - ./:/var/www/html
       - php-socket:/var/www/php:rw
