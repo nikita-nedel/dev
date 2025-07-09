@@ -8,8 +8,9 @@ PHP_CONT = $(DOCKER_COMP) exec app
 PHP      = $(PHP_CONT) php
 COMPOSER = $(PHP_CONT) composer
 SYMFONY  = $(PHP) bin/console
+NPM      = $(PHP_CONT) npm
 
-.PHONY: help build up start down logs sh composer vendor sf test
+.PHONY: help build up start down logs sh bash composer vendor sf test npm-install npm-build npm-watch npm-dev
 
 ## —— 🎵 🐳 The Symfony Docker Makefile 🐳 🎵 ——————————————————————————————————
 help: ## Outputs this help screen
@@ -52,3 +53,16 @@ sf: ## List all Symfony commands or pass the parameter "c=" to run a given comma
 
 cc: c=c:c ## Clear the cache
 cc: sf
+
+## —— Npm 🎵 ———————————————————————————————————————————————————————————————
+npm-install: ## Install node modules
+	@ $(NPM) install
+
+npm-build: ## Run npm build
+	@ $(NPM) run build
+
+npm-watch: ## Run dev --watch if doesn't work use export NODE_OPTIONS=--openssl-legacy-provider
+	@ $(NPM) run watch
+
+npm-dev: ## Run npm dev
+	@ $(NPM) run dev

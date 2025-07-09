@@ -72,7 +72,9 @@ RUN chown -R 1000:1000 /tmp \
     && chown -R 1000:1000 /usr/local \
     && mkdir -p /.cache \
     && chown -R 1000:1000 /.cache \
-    && chmod u+rwX,g+rwX,o+rw -R /.cache
+    && chmod u+rwX,g+rwX,o+rw -R /.cache \
+    && mkdir -p /.npm \
+    && chown -R 1000:1000 /.npm
 
 USER 1000:1000
 
