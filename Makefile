@@ -2,7 +2,7 @@
 DOCKER_COMP = docker compose
 
 # Docker containers
-PHP_CONT = $(DOCKER_COMP) exec app
+PHP_CONT = $(DOCKER_COMP) exec php
 
 # Executables
 PHP      = $(PHP_CONT) php
@@ -22,7 +22,7 @@ build: ## Builds the Docker images
 	@$(DOCKER_COMP) build
 
 up: ## Start the docker hub in detached mode (no logs)
-	@$(DOCKER_COMP) up -d
+	@$(DOCKER_COMP) up -d --build --remove-orphans
 
 down: ## Stop the docker hub
 	@$(DOCKER_COMP) down --remove-orphans
@@ -38,13 +38,8 @@ bash: ## Connect to the container via bash so up and down arrows go to previous 
 
 ## —— Composer 🧙 ——————————————————————————————————————————————————————————————
 
-composer: ## Run composer, pass the parameter "c=" to run a given command, example: make composer c='req symfony/orm-pack'
-	@$(eval c ?=)
-	@$(COMPOSER) $(c)
-
-vendor: ## Install composer dependencies
-vendor: c=install --optimize-autoloader --ignore-platform-reqs --no-interaction
-vendor: composer
+composer: ## Install composer dependencies
+	@$(COMPOSER) install
 
 ## —— Symfony 🎵 ———————————————————————————————————————————————————————————————
 sf: ## List all Symfony commands or pass the parameter "c=" to run a given command, example: make sf c=about

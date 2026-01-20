@@ -1,12 +1,11 @@
-#!/usr/bin/env bash
+#!/bin/sh
 
-if [ -f "/var/www/php/php-fpm.sock" ]; then
-  rm "/var/www/php/php-fpm.sock"
-fi
+mkdir -p /app/var/prize_image
+chown -R hostuser:www-data /app/var/prize_image
+chmod -R 777 /app/var/prize_image
 
-# first arg is `-f` or `--some-option`
-if [ "${1#-}" != "$1" ]; then
-  set -- php-fpm "$@"
-fi
+# Start the cron daemon
+crond -f -l 2 &
 
-exec docker-php-entrypoint "$@"
+# Start PHP-FPM
+php-fpm

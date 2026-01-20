@@ -9,6 +9,7 @@
 /vendor/
 ###< symfony/framework-bundle ###
 
+/docker/php/config
 
 ###> friendsofphp/php-cs-fixer ###
 /.php-cs-fixer.php
