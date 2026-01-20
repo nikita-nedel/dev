@@ -2,14 +2,15 @@
 DOCKER_COMP = docker compose
 
 # Docker containers
-PHP_CONT = $(DOCKER_COMP) exec app
+PHP_CONT = $(DOCKER_COMP) exec php
 
 # Executables
 PHP      = $(PHP_CONT) php
 COMPOSER = $(PHP_CONT) composer
 SYMFONY  = $(PHP) bin/console
+NPM      = $(PHP_CONT) npm
 
-.PHONY: help build up start down logs sh composer vendor sf test
+.PHONY: help build up start down logs sh bash composer vendor sf test npm-install npm-build npm-watch npm-dev
 
 ## —— 🎵 🐳 The Symfony Docker Makefile 🐳 🎵 ——————————————————————————————————
 help: ## Outputs this help screen
@@ -21,7 +22,7 @@ build: ## Builds the Docker images
 	@$(DOCKER_COMP) build
 
 up: ## Start the docker hub in detached mode (no logs)
-	@$(DOCKER_COMP) up -d
+	@$(DOCKER_COMP) up -d --build --remove-orphans
 
 down: ## Stop the docker hub
 	@$(DOCKER_COMP) down --remove-orphans
@@ -37,13 +38,8 @@ bash: ## Connect to the container via bash so up and down arrows go to previous 
 
 ## —— Composer 🧙 ——————————————————————————————————————————————————————————————
 
-composer: ## Run composer, pass the parameter "c=" to run a given command, example: make composer c='req symfony/orm-pack'
-	@$(eval c ?=)
-	@$(COMPOSER) $(c)
-
-vendor: ## Install composer dependencies
-vendor: c=install --optimize-autoloader --ignore-platform-reqs --no-interaction
-vendor: composer
+composer: ## Install composer dependencies
+	@$(COMPOSER) install
 
 ## —— Symfony 🎵 ———————————————————————————————————————————————————————————————
 sf: ## List all Symfony commands or pass the parameter "c=" to run a given command, example: make sf c=about
@@ -52,3 +48,16 @@ sf: ## List all Symfony commands or pass the parameter "c=" to run a given comma
 
 cc: c=c:c ## Clear the cache
 cc: sf
+
+## —— Npm 🎵 ———————————————————————————————————————————————————————————————
+npm-install: ## Install node modules
+	@ $(NPM) install
+
+npm-build: ## Run npm build
+	@ $(NPM) run build
+
+npm-watch: ## Run dev --watch if doesn't work use export NODE_OPTIONS=--openssl-legacy-provider
+	@ $(NPM) run watch
+
+npm-dev: ## Run npm dev
+	@ $(NPM) run dev
