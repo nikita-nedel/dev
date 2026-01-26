@@ -11,13 +11,13 @@ use Symfony\Component\Routing\Requirement\Requirement;
 
 class TestController extends AbstractController
 {
-    #[Route('/{id}', name: 'test', requirements: ['id' => Requirement::DIGITS], defaults: ['id' => 2])]
-    public function testAction(int $id): Response
+    #[Route('/', name: 'app_home')]
+    public function testAction(): Response
     {
         $a = rand(1, 100);
 
-        return $this->render('base.html.twig', [
-            'number2' => $id,
+        return $this->render('index.html.twig', [
+//            'number2' => $id,
             'number' => $a,
         ]);
     }

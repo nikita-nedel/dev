@@ -61,3 +61,6 @@ npm-watch: ## Run dev --watch if doesn't work use export NODE_OPTIONS=--openssl-
 
 npm-dev: ## Run npm dev
 	@ $(NPM) run dev
+
+migrate:
+	@$(PHP_CONT) bin/console doctrine:migrations:migrate --no-interaction

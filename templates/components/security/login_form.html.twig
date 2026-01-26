@@ -1,0 +1,204 @@
+<div class="auth-form-container">
+    <div class="auth-header">
+        <h3>С возвращением!</h3>
+        <p>Войдите в свой аккаунт</p>
+    </div>
+
+    {% if error %}
+        <div class="alert alert-danger mx-3 mt-2">
+            <i class="bi bi-exclamation-circle me-2"></i>
+            {{ error.messageKey|trans(error.messageData, 'security') }}
+        </div>
+    {% endif %}
+
+    <form method="post" action="{{ path('app_login') }}" id="modalLoginForm" class="auth-form">
+        <div class="form-group">
+            <input type="email"
+                   name="_username"
+                   value="{{ last_username }}"
+                   class="form-control"
+                   placeholder="Email"
+                   required
+                   autocomplete="email">
+        </div>
+        <div class="form-group password-group">
+            <input type="password"
+                   name="_password"
+                   class="form-control"
+                   placeholder="Пароль"
+                   required
+                   autocomplete="current-password">
+            <button type="button" class="password-toggle">
+                <i class="bi bi-eye"></i>
+            </button>
+        </div>
+
+        <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+        <div class="form-options">
+            <div class="form-check">
+                <input type="checkbox" name="_remember_me" id="remember">
+                <label for="remember">Запомнить меня</label>
+            </div>
+            <a href="#" class="forgot-link">Забыли пароль?</a>
+        </div>
+        <button type="submit" class="btn-auth">Войти</button>
+        <div class="divider">
+            <span>или</span>
+        </div>
+        <div class="social-auth">
+            <button type="button" class="social-btn google">
+                <i class="bi bi-google"></i>
+                Войти через Google
+            </button>
+            <button type="button" class="social-btn vk">
+                <i class="bi bi-vk"></i>
+                Войти через VK
+            </button>
+        </div>
+    </form>
+</div>
+
+<style>
+    /* Стили формы входа */
+    .auth-form-container {
+        padding: 1.5rem;
+    }
+    .auth-header {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+    .auth-header h3 {
+        font-size: 1.5rem;
+        color: #1f2937;
+        margin-bottom: 0.5rem;
+    }
+    .auth-header p {
+        font-size: 0.95rem;
+        color: #6b7280;
+    }
+    .form-group {
+        margin-bottom: 1rem;
+        position: relative;
+    }
+    .form-control {
+        width: 100%;
+        padding: 0.875rem 1rem;
+        border: 2px solid #e5e7eb;
+        border-radius: 8px;
+        font-size: 0.95rem;
+    }
+    .form-control:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        outline: none;
+    }
+    .password-toggle {
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        color: #999;
+        cursor: pointer;
+        padding: 0;
+    }
+    .form-options {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+    }
+    .form-check {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    .form-check input {
+        width: 18px;
+        height: 18px;
+        border-radius: 4px;
+        border: 2px solid #d1d5db;
+        cursor: pointer;
+    }
+    .form-check input:checked {
+        background-color: #667eea;
+        border-color: #667eea;
+    }
+    .form-check label {
+        font-size: 0.9rem;
+        color: #4b5563;
+        cursor: pointer;
+    }
+    .forgot-link {
+        font-size: 0.9rem;
+        color: #667eea;
+        text-decoration: none;
+    }
+    .forgot-link:hover {
+        text-decoration: underline;
+    }
+    .btn-auth {
+        width: 100%;
+        padding: 0.875rem;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-bottom: 1.5rem;
+    }
+    .btn-auth:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+    }
+    .divider {
+        display: flex;
+        align-items: center;
+        margin: 1.5rem 0;
+        color: #9ca3af;
+    }
+    .divider::before,
+    .divider::after {
+        content: '';
+        flex: 1;
+        height: 1px;
+        background-color: #e5e7eb;
+    }
+    .divider span {
+        padding: 0 1rem;
+    }
+    .social-auth {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+    .social-btn {
+        padding: 0.75rem;
+        border: 2px solid #e5e7eb;
+        border-radius: 8px;
+        background: white;
+        color: #374151;
+        font-size: 0.95rem;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.75rem;
+    }
+    .social-btn:hover {
+        border-color: #667eea;
+        background: #f9fafb;
+    }
+    .alert-danger {
+        background: #fee;
+        color: #ef4444;
+        border: none;
+        border-radius: 8px;
+        padding: 0.75rem 1rem;
+    }
+</style>
