@@ -1,160 +1,108 @@
-<footer class="wb-footer bg-dark text-white mt-5">
-    <div class="container py-5">
-        <div class="row">
-            <div class="col-6 col-md-3 mb-4">
-                <h6 class="fw-bold mb-3">Покупателям</h6>
-                <ul class="list-unstyled">
-                    <li class="mb-2">
-                        <a href="#" class="text-white-50 text-decoration-none hover-text-white">Как сделать заказ</a>
-                    </li>
-                    <li class="mb-2">
-                        <a href="#" class="text-white-50 text-decoration-none hover-text-white">Способы оплаты</a>
-                    </li>
-                    <li class="mb-2">
-                        <a href="#" class="text-white-50 text-decoration-none hover-text-white">Доставка</a>
-                    </li>
-                    <li class="mb-2">
-                        <a href="#" class="text-white-50 text-decoration-none hover-text-white">Возврат товара</a>
-                    </li>
-                    <li class="mb-2">
-                        <a href="#" class="text-white-50 text-decoration-none hover-text-white">Возврат денежных средств</a>
-                    </li>
-                    <li class="mb-2">
-                        <a href="#" class="text-white-50 text-decoration-none hover-text-white">Правила продажи</a>
-                    </li>
-                </ul>
-            </div>
-
-            <div class="col-6 col-md-3 mb-4">
-                <h6 class="fw-bold mb-3">Компания</h6>
-                <ul class="list-unstyled">
-                    <li class="mb-2">
-                        <a href="#" class="text-white-50 text-decoration-none hover-text-white">О нас</a>
-                    </li>
-                    <li class="mb-2">
-                        <a href="#" class="text-white-50 text-decoration-none hover-text-white">Реквизиты</a>
-                    </li>
-                    <li class="mb-2">
-                        <a href="#" class="text-white-50 text-decoration-none hover-text-white">Пресс-центр</a>
-                    </li>
-                    <li class="mb-2">
-                        <a href="#" class="text-white-50 text-decoration-none hover-text-white">Вакансии</a>
-                    </li>
-                    <li class="mb-2">
-                        <a href="#" class="text-white-50 text-decoration-none hover-text-white">Контакты</a>
-                    </li>
-                    <li class="mb-2">
-                        <a href="#" class="text-white-50 text-decoration-none hover-text-white">Партнерская программа</a>
-                    </li>
-                </ul>
-            </div>
-
-            <div class="col-6 col-md-3 mb-4">
-                <h6 class="fw-bold mb-3">Мы в соцсетях</h6>
-                <div class="d-flex gap-3 mb-4">
-                    <a href="#" class="text-white fs-4">
-                        <i class="bi bi-vimeo"></i>
-                    </a>
-                    <a href="#" class="text-white fs-4">
-                        <i class="bi bi-telegram"></i>
-                    </a>
-                    <a href="#" class="text-white fs-4">
-                        <i class="bi bi-youtube"></i>
-                    </a>
-                    <a href="#" class="text-white fs-4">
-                        <i class="bi bi-instagram"></i>
-                    </a>
-                </div>
-
-                <h6 class="fw-bold mb-3">Мобильное приложение</h6>
-                <div class="d-flex flex-column flex-sm-row gap-2">
-                    <a href="#" class="btn btn-outline-light btn-sm d-flex align-items-center justify-content-center" style="width: 120px;">
-                        <i class="bi bi-google-play me-1"></i>
-                        <div class="d-flex flex-column">
-                            <small>GET IT ON</small>
-                            <strong>Google Play</strong>
+<footer class="wb-footer mt-auto">
+    <div class="container">
+        <div class="footer-content">
+            <!-- Верхняя часть футера -->
+            <div class="footer-top">
+                <div class="row">
+                    <!-- Колонка 1: О компании -->
+                    <div class="col-lg-3 col-md-6 mb-4">
+                        <div class="footer-logo mb-3">
+                            <a href="{{ path('app_home') }}" class="logo-link">
+                                <div class="logo-icon">
+                                    <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M16 2L30 8V24L16 30L2 24V8L16 2Z" fill="url(#logo-gradient)"/>
+                                        <path d="M16 10L22 14V22L16 26L10 22V14L16 10Z" fill="white" fill-opacity="0.9"/>
+                                        <defs>
+                                            <linearGradient id="logo-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                                <stop offset="0%" stop-color="#667eea"/>
+                                                <stop offset="100%" stop-color="#764ba2"/>
+                                            </linearGradient>
+                                        </defs>
+                                    </svg>
+                                </div>
+                                <span class="logo-text">WB Style</span>
+                            </a>
                         </div>
-                    </a>
-                    <a href="#" class="btn btn-outline-light btn-sm d-flex align-items-center justify-content-center" style="width: 120px;">
-                        <i class="bi bi-apple me-1"></i>
-                        <div class="d-flex flex-column">
-                            <small>Download on the</small>
-                            <strong>App Store</strong>
-                        </div>
-                    </a>
-                </div>
-            </div>
-
-            <div class="col-6 col-md-3 mb-4">
-                <h6 class="fw-bold mb-3">Контакты</h6>
-                <div class="mb-3">
-                    <div class="d-flex align-items-start mb-2">
-                        <i class="bi bi-telephone me-2"></i>
-                        <div>
-                            <div class="fw-bold">8 800 555-35-35</div>
-                            <small class="text-white-50">Бесплатный звонок по России</small>
-                        </div>
+                        <p class="footer-description">
+                            Интернет-магазин модной одежды, обуви и аксессуаров.
+                            Мы предлагаем лучшие товары по доступным ценам.
+                        </p>
                     </div>
-                    <div class="d-flex align-items-start mb-2">
-                        <i class="bi bi-envelope me-2"></i>
-                        <div>
-                            <div>support@wbstyle.ru</div>
-                            <small class="text-white-50">Поддержка 24/7</small>
+
+                    <!-- Колонка 2: Категории -->
+                    <div class="col-lg-3 col-md-6 mb-4">
+                        <h5 class="footer-title">Категории</h5>
+                        <ul class="footer-links">
+                            <li><a href="#">Одежда</a></li>
+                            <li><a href="#">Обувь</a></li>
+                            <li><a href="#">Аксессуары</a></li>
+                            <li><a href="#">Электроника</a></li>
+                            <li><a href="#">Красота и здоровье</a></li>
+                        </ul>
+                    </div>
+
+                    <!-- Колонка 3: Информация -->
+                    <div class="col-lg-3 col-md-6 mb-4">
+                        <h5 class="footer-title">Информация</h5>
+                        <ul class="footer-links">
+                            <li><a href="#">О нас</a></li>
+                            <li><a href="#">Доставка и оплата</a></li>
+                            <li><a href="#">Возврат товара</a></li>
+                            <li><a href="#">Контакты</a></li>
+                            <li><a href="#">Политика конфиденциальности</a></li>
+                        </ul>
+                    </div>
+
+                    <!-- Колонка 4: Контакты -->
+                    <div class="col-lg-3 col-md-6 mb-4">
+                        <h5 class="footer-title">Контакты</h5>
+                        <div class="footer-contacts">
+                            <div class="contact-item">
+                                <i class="bi bi-telephone"></i>
+                                <div>
+                                    <div class="contact-label">Телефон</div>
+                                    <a href="tel:+78005553535" class="contact-value">8 800 555-35-35</a>
+                                    <div class="contact-note">Бесплатный звонок по России</div>
+                                </div>
+                            </div>
+                            <div class="contact-item">
+                                <i class="bi bi-envelope"></i>
+                                <div>
+                                    <div class="contact-label">Email</div>
+                                    <a href="mailto:support@wbstyle.ru" class="contact-value">support@wbstyle.ru</a>
+                                    <div class="contact-note">Поддержка 24/7</div>
+                                </div>
+                            </div>
+                            <div class="contact-item">
+                                <i class="bi bi-clock"></i>
+                                <div>
+                                    <div class="contact-label">Время работы</div>
+                                    <div class="contact-value">Пн-Вс: 9:00 - 21:00</div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-
-                <h6 class="fw-bold mb-3">Принимаем к оплате</h6>
-                <div class="d-flex flex-wrap gap-2">
-                    <i class="bi bi-credit-card fs-4" title="Visa"></i>
-                    <i class="bi bi-credit-card-2-front fs-4" title="MasterCard"></i>
-                    <i class="bi bi-phone fs-4" title="Мир"></i>
-                    <i class="bi bi-wallet fs-4" title="Кошельки"></i>
-                </div>
             </div>
-        </div>
 
-        <div class="row mt-4 pt-4 border-top border-secondary">
-            <div class="col-md-8">
-                <p class="text-white-50 small">
-                    © 2024 WB Style. Все права защищены.<br>
-                    Публичная оферта | Политика конфиденциальности | Условия использования файлов cookie
-                </p>
-                <p class="text-white-50 small">
-                    Цены в интернет-магазине могут отличаться от розничных магазинов.<br>
-                    Все товары сертифицированы. Гарантия производителя.
-                </p>
-            </div>
-            <div class="col-md-4">
-                <div class="d-flex flex-column align-items-md-end">
-                    <div class="mb-2">
-                        <img src="" alt="Логотип" class="img-fluid">
+            <!-- Нижняя часть футера -->
+            <div class="footer-bottom">
+                <div class="row align-items-center">
+                    <div class="col-md-6 mb-3 mb-md-0">
+                        <div class="copyright">
+                            © 2024 WB Style. Все права защищены.
+                        </div>
                     </div>
-                    <div class="text-white-50 small text-end">
-                        ИП Иванов И.И.<br>
-                        ОГРНИП 123456789012345<br>
-                        ИНН 123456789012
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="bg-black py-3">
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-md-6">
-                    <div class="d-flex flex-wrap gap-3">
-                        <span class="badge bg-secondary">18+</span>
-                        <span class="text-white-50 small">Информация на сайте не является публичной офертой</span>
-                    </div>
-                </div>
-                <div class="col-md-6 text-md-end mt-2 mt-md-0">
-                    <div class="text-white-50 small">
-                        <span class="me-3">Мы используем cookies для улучшения работы сайта</span>
-                        <button type="button" class="btn btn-sm btn-outline-light" data-bs-toggle="modal" data-bs-target="#cookieModal">
-                            Подробнее
-                        </button>
+                    <div class="col-md-6">
+                        <div class="payment-methods">
+                            <span class="payment-label">Принимаем к оплате:</span>
+                            <div class="payment-icons">
+                                <i class="bi bi-credit-card" title="Банковские карты"></i>
+                                <i class="bi bi-paypal" title="PayPal"></i>
+                                <i class="bi bi-cash-coin" title="Наличные"></i>
+                                <i class="bi bi-phone" title="Мобильные платежи"></i>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -162,39 +110,245 @@
     </div>
 </footer>
 
-<div class="modal fade" id="cookieModal" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Использование файлов cookie</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                <p>Мы используем файлы cookie для улучшения работы сайта, персонализации контента и рекламы, а также для анализа трафика.</p>
-                <p>Продолжая использовать наш сайт, вы соглашаетесь с использованием файлов cookie.</p>
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" id="necessaryCookies" checked disabled>
-                    <label class="form-check-label" for="necessaryCookies">
-                        Необходимые cookies (всегда активны)
-                    </label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" id="analyticsCookies">
-                    <label class="form-check-label" for="analyticsCookies">
-                        Аналитические cookies
-                    </label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" id="marketingCookies">
-                    <label class="form-check-label" for="marketingCookies">
-                        Маркетинговые cookies
-                    </label>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отклонить все</button>
-                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Принять все</button>
-            </div>
-        </div>
-    </div>
-</div>
+<style>
+    /* Основные стили футера */
+    .wb-footer {
+        background: #1f2937;
+        color: #9ca3af;
+        padding: 3rem 0 1.5rem;
+        margin-top: auto;
+        width: 100%;
+    }
+
+    .wb-footer .container {
+        width: 100%;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 15px;
+    }
+
+    .footer-content {
+        width: 100%;
+    }
+
+    /* Верхняя часть футера */
+    .footer-top {
+        padding-bottom: 2rem;
+        border-bottom: 1px solid #374151;
+        margin-bottom: 1.5rem;
+    }
+
+    .footer-logo .logo-link {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        text-decoration: none;
+        color: white;
+        margin-bottom: 1rem;
+    }
+
+    .footer-logo .logo-icon {
+        width: 40px;
+        height: 40px;
+    }
+
+    .footer-logo .logo-text {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: white;
+    }
+
+    .footer-description {
+        font-size: 0.9rem;
+        line-height: 1.6;
+        margin-bottom: 0;
+        color: #9ca3af;
+    }
+
+    .footer-title {
+        color: white;
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin-bottom: 1.25rem;
+        position: relative;
+        padding-bottom: 0.5rem;
+    }
+
+    .footer-title::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 40px;
+        height: 2px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 2px;
+    }
+
+    .footer-links {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .footer-links li {
+        margin-bottom: 0.75rem;
+    }
+
+    .footer-links a {
+        color: #9ca3af;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        font-size: 0.95rem;
+        display: inline-block;
+    }
+
+    .footer-links a:hover {
+        color: white;
+        transform: translateX(5px);
+    }
+
+    /* Контакты */
+    .footer-contacts {
+        display: flex;
+        flex-direction: column;
+        gap: 1.25rem;
+    }
+
+    .contact-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    .contact-item i {
+        color: #667eea;
+        font-size: 1.25rem;
+        margin-top: 0.25rem;
+        flex-shrink: 0;
+    }
+
+    .contact-label {
+        font-size: 0.8rem;
+        color: #6b7280;
+        margin-bottom: 0.25rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .contact-value {
+        color: white;
+        font-weight: 500;
+        font-size: 1rem;
+        text-decoration: none;
+        display: block;
+        margin-bottom: 0.25rem;
+        transition: color 0.3s ease;
+    }
+
+    .contact-value:hover {
+        color: #667eea;
+        text-decoration: none;
+    }
+
+    .contact-note {
+        font-size: 0.85rem;
+        color: #6b7280;
+    }
+
+    /* Нижняя часть футера */
+    .footer-bottom {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+
+    .copyright {
+        font-size: 0.9rem;
+        color: #9ca3af;
+    }
+
+    .payment-methods {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+    }
+
+    .payment-label {
+        font-size: 0.9rem;
+        color: #9ca3af;
+    }
+
+    .payment-icons {
+        display: flex;
+        gap: 0.75rem;
+    }
+
+    .payment-icons i {
+        font-size: 1.5rem;
+        color: #9ca3af;
+        transition: color 0.3s ease;
+        cursor: pointer;
+    }
+
+    .payment-icons i:hover {
+        color: white;
+    }
+
+    /* Адаптивность футера */
+    @media (max-width: 768px) {
+        .wb-footer {
+            padding: 2rem 0 1rem;
+        }
+
+        .footer-top {
+            padding-bottom: 1.5rem;
+        }
+
+        .footer-title {
+            font-size: 1rem;
+        }
+
+        .footer-links a {
+            font-size: 0.9rem;
+        }
+
+        .contact-value {
+            font-size: 0.95rem;
+        }
+
+        .payment-methods {
+            justify-content: flex-start;
+            margin-top: 1rem;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .wb-footer {
+            padding: 1.5rem 0 1rem;
+        }
+
+        .footer-logo .logo-text {
+            font-size: 1.25rem;
+        }
+
+        .footer-description {
+            font-size: 0.85rem;
+        }
+
+        .contact-item {
+            gap: 0.75rem;
+        }
+
+        .contact-item i {
+            font-size: 1.1rem;
+        }
+
+        .copyright {
+            font-size: 0.85rem;
+        }
+    }
+</style>

@@ -22,7 +22,7 @@ build: ## Builds the Docker images
 	@$(DOCKER_COMP) build
 
 up: ## Start the docker hub in detached mode (no logs)
-	@$(DOCKER_COMP) up -d --build --remove-orphans
+	@APP_ENV=dev $(DOCKER_COMP) up -d --build --remove-orphans
 
 down: ## Stop the docker hub
 	@$(DOCKER_COMP) down --remove-orphans
@@ -64,3 +64,6 @@ npm-dev: ## Run npm dev
 
 migrate:
 	@$(PHP_CONT) bin/console doctrine:migrations:migrate --no-interaction
+
+migration:
+	@$(PHP_CONT) bin/console make:migration --no-interaction

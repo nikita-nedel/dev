@@ -1,0 +1,917 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Регистрация - WB Style{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        /* Стили для страницы регистрации */
+        .auth-page {
+            min-height: calc(100vh - 120px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #f6f8ff 0%, #f0f4ff 100%);
+            padding: 2rem 1rem;
+        }
+
+        .auth-container {
+            width: 100%;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .auth-card {
+            display: flex;
+            background: white;
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(102, 126, 234, 0.15);
+            min-height: 600px;
+        }
+
+        /* Левая часть с формой */
+        .auth-form-side {
+            flex: 1.2;
+            padding: 3rem;
+            display: flex;
+            align-items: center;
+            min-width: 400px;
+        }
+
+        .auth-form-container {
+            width: 100%;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .auth-header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+
+        .auth-logo {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-decoration: none;
+            margin-bottom: 1.5rem;
+            color: #333;
+        }
+
+        .auth-logo .logo-icon {
+            width: 40px;
+            height: 40px;
+        }
+
+        .auth-logo .logo-text {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .auth-header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 0.5rem;
+        }
+
+        .auth-subtitle {
+            color: #666;
+            font-size: 1rem;
+        }
+
+        /* Правая часть с преимуществами */
+        .auth-benefits-side {
+            flex: 1;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            position: relative;
+            min-width: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 3rem;
+        }
+
+        .auth-benefits-side::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000" opacity="0.1"><path d="M0,500C0,224,224,0,500,0s500,224,500,500S776,1000,500,1000S0,776,0,500z" fill="white"/></svg>') center/cover;
+        }
+
+        .auth-benefits-overlay {
+            position: relative;
+            z-index: 2;
+            color: white;
+            max-width: 400px;
+        }
+
+        .auth-benefits-content h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 2.5rem;
+            background: linear-gradient(135deg, #ffffff 0%, rgba(255,255,255,0.9) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-align: center;
+        }
+
+        /* Общие стили формы */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #4a5568;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        .form-label i {
+            color: #667eea;
+        }
+
+        .input-with-icon {
+            position: relative;
+        }
+
+        .input-with-icon .form-control {
+            width: 100%;
+            padding: 0.875rem 1rem 0.875rem 3rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: #f8fafc;
+        }
+
+        .input-with-icon .form-control:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .input-with-icon .form-control::placeholder {
+            color: #94a3b8;
+        }
+
+        .input-valid-icon {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #10b981;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .input-icon-left {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+            font-size: 1.1rem;
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #94a3b8;
+            cursor: pointer;
+            padding: 0;
+            font-size: 1.25rem;
+        }
+
+        .password-toggle:hover {
+            color: #667eea;
+        }
+
+        .form-error {
+            color: #ef4444;
+            font-size: 0.85rem;
+            margin-top: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .form-error::before {
+            content: '⚠️';
+            font-size: 0.9rem;
+        }
+
+        .password-strength {
+            margin-top: 0.75rem;
+        }
+
+        .strength-bar {
+            height: 4px;
+            background: #e2e8f0;
+            border-radius: 2px;
+            overflow: hidden;
+            margin-bottom: 0.5rem;
+        }
+
+        .strength-fill {
+            height: 100%;
+            width: 0%;
+            border-radius: 2px;
+            transition: all 0.3s ease;
+        }
+
+        .strength-text {
+            font-size: 0.85rem;
+            color: #666;
+        }
+
+        .strength-text span {
+            font-weight: 600;
+        }
+
+        /* Checkbox */
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            font-size: 0.95rem;
+            color: #4a5568;
+        }
+
+        .terms-checkbox {
+            align-items: flex-start;
+            line-height: 1.5;
+        }
+
+        .checkbox-label input {
+            display: none;
+        }
+
+        .checkmark {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #e2e8f0;
+            border-radius: 6px;
+            margin-right: 0.75rem;
+            position: relative;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+            margin-top: 0.25rem;
+        }
+
+        .checkmark::after {
+            content: '';
+            position: absolute;
+            display: none;
+            left: 5px;
+            top: 2px;
+            width: 6px;
+            height: 10px;
+            border: solid white;
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
+        }
+
+        .checkbox-label input:checked ~ .checkmark {
+            background: #667eea;
+            border-color: #667eea;
+        }
+
+        .checkbox-label input:checked ~ .checkmark::after {
+            display: block;
+        }
+
+        .terms-text {
+            font-size: 0.9rem;
+            color: #4a5568;
+        }
+
+        .terms-link {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .terms-link:hover {
+            text-decoration: underline;
+        }
+
+        /* Кнопка */
+        .btn-auth {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            margin: 1.5rem 0;
+        }
+
+        .btn-auth:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-auth:active {
+            transform: translateY(0);
+        }
+
+        /* Footer */
+        .auth-footer {
+            text-align: center;
+            padding-top: 1.5rem;
+            border-top: 1px solid #e2e8f0;
+            color: #666;
+            font-size: 0.95rem;
+        }
+
+        .auth-link {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        .auth-link:hover {
+            color: #764ba2;
+            text-decoration: underline;
+        }
+
+        /* Преимущества */
+        .benefits-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .benefit-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1.25rem;
+            padding: 1.25rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            opacity: 0;
+            transform: translateX(20px);
+        }
+
+        .benefit-item.animate-in {
+            animation: slideInRight 0.5s ease forwards;
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .benefit-item:hover {
+            transform: translateY(-2px);
+            background: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .benefit-icon {
+            width: 48px;
+            height: 48px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-size: 1.5rem;
+        }
+
+        .benefit-content h4 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: white;
+        }
+
+        .benefit-content p {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            margin: 0;
+            line-height: 1.5;
+        }
+
+        /* Статистика */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            text-align: center;
+        }
+
+        .stat-item {
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+        }
+
+        .stat-number {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+            color: white;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            opacity: 0.9;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Анимации */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .auth-form-container > * {
+            animation: fadeInUp 0.5s ease forwards;
+        }
+
+        /* Адаптивность */
+        @media (max-width: 992px) {
+            .auth-card {
+                flex-direction: column;
+            }
+
+            .auth-benefits-side {
+                min-height: 400px;
+                padding: 2rem;
+            }
+
+            .auth-benefits-content h2 {
+                font-size: 2rem;
+                margin-bottom: 2rem;
+            }
+
+            .benefits-list {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .auth-form-side {
+                padding: 2rem;
+                min-width: auto;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .auth-page {
+                padding: 1rem;
+            }
+
+            .auth-card {
+                border-radius: 16px;
+            }
+
+            .auth-benefits-side {
+                display: none;
+            }
+
+            .auth-form-side {
+                padding: 1.5rem;
+            }
+
+            .auth-header h1 {
+                font-size: 1.75rem;
+            }
+
+            .btn-auth {
+                padding: 0.875rem;
+            }
+
+            .benefits-list {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .auth-container {
+                padding: 0;
+            }
+
+            .auth-card {
+                border-radius: 0;
+                box-shadow: none;
+            }
+
+            .auth-form-side {
+                padding: 1rem;
+            }
+
+            .row.g-3 {
+                flex-direction: column;
+            }
+
+            .row.g-3 .col-md-6 {
+                width: 100%;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <main class="auth-page">
+        <div class="auth-container">
+            <div class="auth-card">
+                <!-- Левая часть с формой -->
+                <div class="auth-form-side">
+                    <div class="auth-form-container">
+                        <!-- Логотип и заголовок -->
+                        <div class="auth-header">
+                            <a href="{{ path('app_home') }}" class="auth-logo">
+                                <div class="logo-icon">
+                                    <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M16 2L30 8V24L16 30L2 24V8L16 2Z" fill="url(#logo-gradient)"/>
+                                        <path d="M16 10L22 14V22L16 26L10 22V14L16 10Z" fill="white" fill-opacity="0.9"/>
+                                        <defs>
+                                            <linearGradient id="logo-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                                <stop offset="0%" stop-color="#667eea"/>
+                                                <stop offset="100%" stop-color="#764ba2"/>
+                                            </linearGradient>
+                                        </defs>
+                                    </svg>
+                                </div>
+                                <span class="logo-text">WB Style</span>
+                            </a>
+                            <h1>Создать аккаунт</h1>
+                            <p class="auth-subtitle">Присоединяйтесь к нашему сообществу</p>
+                        </div>
+
+                        <!-- Форма регистрации -->
+                        {{ form_start(registrationForm, {'attr': {'class': 'auth-form', 'novalidate': 'novalidate'}}) }}
+
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">
+                                        <i class="bi bi-person"></i> Имя
+                                    </label>
+                                    <div class="input-with-icon">
+                                        {{ form_widget(registrationForm.firstName, {
+                                            'attr': {
+                                                'class': 'form-control',
+                                                'placeholder': 'Иван'
+                                            }
+                                        }) }}
+                                        <i class="bi bi-check-circle input-valid-icon"></i>
+                                    </div>
+                                    {% if registrationForm.firstName.vars.errors|length > 0 %}
+                                        <div class="form-error">
+                                            {{ form_errors(registrationForm.firstName) }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">
+                                        <i class="bi bi-person"></i> Фамилия
+                                    </label>
+                                    <div class="input-with-icon">
+                                        {{ form_widget(registrationForm.lastName, {
+                                            'attr': {
+                                                'class': 'form-control',
+                                                'placeholder': 'Иванов'
+                                            }
+                                        }) }}
+                                        <i class="bi bi-check-circle input-valid-icon"></i>
+                                    </div>
+                                    {% if registrationForm.lastName.vars.errors|length > 0 %}
+                                        <div class="form-error">
+                                            {{ form_errors(registrationForm.lastName) }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">
+                                <i class="bi bi-phone"></i> Телефон
+                            </label>
+                            <div class="input-with-icon">
+                                {{ form_widget(registrationForm.phone, {
+                                    'attr': {
+                                        'class': 'form-control',
+                                        'placeholder': '+7 (999) 123-45-67'
+                                    }
+                                }) }}
+                                <i class="bi bi-telephone input-icon-left"></i>
+                            </div>
+                            {% if registrationForm.phone.vars.errors|length > 0 %}
+                                <div class="form-error">
+                                    {{ form_errors(registrationForm.phone) }}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">
+                                <i class="bi bi-envelope"></i> Email
+                            </label>
+                            <div class="input-with-icon">
+                                {{ form_widget(registrationForm.email, {
+                                    'attr': {
+                                        'class': 'form-control',
+                                        'placeholder': 'your@email.com'
+                                    }
+                                }) }}
+                                <i class="bi bi-check-circle input-valid-icon"></i>
+                            </div>
+                            {% if registrationForm.email.vars.errors|length > 0 %}
+                                <div class="form-error">
+                                    {{ form_errors(registrationForm.email) }}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">
+                                <i class="bi bi-lock"></i> Пароль
+                            </label>
+                            <div class="input-with-icon">
+                                {{ form_widget(registrationForm.plainPassword, {
+                                    'attr': {
+                                        'class': 'form-control',
+                                        'placeholder': 'Не менее 8 символов'
+                                    }
+                                }) }}
+                                <button type="button" class="password-toggle" id="toggleRegPassword">
+                                    <i class="bi bi-eye"></i>
+                                </button>
+                            </div>
+                            {% if registrationForm.plainPassword.vars.errors|length > 0 %}
+                                <div class="form-error">
+                                    {{ form_errors(registrationForm.plainPassword) }}
+                                </div>
+                            {% endif %}
+                            <div class="password-strength">
+                                <div class="strength-bar">
+                                    <div class="strength-fill" data-strength="0"></div>
+                                </div>
+                                <div class="strength-text">Надёжность пароля: <span>слабый</span></div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="checkbox-label terms-checkbox">
+                                {{ form_widget(registrationForm.agreeTerms, {
+                                    'attr': {'class': 'terms-input'}
+                                }) }}
+                                <span class="checkmark"></span>
+                                <span class="terms-text">
+                                Я принимаю <a href="#" class="terms-link">Условия использования</a>
+                                и <a href="#" class="terms-link">Политику конфиденциальности</a>
+                            </span>
+                            </label>
+                            {% if registrationForm.agreeTerms.vars.errors|length > 0 %}
+                                <div class="form-error">
+                                    {{ form_errors(registrationForm.agreeTerms) }}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <button type="submit" class="btn-auth">
+                            <i class="bi bi-person-plus"></i>
+                            <span>Зарегистрироваться</span>
+                        </button>
+
+                        <!-- Ссылка на вход -->
+                        <div class="auth-footer">
+                            <p>Уже есть аккаунт?
+                                <a href="{{ path('app_login') }}" class="auth-link">
+                                    Войти
+                                </a>
+                            </p>
+                        </div>
+
+                        {{ form_end(registrationForm) }}
+                    </div>
+                </div>
+
+                <!-- Правая часть с преимуществами -->
+                <div class="auth-benefits-side">
+                    <div class="auth-benefits-overlay">
+                        <div class="auth-benefits-content">
+                            <h2>Почему стоит присоединиться?</h2>
+
+                            <div class="benefits-list">
+                                <div class="benefit-item">
+                                    <div class="benefit-icon">
+                                        <i class="bi bi-percent"></i>
+                                    </div>
+                                    <div class="benefit-content">
+                                        <h4>Скидки до 30%</h4>
+                                        <p>Специальные предложения для зарегистрированных пользователей</p>
+                                    </div>
+                                </div>
+
+                                <div class="benefit-item">
+                                    <div class="benefit-icon">
+                                        <i class="bi bi-lightning"></i>
+                                    </div>
+                                    <div class="benefit-content">
+                                        <h4>Быстрые заказы</h4>
+                                        <p>Сохраняйте адреса доставки для ускоренного оформления</p>
+                                    </div>
+                                </div>
+
+                                <div class="benefit-item">
+                                    <div class="benefit-icon">
+                                        <i class="bi bi-heart"></i>
+                                    </div>
+                                    <div class="benefit-content">
+                                        <h4>Избранное</h4>
+                                        <p>Сохраняйте понравившиеся товары в одном месте</p>
+                                    </div>
+                                </div>
+
+                                <div class="benefit-item">
+                                    <div class="benefit-icon">
+                                        <i class="bi bi-bell"></i>
+                                    </div>
+                                    <div class="benefit-content">
+                                        <h4>Уведомления</h4>
+                                        <p>Получайте информацию о скидках и новинках первыми</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="stats-grid">
+                                <div class="stat-item">
+                                    <div class="stat-number">10K+</div>
+                                    <div class="stat-label">довольных клиентов</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-number">24/7</div>
+                                    <div class="stat-label">поддержка</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-number">100%</div>
+                                    <div class="stat-label">безопасность</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Показ/скрытие пароля
+            const toggleBtn = document.getElementById('toggleRegPassword');
+            const passwordInput = document.querySelector('#{{ registrationForm.plainPassword.vars.id }}');
+
+            if (toggleBtn && passwordInput) {
+                toggleBtn.addEventListener('click', function() {
+                    const icon = this.querySelector('i');
+                    if (passwordInput.type === 'password') {
+                        passwordInput.type = 'text';
+                        icon.className = 'bi bi-eye-slash';
+                    } else {
+                        passwordInput.type = 'password';
+                        icon.className = 'bi bi-eye';
+                    }
+                });
+            }
+
+            // Валидация пароля
+            if (passwordInput) {
+                passwordInput.addEventListener('input', function() {
+                    const password = this.value;
+                    const strengthBar = document.querySelector('.strength-fill');
+                    const strengthText = document.querySelector('.strength-text span');
+
+                    let strength = 0;
+                    let text = 'слабый';
+                    let color = '#ef4444';
+
+                    if (password.length >= 8) strength += 25;
+                    if (/[A-Z]/.test(password)) strength += 25;
+                    if (/[0-9]/.test(password)) strength += 25;
+                    if (/[^A-Za-z0-9]/.test(password)) strength += 25;
+
+                    if (strength >= 75) {
+                        text = 'сильный';
+                        color = '#10b981';
+                    } else if (strength >= 50) {
+                        text = 'средний';
+                        color = '#f59e0b';
+                    } else if (strength >= 25) {
+                        text = 'слабый';
+                        color = '#ef4444';
+                    }
+
+                    if (strengthBar) {
+                        strengthBar.style.width = strength + '%';
+                        strengthBar.style.backgroundColor = color;
+                    }
+
+                    if (strengthText) {
+                        strengthText.textContent = text;
+                        strengthText.style.color = color;
+                    }
+                });
+            }
+
+            // Валидация полей в реальном времени
+            const inputs = document.querySelectorAll('.form-control');
+            inputs.forEach(input => {
+                const validIcon = input.parentElement.querySelector('.input-valid-icon');
+                if (validIcon) {
+                    input.addEventListener('input', function() {
+                        if (this.value.trim().length > 2) {
+                            validIcon.style.opacity = '1';
+                        } else {
+                            validIcon.style.opacity = '0';
+                        }
+                    });
+                }
+            });
+
+            // Анимация кнопки регистрации
+            const authForm = document.querySelector('.auth-form');
+            if (authForm) {
+                authForm.addEventListener('submit', function(e) {
+                    const submitBtn = this.querySelector('.btn-auth');
+                    if (submitBtn) {
+                        submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Регистрация...';
+                        submitBtn.disabled = true;
+                    }
+                });
+            }
+
+            // Анимация появления преимуществ
+            const benefitItems = document.querySelectorAll('.benefit-item');
+            benefitItems.forEach((item, index) => {
+                item.style.animationDelay = `${index * 0.1}s`;
+                item.classList.add('animate-in');
+            });
+        });
+    </script>
+{% endblock %}

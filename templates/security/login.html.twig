@@ -1,0 +1,739 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Вход в аккаунт - WB Style{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        /* Все стили переносим сюда */
+        .auth-page {
+            min-height: calc(100vh - 120px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #f6f8ff 0%, #f0f4ff 100%);
+            padding: 2rem 1rem;
+        }
+
+        .auth-container {
+            width: 100%;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .auth-card {
+            display: flex;
+            background: white;
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(102, 126, 234, 0.15);
+            min-height: 600px;
+        }
+
+        /* Левая часть с изображением */
+        .auth-image-side {
+            flex: 1;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            position: relative;
+            min-width: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 3rem;
+        }
+
+        .auth-image-overlay {
+            position: relative;
+            z-index: 2;
+            color: white;
+            text-align: center;
+        }
+
+        .auth-image-side::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000" opacity="0.1"><path d="M500,250c138,0,250-112,250-250S638-250,500-250S250-138,250,0S362,250,500,250z" fill="white"/></svg>') center/cover;
+        }
+
+        .auth-image-content h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #ffffff 0%, rgba(255,255,255,0.8) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .auth-image-content p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            margin-bottom: 3rem;
+            line-height: 1.6;
+        }
+
+        .auth-features {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            max-width: 300px;
+            margin: 0 auto;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+            transition: transform 0.3s ease, background 0.3s ease;
+        }
+
+        .feature-item:hover {
+            transform: translateY(-2px);
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .feature-item i {
+            font-size: 1.5rem;
+            color: #fff;
+        }
+
+        .feature-item span {
+            font-size: 1rem;
+            font-weight: 500;
+        }
+
+        /* Правая часть с формой */
+        .auth-form-side {
+            flex: 1.2;
+            padding: 3rem;
+            display: flex;
+            align-items: center;
+            min-width: 400px;
+        }
+
+        .auth-form-container {
+            width: 100%;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .auth-header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+
+        .auth-logo {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-decoration: none;
+            margin-bottom: 1.5rem;
+            color: #333;
+        }
+
+        .auth-logo .logo-icon {
+            width: 40px;
+            height: 40px;
+        }
+
+        .auth-logo .logo-text {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .auth-header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 0.5rem;
+        }
+
+        .auth-subtitle {
+            color: #666;
+            font-size: 1rem;
+        }
+
+        /* Форма */
+        .auth-alert {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            padding: 1rem;
+            background: #fee;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+            border-left: 4px solid #ef4444;
+        }
+
+        .auth-alert.alert-danger i {
+            color: #ef4444;
+            font-size: 1.25rem;
+            margin-top: 0.25rem;
+        }
+
+        .auth-alert strong {
+            display: block;
+            color: #1a1a1a;
+            margin-bottom: 0.25rem;
+        }
+
+        .auth-alert p {
+            color: #666;
+            margin: 0;
+            font-size: 0.9rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #4a5568;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        .form-label i {
+            color: #667eea;
+        }
+
+        .input-with-icon {
+            position: relative;
+        }
+
+        .input-with-icon .form-control {
+            width: 100%;
+            padding: 0.875rem 1rem 0.875rem 3rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: #f8fafc;
+        }
+
+        .input-with-icon .form-control:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .input-with-icon .form-control::placeholder {
+            color: #94a3b8;
+        }
+
+        .input-valid-icon {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #10b981;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #94a3b8;
+            cursor: pointer;
+            padding: 0;
+            font-size: 1.25rem;
+        }
+
+        .password-toggle:hover {
+            color: #667eea;
+        }
+
+        .form-help {
+            margin-top: 0.5rem;
+            text-align: right;
+        }
+
+        .forgot-link {
+            color: #667eea;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.3s ease;
+        }
+
+        .forgot-link:hover {
+            color: #764ba2;
+            text-decoration: underline;
+        }
+
+        .form-options {
+            margin: 1.5rem 0;
+        }
+
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            font-size: 0.95rem;
+            color: #4a5568;
+        }
+
+        .checkbox-label input {
+            display: none;
+        }
+
+        .checkmark {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #e2e8f0;
+            border-radius: 6px;
+            margin-right: 0.75rem;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .checkmark::after {
+            content: '';
+            position: absolute;
+            display: none;
+            left: 5px;
+            top: 2px;
+            width: 6px;
+            height: 10px;
+            border: solid white;
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
+        }
+
+        .checkbox-label input:checked ~ .checkmark {
+            background: #667eea;
+            border-color: #667eea;
+        }
+
+        .checkbox-label input:checked ~ .checkmark::after {
+            display: block;
+        }
+
+        .btn-auth {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            margin: 1.5rem 0;
+        }
+
+        .btn-auth:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-auth:active {
+            transform: translateY(0);
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 2rem 0;
+            color: #94a3b8;
+            font-size: 0.9rem;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: #e2e8f0;
+        }
+
+        .divider span {
+            padding: 0 1rem;
+        }
+
+        .social-auth {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            margin-bottom: 2rem;
+        }
+
+        .social-btn {
+            padding: 0.875rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            background: white;
+            color: #4a5568;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+        }
+
+        .social-btn:hover {
+            border-color: #667eea;
+            background: #f8fafc;
+            transform: translateY(-1px);
+        }
+
+        .social-btn.google i {
+            color: #db4437;
+        }
+
+        .social-btn.vk i {
+            color: #4c75a3;
+        }
+
+        .auth-footer {
+            text-align: center;
+            padding-top: 1.5rem;
+            border-top: 1px solid #e2e8f0;
+            color: #666;
+            font-size: 0.95rem;
+        }
+
+        .auth-link {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        .auth-link:hover {
+            color: #764ba2;
+            text-decoration: underline;
+        }
+
+        /* Анимации */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .auth-form-container > * {
+            animation: fadeInUp 0.5s ease forwards;
+        }
+
+        .auth-form-container > *:nth-child(1) { animation-delay: 0.1s; }
+        .auth-form-container > *:nth-child(2) { animation-delay: 0.2s; }
+        .auth-form-container > *:nth-child(3) { animation-delay: 0.3s; }
+        .auth-form-container > *:nth-child(4) { animation-delay: 0.4s; }
+        .auth-form-container > *:nth-child(5) { animation-delay: 0.5s; }
+        .auth-form-container > *:nth-child(6) { animation-delay: 0.6s; }
+        .auth-form-container > *:nth-child(7) { animation-delay: 0.7s; }
+
+        /* Адаптивность */
+        @media (max-width: 992px) {
+            .auth-card {
+                flex-direction: column;
+                min-height: auto;
+            }
+
+            .auth-image-side {
+                min-height: 250px;
+                padding: 2rem;
+            }
+
+            .auth-image-content h2 {
+                font-size: 2rem;
+            }
+
+            .auth-features {
+                flex-direction: row;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .feature-item {
+                min-width: 180px;
+            }
+
+            .auth-form-side {
+                padding: 2rem;
+                min-width: auto;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .auth-page {
+                padding: 1rem;
+            }
+
+            .auth-card {
+                border-radius: 16px;
+            }
+
+            .auth-image-side {
+                display: none;
+            }
+
+            .auth-form-side {
+                padding: 1.5rem;
+            }
+
+            .auth-header h1 {
+                font-size: 1.75rem;
+            }
+
+            .btn-auth {
+                padding: 0.875rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .auth-container {
+                padding: 0;
+            }
+
+            .auth-card {
+                border-radius: 0;
+                box-shadow: none;
+            }
+
+            .auth-form-side {
+                padding: 1rem;
+            }
+
+            .social-btn span {
+                font-size: 0.875rem;
+            }
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <main class="auth-page">
+        <div class="auth-container">
+            <div class="auth-card">
+                <!-- Левая часть с изображением -->
+                <div class="auth-image-side">
+                    <div class="auth-image-overlay">
+                        <div class="auth-image-content">
+                            <h2>С возвращением!</h2>
+                            <p>Войдите в свой аккаунт, чтобы продолжить покупки</p>
+                            <div class="auth-features">
+                                <div class="feature-item">
+                                    <i class="bi bi-truck"></i>
+                                    <span>Быстрая доставка</span>
+                                </div>
+                                <div class="feature-item">
+                                    <i class="bi bi-shield-check"></i>
+                                    <span>Безопасные платежи</span>
+                                </div>
+                                <div class="feature-item">
+                                    <i class="bi bi-star"></i>
+                                    <span>Бонусная программа</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Правая часть с формой -->
+                <div class="auth-form-side">
+                    <div class="auth-form-container">
+                        <!-- Логотип и заголовок -->
+                        <div class="auth-header">
+                            <a href="{{ path('app_home') }}" class="auth-logo">
+                                <div class="logo-icon">
+                                    <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M16 2L30 8V24L16 30L2 24V8L16 2Z" fill="url(#logo-gradient)"/>
+                                        <path d="M16 10L22 14V22L16 26L10 22V14L16 10Z" fill="white" fill-opacity="0.9"/>
+                                        <defs>
+                                            <linearGradient id="logo-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                                <stop offset="0%" stop-color="#667eea"/>
+                                                <stop offset="100%" stop-color="#764ba2"/>
+                                            </linearGradient>
+                                        </defs>
+                                    </svg>
+                                </div>
+                                <span class="logo-text">WB Style</span>
+                            </a>
+                            <h1>Вход в аккаунт</h1>
+                            <p class="auth-subtitle">Введите ваши данные для входа</p>
+                        </div>
+
+                        {% if error %}
+                            <div class="auth-alert alert-danger">
+                                <i class="bi bi-exclamation-circle"></i>
+                                <div>
+                                    <strong>Ошибка входа</strong>
+                                    <p>{{ error.messageKey|trans(error.messageData, 'security') }}</p>
+                                </div>
+                            </div>
+                        {% endif %}
+
+                        <!-- Форма входа -->
+                        <form method="post" action="{{ path('app_login') }}" class="auth-form">
+                            <div class="form-group">
+                                <label for="username" class="form-label">
+                                    <i class="bi bi-envelope"></i> Email
+                                </label>
+                                <div class="input-with-icon">
+                                    <input type="email"
+                                           value="{{ last_username }}"
+                                           name="_username"
+                                           id="username"
+                                           class="form-control"
+                                           placeholder="your@email.com"
+                                           required
+                                           autofocus
+                                           autocomplete="email">
+                                    <i class="bi bi-check-circle input-valid-icon"></i>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="password" class="form-label">
+                                    <i class="bi bi-lock"></i> Пароль
+                                </label>
+                                <div class="input-with-icon">
+                                    <input type="password"
+                                           name="_password"
+                                           id="password"
+                                           class="form-control"
+                                           placeholder="Введите пароль"
+                                           required
+                                           autocomplete="current-password">
+                                    <button type="button" class="password-toggle" id="togglePassword">
+                                        <i class="bi bi-eye"></i>
+                                    </button>
+                                </div>
+                                <div class="form-help">
+                                    <a href="#" class="forgot-link">Забыли пароль?</a>
+                                </div>
+                            </div>
+
+                            <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+                            <div class="form-options">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" name="_remember_me" id="remember_me">
+                                    <span class="checkmark"></span>
+                                    Запомнить меня
+                                </label>
+                            </div>
+
+                            <button type="submit" class="btn-auth">
+                                <i class="bi bi-arrow-right"></i>
+                                <span>Войти</span>
+                            </button>
+
+                            <!-- Разделитель -->
+                            <div class="divider">
+                                <span>или</span>
+                            </div>
+
+                            <!-- Социальные сети -->
+                            <div class="social-auth">
+                                <button type="button" class="social-btn google">
+                                    <i class="bi bi-google"></i>
+                                    <span>Войти через Google</span>
+                                </button>
+                                <button type="button" class="social-btn vk">
+                                    <i class="bi bi-vk"></i>
+                                    <span>Войти через VK</span>
+                                </button>
+                            </div>
+
+                            <!-- Ссылка на регистрацию -->
+                            <div class="auth-footer">
+                                <p>Нет аккаунта?
+                                    <a href="{{ path('app_register') }}" class="auth-link">
+                                        Зарегистрироваться
+                                    </a>
+                                </p>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Показ/скрытие пароля
+            const toggleBtn = document.getElementById('togglePassword');
+            const passwordInput = document.getElementById('password');
+
+            if (toggleBtn) {
+                toggleBtn.addEventListener('click', function() {
+                    const icon = this.querySelector('i');
+                    if (passwordInput.type === 'password') {
+                        passwordInput.type = 'text';
+                        icon.className = 'bi bi-eye-slash';
+                    } else {
+                        passwordInput.type = 'password';
+                        icon.className = 'bi bi-eye';
+                    }
+                });
+            }
+
+            // Валидация email в реальном времени
+            const emailInput = document.getElementById('username');
+            const validIcon = document.querySelector('.input-valid-icon');
+
+            if (emailInput && validIcon) {
+                emailInput.addEventListener('input', function() {
+                    const isValid = this.value.includes('@') && this.value.includes('.');
+                    if (isValid && this.value.length > 5) {
+                        validIcon.style.opacity = '1';
+                    } else {
+                        validIcon.style.opacity = '0';
+                    }
+                });
+            }
+
+            // Анимация кнопки входа
+            const authForm = document.querySelector('.auth-form');
+            if (authForm) {
+                authForm.addEventListener('submit', function(e) {
+                    const submitBtn = this.querySelector('.btn-auth');
+                    if (submitBtn) {
+                        submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Вход...';
+                        submitBtn.disabled = true;
+                    }
+                });
+            }
+        });
+    </script>
+{% endblock %}

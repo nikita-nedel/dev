@@ -7,7 +7,6 @@ namespace App\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\Routing\Requirement\Requirement;
 
 class TestController extends AbstractController
 {
@@ -20,5 +19,13 @@ class TestController extends AbstractController
 //            'number2' => $id,
             'number' => $a,
         ]);
+    }
+
+    #[Route('/api/test-dd', methods: ['POST'])]
+    public function testDd(): Response
+    {
+        dd('POST DD WORKS!');
+
+        return new JsonResponse(['ok' => true]);
     }
 }

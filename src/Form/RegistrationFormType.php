@@ -1,5 +1,6 @@
 <?php
-// src/Form/RegistrationFormType.php
+
+declare(strict_types=1);
 
 namespace App\Form;
 
@@ -15,7 +16,6 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\IsTrue;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
-use Symfony\Component\Validator\Constraints\Regex;
 
 class RegistrationFormType extends AbstractType
 {

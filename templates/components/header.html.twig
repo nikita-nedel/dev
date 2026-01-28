@@ -1,4 +1,3 @@
-{# templates/components/header.html.twig #}
 <header class="wb-header">
     <div class="container">
         <div class="header-content">
@@ -17,7 +16,7 @@
                             </defs>
                         </svg>
                     </div>
-                    <span class="logo-text">Flora</span>
+                    <span class="logo-text">WB Style</span>
                 </a>
             </div>
 
@@ -42,13 +41,12 @@
 
                 <div class="user-actions">
                     {% if app.user %}
-                        <!-- Пользователь авторизован -->
-                        <a href="{{ path('app_favorites') }}" class="action-btn wishlist-btn" title="Избранное">
+                        <a href="" class="action-btn wishlist-btn" title="Избранное">
                             <i class="bi bi-heart"></i>
                             <span class="action-badge">3</span>
                         </a>
 
-                        <a href="{{ path('app_cart') }}" class="action-btn cart-btn" title="Корзина">
+                        <a href="" class="action-btn cart-btn" title="Корзина">
                             <i class="bi bi-cart"></i>
                             <span class="action-badge">2</span>
                             <span class="cart-text">Корзина</span>
@@ -60,11 +58,14 @@
                                 <span>{{ app.user.firstName ?? 'Аккаунт' }}</span>
                             </button>
                             <div class="dropdown-menu dropdown-menu-end">
-                                <a class="dropdown-item" href="{{ path('app_profile') }}">
+                                <a class="dropdown-item" href="">
                                     <i class="bi bi-person me-2"></i>Профиль
                                 </a>
-                                <a class="dropdown-item" href="{{ path('app_orders') }}">
+                                <a class="dropdown-item" href="">
                                     <i class="bi bi-bag me-2"></i>Заказы
+                                </a>
+                                <a class="dropdown-item" href="">
+                                    <i class="bi bi-heart me-2"></i>Избранное
                                 </a>
                                 <div class="dropdown-divider"></div>
                                 <a class="dropdown-item text-danger" href="{{ path('app_logout') }}">
@@ -74,36 +75,21 @@
                         </div>
                     {% else %}
                         <!-- Пользователь не авторизован -->
-                        <button class="action-btn wishlist-btn" title="Избранное" onclick="showAuthModal('login')">
-                            <i class="bi bi-heart"></i>
-                            <span class="action-badge">0</span>
-                        </button>
-
-                        <button class="action-btn cart-btn" title="Корзина" onclick="showAuthModal('login')">
-                            <i class="bi bi-cart"></i>
-                            <span class="action-badge">0</span>
-                            <span class="cart-text">Корзина</span>
-                        </button>
-
-                        <button class="action-btn auth-btn" onclick="showAuthModal('login')">
+                        <a href="{{ path('app_login') }}" class="action-btn auth-btn">
                             <i class="bi bi-person"></i>
                             <span>Войти</span>
-                        </button>
+                        </a>
+
+                        <a href="{{ path('app_register') }}" class="action-btn register-btn" style="background: rgba(255, 255, 255, 0.2);">
+                            <i class="bi bi-person-plus"></i>
+                            <span>Регистрация</span>
+                        </a>
                     {% endif %}
                 </div>
             </div>
         </div>
     </div>
 </header>
-
-<!-- Пустое модальное окно -->
-<div class="modal fade" id="authModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
-        <div class="modal-content">
-            <!-- Контент будет загружаться через AJAX -->
-        </div>
-    </div>
-</div>
 
 <!-- Оффканвас меню каталога -->
 <div class="offcanvas offcanvas-start" tabindex="-1" id="catalogMenu">
@@ -150,6 +136,7 @@
 </div>
 
 <style>
+    /* Основные стили хедера */
     .wb-header {
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         color: white;
@@ -160,6 +147,14 @@
         height: 60px;
         display: flex;
         align-items: center;
+        width: 100%;
+    }
+
+    .wb-header .container {
+        width: 100%;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 15px;
     }
 
     .header-content {
@@ -168,6 +163,7 @@
         justify-content: space-between;
         gap: 1.5rem;
         height: 100%;
+        width: 100%;
     }
 
     .header-logo .logo-link {
@@ -186,17 +182,20 @@
     .logo-icon {
         width: 32px;
         height: 32px;
+        flex-shrink: 0;
     }
 
     .logo-text {
         font-size: 1.25rem;
         font-weight: 700;
         letter-spacing: -0.5px;
+        white-space: nowrap;
     }
 
     .header-search {
         flex: 1;
         max-width: 600px;
+        min-width: 200px;
     }
 
     .search-input-group {
@@ -205,6 +204,7 @@
         border-radius: 8px;
         overflow: hidden;
         transition: all 0.3s ease;
+        width: 100%;
     }
 
     .search-input-group:focus-within {
@@ -220,6 +220,8 @@
         color: white;
         font-size: 0.95rem;
         transition: all 0.3s ease;
+        width: 100%;
+        min-width: 0;
     }
 
     .search-input:focus {
@@ -227,19 +229,8 @@
         color: #333;
     }
 
-    .search-input:focus::placeholder {
-        color: #999;
-    }
-
-    /* ОБНОВЛЕННЫЙ ЦВЕТ PLACEHOLDER */
     .search-input::placeholder {
-        color: rgba(255, 255, 255, 0.8); /* Более яркий белый с прозрачностью */
-    }
-
-    /* Альтернативный вариант - полностью белый */
-    .search-input::placeholder {
-        color: white;
-        opacity: 0.9; /* Легкая прозрачность для мягкости */
+        color: rgba(255, 255, 255, 0.8);
     }
 
     .search-button {
@@ -249,6 +240,7 @@
         color: white;
         cursor: pointer;
         transition: all 0.3s ease;
+        flex-shrink: 0;
     }
 
     .search-button:hover {
@@ -259,6 +251,7 @@
         display: flex;
         align-items: center;
         gap: 1rem;
+        flex-shrink: 0;
     }
 
     .action-btn {
@@ -275,11 +268,14 @@
         transition: all 0.3s ease;
         position: relative;
         text-decoration: none;
+        white-space: nowrap;
     }
 
     .action-btn:hover {
         background: rgba(255, 255, 255, 0.2);
         transform: translateY(-1px);
+        text-decoration: none;
+        color: white;
     }
 
     .catalog-btn {
@@ -293,6 +289,11 @@
     .user-actions {
         display: flex;
         gap: 0.5rem;
+        align-items: center;
+    }
+
+    .register-btn:hover {
+        background: rgba(255, 255, 255, 0.3) !important;
     }
 
     .action-badge {
@@ -320,18 +321,27 @@
         box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
         border-radius: 8px;
         padding: 0.5rem;
+        min-width: 200px;
     }
 
     .dropdown-item {
         padding: 0.75rem 1rem;
         border-radius: 6px;
         transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
     }
 
     .dropdown-item:hover {
         background: #f3f4f6;
     }
 
+    .dropdown-item.text-danger:hover {
+        background: #fee2e2;
+        color: #dc2626 !important;
+    }
+
+    /* Категории в оффканвасе */
     .category-list {
         display: flex;
         flex-direction: column;
@@ -352,25 +362,35 @@
     .category-item:hover {
         background: #f3f4f6;
         color: #667eea;
+        text-decoration: none;
     }
 
     .category-item i {
         font-size: 1.25rem;
         width: 24px;
+        text-align: center;
     }
 
+    /* Адаптивность */
     @media (max-width: 992px) {
         .header-search {
             display: none;
         }
+
         .cart-text {
             display: inline;
         }
+
         .action-btn span:not(.cart-text) {
             display: none;
         }
+
         .action-btn {
             padding: 0.5rem;
+        }
+
+        .logo-text {
+            font-size: 1.1rem;
         }
     }
 
@@ -378,15 +398,22 @@
         .wb-header {
             height: 56px;
         }
+
         .header-content {
             gap: 1rem;
         }
+
         .logo-text {
             font-size: 1.1rem;
         }
+
         .logo-icon {
             width: 28px;
             height: 28px;
+        }
+
+        .register-btn span {
+            display: none;
         }
     }
 
@@ -394,330 +421,59 @@
         .wb-header {
             height: 52px;
         }
+
         .logo-text {
             display: none;
         }
+
         .catalog-btn span {
             display: none;
         }
-    }
 
-    #authModal .modal-dialog {
-        max-width: 500px;
-    }
-    #authModal .modal-content {
-        border-radius: 16px;
-        border: none;
-    }
-    #authModal .modal-header {
-        border: none;
-        padding: 1.5rem 1.5rem 0;
-    }
-    #authModal .nav-tabs {
-        border: none;
-        gap: 1rem;
-    }
-    #authModal .nav-link {
-        padding: 0.75rem 1.5rem;
-        border: none;
-        border-radius: 8px;
-        color: #6b7280;
-        background: #f3f4f6;
-    }
-    #authModal .nav-link.active {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-    }
-    #authModal .btn-close {
-        margin: 0;
+        .auth-btn span {
+            display: none;
+        }
+
+        .action-btn {
+            padding: 0.5rem;
+        }
     }
 </style>
 
 <script>
-    // Глобальные переменные для хранения загруженных форм
-    let authFormsLoaded = {
-        login: null,
-        register: null
-    };
-    let authModal = null;
-
-    async function showAuthModal(type = 'login') {
-        const modalEl = document.getElementById('authModal');
-        const modalContent = modalEl.querySelector('.modal-content');
-
-        try {
-            // Если формы еще не загружены, загружаем обе сразу
-            if (!authFormsLoaded.login || !authFormsLoaded.register) {
-                // Показываем лоадер
-                modalContent.innerHTML = `
-                    <div class="modal-body text-center py-5">
-                        <div class="spinner-border text-primary" role="status">
-                            <span class="visually-hidden">Загрузка...</span>
-                        </div>
-                        <p class="mt-3">Загрузка...</p>
-                    </div>
-                `;
-
-                // Загружаем обе формы параллельно
-                const [loginResponse, registerResponse] = await Promise.all([
-                    fetch('/auth/modal/login'),
-                    fetch('/auth/modal/register')
-                ]);
-
-                if (!loginResponse.ok || !registerResponse.ok) {
-                    throw new Error('Ошибка загрузки форм');
-                }
-
-                authFormsLoaded.login = await loginResponse.text();
-                authFormsLoaded.register = await registerResponse.text();
-            }
-
-            // Вставляем общий контент модального окна с вкладками
-            modalContent.innerHTML = `
-                <div class="modal-header border-0 pb-0">
-                    <ul class="nav nav-tabs border-0" id="authTabs" role="tablist">
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link ${type === 'login' ? 'active' : ''}"
-                                    data-bs-toggle="tab"
-                                    data-bs-target="#loginTab"
-                                    type="button"
-                                    onclick="switchAuthTab('login')">
-                                Вход
-                            </button>
-                        </li>
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link ${type === 'register' ? 'active' : ''}"
-                                    data-bs-toggle="tab"
-                                    data-bs-target="#registerTab"
-                                    type="button"
-                                    onclick="switchAuthTab('register')">
-                                Регистрация
-                            </button>
-                        </li>
-                    </ul>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body p-0">
-                    <div class="tab-content">
-                        <div class="tab-pane fade ${type === 'login' ? 'show active' : ''}"
-                             id="loginTab"
-                             role="tabpanel">
-                            ${authFormsLoaded.login}
-                        </div>
-                        <div class="tab-pane fade ${type === 'register' ? 'show active' : ''}"
-                             id="registerTab"
-                             role="tabpanel">
-                            ${authFormsLoaded.register}
-                        </div>
-                    </div>
-                </div>
-            `;
-
-            // Инициализируем модальное окно
-            if (!authModal) {
-                authModal = new bootstrap.Modal(modalEl);
-            }
-
-            // Инициализируем обработчики событий
-            initAuthModalEvents();
-
-            // Показываем модальное окно
-            authModal.show();
-
-        } catch (error) {
-            console.error('Error loading auth modal:', error);
-            modalContent.innerHTML = `
-                <div class="modal-body text-center py-5">
-                    <i class="bi bi-exclamation-triangle text-danger" style="font-size: 3rem;"></i>
-                    <p class="mt-3">Произошла ошибка при загрузке. Пожалуйста, попробуйте еще раз.</p>
-                    <button class="btn btn-primary mt-2" onclick="showAuthModal('${type}')">
-                        Попробовать снова
-                    </button>
-                </div>
-            `;
-        }
-    }
-
-    // Функция для переключения вкладок без запросов
-    function switchAuthTab(type) {
-        // Обновляем активные классы у вкладок
-        document.querySelectorAll('#authTabs .nav-link').forEach(tab => {
-            tab.classList.remove('active');
-            const target = tab.getAttribute('data-bs-target');
-            if (target === `#${type}Tab`) {
-                tab.classList.add('active');
-            }
-        });
-
-        // Обновляем активные классы у контента
-        document.querySelectorAll('.tab-content .tab-pane').forEach(pane => {
-            pane.classList.remove('show', 'active');
-            if (pane.id === `${type}Tab`) {
-                pane.classList.add('show', 'active');
-            }
-        });
-    }
-
-    // Инициализация обработчиков событий для форм
-    function initAuthModalEvents() {
-        // Переключение видимости пароля
-        document.querySelectorAll('.password-toggle').forEach(btn => {
-            btn.addEventListener('click', function() {
-                const input = this.closest('.form-group').querySelector('input[type="password"], input[type="text"]');
-                if (input.type === 'password') {
-                    input.type = 'text';
-                    this.innerHTML = '<i class="bi bi-eye-slash"></i>';
-                } else {
-                    input.type = 'password';
-                    this.innerHTML = '<i class="bi bi-eye"></i>';
-                }
+    // Инициализация оффканваса и других компонентов
+    document.addEventListener('DOMContentLoaded', function() {
+        // Обработка выпадающих меню
+        const dropdowns = document.querySelectorAll('.dropdown-toggle');
+        dropdowns.forEach(dropdown => {
+            dropdown.addEventListener('click', function(e) {
+                e.stopPropagation();
             });
         });
 
-        // AJAX отправка форм
-        const loginForm = document.querySelector('#loginTab #modalLoginForm');
-        const registerForm = document.querySelector('#registerTab #modalRegisterForm');
-
-        if (loginForm) {
-            loginForm.addEventListener('submit', function(e) {
-                e.preventDefault();
-                handleLoginForm(this);
-            });
-        }
-
-        if (registerForm) {
-            registerForm.addEventListener('submit', function(e) {
-                e.preventDefault();
-                handleRegisterForm(this);
-            });
-        }
-    }
-
-    // Функция для обработки формы входа
-    async function handleLoginForm(form) {
-        const submitBtn = form.querySelector('.btn-auth');
-        const originalText = submitBtn.innerHTML;
-
-        submitBtn.disabled = true;
-        submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Вход...';
-
-        try {
-            const formData = new FormData(form);
-            const response = await fetch(form.action, {
-                method: 'POST',
-                body: formData,
-                headers: {
-                    'Accept': 'application/json',
-                    'X-Requested-With': 'XMLHttpRequest'
-                }
-            });
-
-            // Получаем JSON ответ
-            const result = await response.json();
-
-            // Сервер всегда возвращает HTML с формой
-            // Проверяем, есть ли ошибка в возвращенном HTML
-            const tempDiv = document.createElement('div');
-            tempDiv.innerHTML = result.html;
-            const hasError = tempDiv.querySelector('.alert-danger') !== null;
-
-            if (hasError) {
-                // Есть ошибка - обновляем форму
-                document.querySelector('#loginTab').innerHTML = result.html;
-                // Повторно инициализируем обработчики для новой формы
-                const newForm = document.querySelector('#loginTab #modalLoginForm');
-                if (newForm) {
-                    newForm.addEventListener('submit', function(e) {
-                        e.preventDefault();
-                        handleLoginForm(this);
-                    });
-                }
-                // Инициализируем другие обработчики
-                initPasswordToggles();
-            } else {
-                // Нет ошибки - значит успешный вход
-                // Закрываем модальное окно и перезагружаем страницу
-                authModal.hide();
-                window.location.reload();
-            }
-
-        } catch (error) {
-            console.error('Error:', error);
-            alert('Произошла ошибка при входе');
-        } finally {
-            submitBtn.disabled = false;
-            submitBtn.innerHTML = originalText;
-        }
-    }
-
-    // Функция для обработки формы регистрации
-    async function handleRegisterForm(form) {
-        const submitBtn = form.querySelector('.btn-auth');
-        const originalText = submitBtn.innerHTML;
-
-        submitBtn.disabled = true;
-        submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Регистрация...';
-
-        try {
-            const formData = new FormData(form);
-            const response = await fetch(form.action, {
-                method: 'POST',
-                body: formData,
-                headers: {
-                    'Accept': 'application/json',
-                    'X-Requested-With': 'XMLHttpRequest'
-                }
-            });
-
-            const result = await response.json();
-
-            // Проверяем, успешна ли регистрация
-            if (result.success) {
-                // Успешная регистрация
-                authModal.hide();
-                window.location.reload();
-            } else {
-                // Есть ошибки валидации - обновляем форму
-                if (result.html) {
-                    document.querySelector('#registerTab').innerHTML = result.html;
-                    // Повторно инициализируем обработчики
-                    const newForm = document.querySelector('#registerTab #modalRegisterForm');
-                    if (newForm) {
-                        newForm.addEventListener('submit', function(e) {
-                            e.preventDefault();
-                            handleRegisterForm(this);
-                        });
+        // Закрытие dropdown при клике вне
+        document.addEventListener('click', function() {
+            const openDropdowns = document.querySelectorAll('.dropdown-menu.show');
+            openDropdowns.forEach(menu => {
+                const dropdown = menu.closest('.dropdown');
+                if (dropdown) {
+                    const toggle = dropdown.querySelector('.dropdown-toggle');
+                    if (toggle) {
+                        bootstrap.Dropdown.getInstance(toggle)?.hide();
                     }
-                    initPasswordToggles();
-                }
-            }
-
-        } catch (error) {
-            console.error('Error:', error);
-            alert('Произошла ошибка при регистрации');
-        } finally {
-            submitBtn.disabled = false;
-            submitBtn.innerHTML = originalText;
-        }
-    }
-
-    // Вспомогательные функции для повторной инициализации
-    function initPasswordToggles() {
-        document.querySelectorAll('.password-toggle').forEach(btn => {
-            btn.addEventListener('click', function() {
-                const input = this.closest('.form-group').querySelector('input[type="password"], input[type="text"]');
-                if (input.type === 'password') {
-                    input.type = 'text';
-                    this.innerHTML = '<i class="bi bi-eye-slash"></i>';
-                } else {
-                    input.type = 'password';
-                    this.innerHTML = '<i class="bi bi-eye"></i>';
                 }
             });
         });
-    }
 
-    // Сделаем функции глобальными
-    window.showAuthModal = showAuthModal;
-    window.switchAuthTab = switchAuthTab;
+        // Инициализация всех Bootstrap компонентов
+        const offcanvasElements = document.querySelectorAll('.offcanvas');
+        offcanvasElements.forEach(el => {
+            new bootstrap.Offcanvas(el);
+        });
+
+        const dropdownElements = document.querySelectorAll('.dropdown-toggle');
+        dropdownElements.forEach(el => {
+            new bootstrap.Dropdown(el);
+        });
+    });
 </script>
