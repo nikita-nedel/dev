@@ -22,8 +22,4 @@ require('bootstrap');
 
 // any CSS you import will output into a single css file (app.css in this case)
 import './styles/app.css';
-import './styles/home/style.css';
 import  './styles/global.scss';
-
-import './js/home/script';
-import './js/base/script';
