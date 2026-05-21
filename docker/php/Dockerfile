@@ -8,6 +8,7 @@ RUN apk --no-cache add \
     && docker-php-ext-install pdo_pgsql pdo_mysql
 
 RUN apk add icu-dev
+RUN apk add --no-cache nodejs npm
 RUN docker-php-ext-configure intl && docker-php-ext-install intl
 RUN apk add --no-cache \
     freetype-dev \
