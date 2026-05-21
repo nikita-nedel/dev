@@ -31,15 +31,8 @@ class RegistrationFormType extends AbstractType
                     'maxlength' => 50,
                 ],
                 'constraints' => [
-                    new NotBlank([
-                        'message' => 'Пожалуйста, введите имя',
-                    ]),
-                    new Length([
-                        'min' => 2,
-                        'max' => 50,
-                        'minMessage' => 'Имя должно содержать минимум {{ limit }} символа',
-                        'maxMessage' => 'Имя не должно превышать {{ limit }} символов',
-                    ]),
+                    new NotBlank(message: 'Пожалуйста, введите имя'),
+                    new Length(min: 2, max: 50, minMessage: 'Имя должно содержать минимум {{ limit }} символа', maxMessage: 'Имя не должно превышать {{ limit }} символов'),
                 ],
             ])
             ->add('lastName', TextType::class, [
@@ -51,15 +44,12 @@ class RegistrationFormType extends AbstractType
                     'maxlength' => 50,
                 ],
                 'constraints' => [
-                    new NotBlank([
-                        'message' => 'Пожалуйста, введите фамилию',
-                    ]),
-                    new Length([
-                        'min' => 2,
-                        'max' => 50,
-                        'minMessage' => 'Фамилия должна содержать минимум {{ limit }} символа',
-                        'maxMessage' => 'Фамилия не должна превышать {{ limit }} символов',
-                    ]),
+                    new NotBlank(message: 'Пожалуйста, введите фамилию'),
+                    new Length(
+                        min: 2,
+                        max: 50,
+                        minMessage: 'Фамилия должна содержать минимум {{ limit }} символа',
+                        maxMessage: 'Фамилия не должна превышать {{ limit }} символов'),
                 ],
             ])
             ->add('phone', TelType::class, [
@@ -69,9 +59,7 @@ class RegistrationFormType extends AbstractType
                     'placeholder' => 'phone',
                 ],
                 'constraints' => [
-                    new NotBlank([
-                        'message' => 'Пожалуйста, введите номер телефона',
-                    ]),
+                    new NotBlank(message: 'Пожалуйста, введите номер телефона'),
                 ],
             ])
             ->add('email', EmailType::class, [
@@ -82,9 +70,7 @@ class RegistrationFormType extends AbstractType
                     'autocomplete' => 'email',
                 ],
                 'constraints' => [
-                    new NotBlank([
-                        'message' => 'Пожалуйста, введите email',
-                    ]),
+                    new NotBlank(message: 'Пожалуйста, введите email'),
                 ],
             ])
             ->add('plainPassword', PasswordType::class, [
@@ -97,14 +83,8 @@ class RegistrationFormType extends AbstractType
                     'minlength' => 8,
                 ],
                 'constraints' => [
-                    new NotBlank([
-                        'message' => 'Пожалуйста, введите пароль',
-                    ]),
-                    new Length([
-                        'min' => 8,
-                        'minMessage' => 'Пароль должен содержать минимум {{ limit }} символов',
-                        'max' => 4096,
-                    ]),
+                    new NotBlank(message: 'Пожалуйста, введите пароль'),
+                    new Length(min: 8, max: 4096, minMessage: 'Пароль должен содержать минимум {{ limit }} символов'),
                 ],
             ])
             ->add('agreeTerms', CheckboxType::class, [
@@ -114,9 +94,7 @@ class RegistrationFormType extends AbstractType
                     'class' => 'form-check-input',
                 ],
                 'constraints' => [
-                    new IsTrue([
-                        'message' => 'Вы должны принять условия использования.',
-                    ]),
+                    new IsTrue(message: 'Вы должны принять условия использования.'),
                 ],
             ]);
     }

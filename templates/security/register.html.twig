@@ -714,16 +714,6 @@
                         </div>
 
                         <div class="form-group">
-                            <label class="checkbox-label terms-checkbox">
-                                {{ form_widget(registrationForm.agreeTerms, {
-                                    'attr': {'class': 'terms-input'}
-                                }) }}
-                                <span class="checkmark"></span>
-                                <span class="terms-text">
-                                Я принимаю <a href="#" class="terms-link">Условия использования</a>
-                                и <a href="#" class="terms-link">Политику конфиденциальности</a>
-                            </span>
-                            </label>
                             {% if registrationForm.agreeTerms.vars.errors|length > 0 %}
                                 <div class="form-error">
                                     {{ form_errors(registrationForm.agreeTerms) }}

@@ -1,0 +1,1697 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ category.name }} - WB Style{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        /* Каталог товаров */
+        .catalog-page {
+            background: #f8f9fa;
+            min-height: calc(100vh - 120px);
+            padding: 2rem 0;
+        }
+
+        /* Хлебные крошки */
+        .breadcrumbs {
+            margin-bottom: 2rem;
+            padding: 0 1.5rem;
+        }
+
+        .breadcrumbs-list {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .breadcrumbs-item {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .breadcrumbs-item a {
+            color: #667eea;
+            text-decoration: none;
+        }
+
+        .breadcrumbs-item a:hover {
+            text-decoration: underline;
+        }
+
+        .breadcrumbs-item:not(:last-child)::after {
+            content: '/';
+            margin-left: 0.5rem;
+            color: #94a3b8;
+        }
+
+        .breadcrumbs-item:last-child {
+            color: #333;
+            font-weight: 500;
+        }
+
+        /* Заголовок категории */
+        .category-header {
+            background: white;
+            border-radius: 16px;
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .category-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea10 0%, #764ba210 100%);
+            clip-path: polygon(100% 0, 0 0, 100% 100%);
+        }
+
+        .category-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: #1a1a1a;
+            position: relative;
+        }
+
+        .category-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 60px;
+            height: 4px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 2px;
+        }
+
+        .category-description {
+            font-size: 1.1rem;
+            color: #666;
+            line-height: 1.6;
+            max-width: 600px;
+            margin-bottom: 1.5rem;
+        }
+
+        .category-stats {
+            display: flex;
+            gap: 2rem;
+            margin-top: 1.5rem;
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .stat-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #667eea20 0%, #764ba220 100%);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #667eea;
+            font-size: 1.25rem;
+        }
+
+        .stat-content {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1a1a1a;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        /* Фильтры и сортировка */
+        .catalog-controls {
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .controls-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .filters-section {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            min-width: 180px;
+        }
+
+        .filter-label {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #4a5568;
+        }
+
+        .filter-select {
+            padding: 0.75rem 1rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            background: white;
+            font-size: 0.95rem;
+            color: #333;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%236b7280' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            background-size: 16px;
+            padding-right: 2.5rem;
+        }
+
+        .filter-select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .view-toggle {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .view-btn {
+            width: 40px;
+            height: 40px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            background: white;
+            color: #94a3b8;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+        }
+
+        .view-btn.active {
+            border-color: #667eea;
+            color: #667eea;
+            background: #667eea10;
+        }
+
+        .view-btn:hover:not(.active) {
+            border-color: #cbd5e0;
+            color: #667eea;
+        }
+
+        /* Боковые фильтры */
+        .catalog-content {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 2rem;
+        }
+
+        .sidebar-filters {
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            height: fit-content;
+            position: sticky;
+            top: 100px;
+        }
+
+        .filter-section {
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .filter-section:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .filter-section-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #1a1a1a;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .filter-section-title::after {
+            content: '−';
+            font-size: 1.5rem;
+            color: #667eea;
+            transition: transform 0.3s ease;
+        }
+
+        .filter-section.collapsed .filter-section-title::after {
+            content: '+';
+        }
+
+        .filter-section-content {
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .filter-section.collapsed .filter-section-content {
+            max-height: 0;
+        }
+
+        .price-range {
+            padding-top: 0.5rem;
+        }
+
+        .price-inputs {
+            display: flex;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .price-input {
+            flex: 1;
+            padding: 0.75rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            text-align: center;
+        }
+
+        .price-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .price-slider {
+            width: 100%;
+            height: 4px;
+            background: #e2e8f0;
+            border-radius: 2px;
+            position: relative;
+            margin: 1.5rem 0;
+        }
+
+        .price-slider-fill {
+            position: absolute;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 2px;
+        }
+
+        .price-slider-handle {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 20px;
+            height: 20px;
+            background: white;
+            border: 3px solid #667eea;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            transition: transform 0.2s ease;
+        }
+
+        .price-slider-handle:hover {
+            transform: translateY(-50%) scale(1.2);
+        }
+
+        .filter-options {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .filter-option {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            cursor: pointer;
+        }
+
+        .filter-checkbox {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #e2e8f0;
+            border-radius: 6px;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .filter-checkbox::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 6px;
+            width: 6px;
+            height: 10px;
+            border: solid white;
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .filter-option input:checked + .filter-checkbox {
+            background: #667eea;
+            border-color: #667eea;
+        }
+
+        .filter-option input:checked + .filter-checkbox::after {
+            opacity: 1;
+        }
+
+        .filter-option input {
+            display: none;
+        }
+
+        .filter-option-label {
+            font-size: 0.95rem;
+            color: #4a5568;
+            cursor: pointer;
+            flex: 1;
+        }
+
+        .filter-count {
+            font-size: 0.85rem;
+            color: #94a3b8;
+        }
+
+        .filter-colors {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+        }
+
+        .color-option {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 3px solid transparent;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .color-option.active {
+            border-color: #667eea;
+            transform: scale(1.1);
+        }
+
+        .color-option::after {
+            content: '✓';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 0.8rem;
+            font-weight: bold;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .color-option.active::after {
+            opacity: 1;
+        }
+
+        .filter-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .tag-option {
+            padding: 0.5rem 1rem;
+            background: #f8fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            color: #4a5568;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .tag-option.active {
+            background: #667eea;
+            border-color: #667eea;
+            color: white;
+        }
+
+        .filter-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .filter-btn {
+            flex: 1;
+            padding: 0.875rem;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .filter-btn.apply {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .filter-btn.reset {
+            background: #f8fafc;
+            border: 2px solid #e2e8f0;
+            color: #4a5568;
+        }
+
+        .filter-btn.apply:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .filter-btn.reset:hover {
+            border-color: #667eea;
+            color: #667eea;
+        }
+
+        /* Сетка товаров */
+        .products-section {
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .products-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .products-count {
+            font-size: 0.95rem;
+            color: #666;
+        }
+
+        .products-count strong {
+            color: #1a1a1a;
+        }
+
+        /* Анимации для товаров */
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+            opacity: 0;
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            border: 1px solid #e2e8f0;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: cardAppear 0.6s ease forwards;
+        }
+
+        @keyframes cardAppear {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .product-card:nth-child(1) { animation-delay: 0.1s; }
+        .product-card:nth-child(2) { animation-delay: 0.2s; }
+        .product-card:nth-child(3) { animation-delay: 0.3s; }
+        .product-card:nth-child(4) { animation-delay: 0.4s; }
+        .product-card:nth-child(5) { animation-delay: 0.5s; }
+        .product-card:nth-child(6) { animation-delay: 0.6s; }
+        .product-card:nth-child(7) { animation-delay: 0.7s; }
+        .product-card:nth-child(8) { animation-delay: 0.8s; }
+        .product-card:nth-child(9) { animation-delay: 0.9s; }
+        .product-card:nth-child(10) { animation-delay: 1s; }
+        .product-card:nth-child(11) { animation-delay: 1.1s; }
+        .product-card:nth-child(12) { animation-delay: 1.2s; }
+
+        .product-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+            z-index: 10;
+        }
+
+        .product-image {
+            height: 280px;
+            background: linear-gradient(135deg, #f6f8ff 0%, #f0f4ff 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .product-image::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(180deg, rgba(255,255,255,0) 70%, rgba(255,255,255,0.8) 100%);
+            z-index: 1;
+        }
+
+        .product-image img {
+            max-width: 85%;
+            max-height: 85%;
+            object-fit: contain;
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            z-index: 2;
+        }
+
+        .product-card:hover .product-image img {
+            transform: scale(1.15) rotate(2deg);
+            filter: brightness(1.05);
+        }
+
+        .product-badges {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            z-index: 3;
+        }
+
+        .badge {
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: white;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            animation: badgePulse 2s infinite;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        @keyframes badgePulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .badge.discount {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            animation-delay: 0.5s;
+        }
+
+        .badge.new {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            animation-delay: 1s;
+        }
+
+        .badge.hit {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            animation-delay: 1.5s;
+        }
+
+        .badge.free-shipping {
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            animation-delay: 2s;
+        }
+
+        .favorite-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.95);
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            color: #666;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 3;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        .favorite-btn:hover {
+            color: #ef4444;
+            transform: scale(1.15) rotate(15deg);
+            box-shadow: 0 8px 25px rgba(239, 68, 68, 0.3);
+        }
+
+        .favorite-btn.active {
+            color: #ef4444;
+            animation: heartBeat 0.6s ease;
+        }
+
+        @keyframes heartBeat {
+            0%, 100% { transform: scale(1); }
+            25% { transform: scale(1.3); }
+            50% { transform: scale(0.95); }
+            75% { transform: scale(1.15); }
+        }
+
+        .quick-view-btn {
+            position: absolute;
+            bottom: 15px;
+            right: 15px;
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.95);
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            color: #666;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 3;
+            opacity: 0;
+            transform: translateY(10px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        .product-card:hover .quick-view-btn {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .quick-view-btn:hover {
+            color: #667eea;
+            transform: scale(1.15);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .product-info {
+            padding: 1.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .product-info::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #667eea, transparent);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .product-card:hover .product-info::before {
+            opacity: 1;
+        }
+
+        .product-title {
+            font-size: 1rem;
+            line-height: 1.4;
+            margin-bottom: 0.75rem;
+            color: #1a1a1a;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            height: 2.8rem;
+            transition: color 0.3s ease;
+        }
+
+        .product-card:hover .product-title {
+            color: #667eea;
+        }
+
+        .product-rating {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .stars {
+            display: flex;
+            gap: 2px;
+        }
+
+        .stars i {
+            color: #ffd700;
+            font-size: 1rem;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .stars i.faded {
+            color: #e2e8f0;
+        }
+
+        .rating-count {
+            font-size: 0.85rem;
+            color: #666;
+        }
+
+        .product-price {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.25rem;
+            position: relative;
+        }
+
+        .current-price {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #1a1a1a;
+            position: relative;
+            padding-right: 0.5rem;
+        }
+
+        .current-price::after {
+            content: '₽';
+            font-size: 0.9em;
+            margin-left: 2px;
+        }
+
+        .old-price {
+            font-size: 1rem;
+            color: #94a3b8;
+            text-decoration: line-through;
+            position: relative;
+        }
+
+        .old-price::after {
+            content: '₽';
+            font-size: 0.9em;
+            margin-left: 2px;
+        }
+
+        .discount-percent {
+            position: absolute;
+            top: -8px;
+            right: 0;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #ef4444;
+            padding: 2px 6px;
+            background: #fee;
+            border-radius: 4px;
+            animation: discountFlash 2s infinite;
+        }
+
+        @keyframes discountFlash {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .product-seller {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1.25rem;
+            padding-bottom: 1.25rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .seller-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .seller-name {
+            font-size: 0.9rem;
+            color: #666;
+            flex: 1;
+        }
+
+        .seller-rating {
+            font-size: 0.85rem;
+            color: #f59e0b;
+            font-weight: 600;
+        }
+
+        .product-actions {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .add-to-cart {
+            flex: 1;
+            padding: 0.875rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .add-to-cart::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .add-to-cart:hover::before {
+            left: 100%;
+        }
+
+        .add-to-cart:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .add-to-cart:active {
+            transform: translateY(0);
+        }
+
+        .buy-now {
+            flex: 1;
+            padding: 0.875rem;
+            background: white;
+            border: 2px solid #667eea;
+            color: #667eea;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .buy-now:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        /* Пагинация */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .pagination-btn {
+            width: 40px;
+            height: 40px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            background: white;
+            color: #4a5568;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+
+        .pagination-btn:hover:not(.disabled):not(.active) {
+            border-color: #667eea;
+            color: #667eea;
+        }
+
+        .pagination-btn.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-color: #667eea;
+            color: white;
+            transform: scale(1.1);
+        }
+
+        .pagination-btn.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .pagination-dots {
+            padding: 0 0.5rem;
+            color: #94a3b8;
+        }
+
+        /* Адаптивность */
+        @media (max-width: 1200px) {
+            .catalog-content {
+                grid-template-columns: 240px 1fr;
+            }
+
+            .products-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            }
+        }
+
+        @media (max-width: 992px) {
+            .catalog-content {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar-filters {
+                position: static;
+            }
+
+            .category-title {
+                font-size: 2rem;
+            }
+
+            .products-grid {
+                grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+                gap: 1rem;
+            }
+
+            .product-image {
+                height: 240px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .category-header {
+                padding: 1.5rem;
+            }
+
+            .category-title {
+                font-size: 1.75rem;
+            }
+
+            .category-description {
+                font-size: 1rem;
+            }
+
+            .category-stats {
+                flex-wrap: wrap;
+                gap: 1rem;
+            }
+
+            .controls-row {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .filters-section {
+                width: 100%;
+                overflow-x: auto;
+                padding-bottom: 0.5rem;
+            }
+
+            .filter-group {
+                min-width: 150px;
+            }
+
+            .products-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+
+            .products-grid {
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            }
+
+            .product-image {
+                height: 200px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .breadcrumbs {
+                padding: 0 1rem;
+            }
+
+            .catalog-controls,
+            .sidebar-filters,
+            .products-section {
+                padding: 1rem;
+            }
+
+            .products-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .product-image {
+                height: 260px;
+            }
+
+            .filter-actions {
+                flex-direction: column;
+            }
+
+            .pagination {
+                flex-wrap: wrap;
+            }
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="catalog-page">
+        <div class="container">
+            <!-- Хлебные крошки -->
+            <nav class="breadcrumbs">
+                <ul class="breadcrumbs-list">
+                    <li class="breadcrumbs-item">
+                        <a href="{{ path('app_home') }}">Главная</a>
+                    </li>
+                    <li class="breadcrumbs-item">
+                        <a href="{{ path('app_catalog') }}">Каталог</a>
+                    </li>
+                    <li class="breadcrumbs-item">{{ category.name }}</li>
+                </ul>
+            </nav>
+
+            <!-- Заголовок категории -->
+            <div class="category-header">
+                <h1 class="category-title">{{ category.name }}</h1>
+                <p class="category-description">{{ category.description }}</p>
+
+                <div class="category-stats">
+                    <div class="stat-item">
+                        <div class="stat-icon">
+                            <i class="bi bi-box-seam"></i>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-value">{{ category.productCount|number_format(0, ',', ' ') }}</div>
+                            <div class="stat-label">товаров</div>
+                        </div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-icon">
+                            <i class="bi bi-star"></i>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-value">{{ category.avgRating }}</div>
+                            <div class="stat-label">средний рейтинг</div>
+                        </div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-icon">
+                            <i class="bi bi-tag"></i>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-value">до -{{ category.maxDiscount }}%</div>
+                            <div class="stat-label">максимальная скидка</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Фильтры и сортировка -->
+            <div class="catalog-controls">
+                <div class="controls-row">
+                    <div class="filters-section">
+                        <div class="filter-group">
+                            <label class="filter-label">Сортировка</label>
+                            <select class="filter-select" id="sortBy">
+                                <option value="popular">По популярности</option>
+                                <option value="rating">По рейтингу</option>
+                                <option value="price_asc">По цене (дешевые)</option>
+                                <option value="price_desc">По цене (дорогие)</option>
+                                <option value="new">По новизне</option>
+                                <option value="discount">По скидке</option>
+                            </select>
+                        </div>
+
+                        <div class="filter-group">
+                            <label class="filter-label">Товаров на странице</label>
+                            <select class="filter-select" id="perPage">
+                                <option value="24">24</option>
+                                <option value="48">48</option>
+                                <option value="96">96</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="view-toggle">
+                        <button class="view-btn active" data-view="grid">
+                            <i class="bi bi-grid-3x3-gap"></i>
+                        </button>
+                        <button class="view-btn" data-view="list">
+                            <i class="bi bi-list"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="catalog-content">
+                <!-- Боковые фильтры -->
+                <aside class="sidebar-filters">
+                    <div class="filter-section">
+                        <h3 class="filter-section-title">Цена, ₽</h3>
+                        <div class="filter-section-content">
+                            <div class="price-range">
+                                <div class="price-inputs">
+                                    <input type="number" class="price-input" id="priceMin" placeholder="0" min="0" max="100000" value="0">
+                                    <span style="align-self: center;">—</span>
+                                    <input type="number" class="price-input" id="priceMax" placeholder="100000" min="0" max="100000" value="50000">
+                                </div>
+                                <div class="price-slider">
+                                    <div class="price-slider-fill" id="priceFill"></div>
+                                    <div class="price-slider-handle" id="priceMinHandle"></div>
+                                    <div class="price-slider-handle" id="priceMaxHandle"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="filter-section">
+                        <h3 class="filter-section-title">Бренды</h3>
+                        <div class="filter-section-content">
+                            <div class="filter-options">
+                                {% for brand in brands %}
+                                    <label class="filter-option">
+                                        <input type="checkbox" name="brand" value="{{ brand.id }}">
+                                        <span class="filter-checkbox"></span>
+                                        <span class="filter-option-label">{{ brand.name }}</span>
+                                        <span class="filter-count">({{ brand.count }})</span>
+                                    </label>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="filter-section">
+                        <h3 class="filter-section-title">Размеры</h3>
+                        <div class="filter-section-content">
+                            <div class="filter-tags">
+                                {% for size in sizes %}
+                                    <div class="tag-option" data-size="{{ size }}">{{ size }}</div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="filter-section">
+                        <h3 class="filter-section-title">Цвета</h3>
+                        <div class="filter-section-content">
+                            <div class="filter-colors">
+                                {% for color in colors %}
+                                    <div class="color-option" style="background-color: {{ color.code }};" data-color="{{ color.name }}"></div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="filter-section">
+                        <h3 class="filter-section-title">Доставка</h3>
+                        <div class="filter-section-content">
+                            <div class="filter-options">
+                                <label class="filter-option">
+                                    <input type="checkbox" name="free_shipping" value="1">
+                                    <span class="filter-checkbox"></span>
+                                    <span class="filter-option-label">Бесплатная доставка</span>
+                                </label>
+                                <label class="filter-option">
+                                    <input type="checkbox" name="fast_shipping" value="1">
+                                    <span class="filter-checkbox"></span>
+                                    <span class="filter-option-label">Быстрая доставка</span>
+                                </label>
+                                <label class="filter-option">
+                                    <input type="checkbox" name="pickup" value="1">
+                                    <span class="filter-checkbox"></span>
+                                    <span class="filter-option-label">Самовывоз</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="filter-actions">
+                        <button class="filter-btn apply">Применить фильтры</button>
+                        <button class="filter-btn reset">Сбросить</button>
+                    </div>
+                </aside>
+
+                <!-- Сетка товаров -->
+                <main class="products-section">
+                    <div class="products-header">
+                        <div class="products-count">
+                            Найдено <strong>{{ products|length }}</strong> товаров
+                        </div>
+                        <div class="sort-info">
+                            Сортировка: <strong>По популярности</strong>
+                        </div>
+                    </div>
+
+                    <div class="products-grid">
+                        {% for product in products %}
+                            <div class="product-card" data-product-id="{{ product.id }}">
+                                <div class="product-image">
+                                    <img src="{{ product.image }}" alt="{{ product.name }}" loading="lazy">
+
+                                    <div class="product-badges">
+                                        {% if product.discount > 0 %}
+                                            <div class="badge discount">-{{ product.discount }}%</div>
+                                        {% endif %}
+                                        {% if product.isNew %}
+                                            <div class="badge new">Новинка</div>
+                                        {% endif %}
+                                        {% if product.isHit %}
+                                            <div class="badge hit">Хит</div>
+                                        {% endif %}
+                                        {% if product.freeShipping %}
+                                            <div class="badge free-shipping">Бесплатная доставка</div>
+                                        {% endif %}
+                                    </div>
+
+                                    <button class="favorite-btn {{ product.isFavorite ? 'active' : '' }}"
+                                            data-product-id="{{ product.id }}">
+                                        <i class="bi {{ product.isFavorite ? 'bi-heart-fill' : 'bi-heart' }}"></i>
+                                    </button>
+
+                                    <button class="quick-view-btn" data-product-id="{{ product.id }}">
+                                        <i class="bi bi-eye"></i>
+                                    </button>
+                                </div>
+
+                                <div class="product-info">
+                                    <h3 class="product-title">
+                                        <a href="{{ path('app_product', {id: product.id}) }}" class="text-decoration-none text-dark">
+                                            {{ product.name }}
+                                        </a>
+                                    </h3>
+
+                                    <div class="product-rating">
+                                        <div class="stars">
+                                            {% for i in 1..5 %}
+                                                <i class="bi {{ i <= product.rating ? 'bi-star-fill' : 'bi-star' }} {{ i > product.rating and i <= product.rating + 0.5 ? 'bi-star-half' : '' }}"></i>
+                                            {% endfor %}
+                                        </div>
+                                        <span class="rating-count">({{ product.reviews }})</span>
+                                    </div>
+
+                                    <div class="product-price">
+                                        <div class="current-price">{{ product.price|number_format(0, ',', ' ') }}</div>
+                                        {% if product.oldPrice %}
+                                            <div class="old-price">{{ product.oldPrice|number_format(0, ',', ' ') }}</div>
+                                            <div class="discount-percent">-{{ product.discount }}%</div>
+                                        {% endif %}
+                                    </div>
+
+                                    <div class="product-seller">
+                                        <div class="seller-avatar">{{ product.sellerName|first|upper }}</div>
+                                        <span class="seller-name">{{ product.sellerName }}</span>
+                                        <span class="seller-rating">
+                                    <i class="bi bi-star-fill"></i> {{ product.sellerRating }}
+                                </span>
+                                    </div>
+
+                                    <div class="product-actions">
+                                        <button class="add-to-cart" data-product-id="{{ product.id }}">
+                                            <i class="bi bi-cart-plus"></i>
+                                            <span>В корзину</span>
+                                        </button>
+                                        <button class="buy-now" data-product-id="{{ product.id }}">
+                                            Купить сейчас
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+
+                    <!-- Пагинация -->
+                    <div class="pagination">
+                        <button class="pagination-btn disabled">
+                            <i class="bi bi-chevron-left"></i>
+                        </button>
+
+                        <button class="pagination-btn active">1</button>
+                        <button class="pagination-btn">2</button>
+                        <button class="pagination-btn">3</button>
+                        <button class="pagination-btn">4</button>
+
+                        <span class="pagination-dots">...</span>
+
+                        <button class="pagination-btn">12</button>
+
+                        <button class="pagination-btn">
+                            <i class="bi bi-chevron-right"></i>
+                        </button>
+                    </div>
+                </main>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Сворачивание фильтров
+            const filterSections = document.querySelectorAll('.filter-section');
+            filterSections.forEach(section => {
+                const title = section.querySelector('.filter-section-title');
+                const content = section.querySelector('.filter-section-content');
+
+                // Устанавливаем начальную высоту
+                content.style.maxHeight = content.scrollHeight + 'px';
+
+                title.addEventListener('click', () => {
+                    section.classList.toggle('collapsed');
+                    if (section.classList.contains('collapsed')) {
+                        content.style.maxHeight = '0';
+                    } else {
+                        content.style.maxHeight = content.scrollHeight + 'px';
+                    }
+                });
+            });
+
+            // Цветовые фильтры
+            const colorOptions = document.querySelectorAll('.color-option');
+            colorOptions.forEach(color => {
+                color.addEventListener('click', function() {
+                    this.classList.toggle('active');
+                });
+            });
+
+            // Фильтры по тегам (размеры)
+            const tagOptions = document.querySelectorAll('.tag-option');
+            tagOptions.forEach(tag => {
+                tag.addEventListener('click', function() {
+                    this.classList.toggle('active');
+                });
+            });
+
+            // Слайдер цены
+            const priceMinInput = document.getElementById('priceMin');
+            const priceMaxInput = document.getElementById('priceMax');
+            const priceMinHandle = document.getElementById('priceMinHandle');
+            const priceMaxHandle = document.getElementById('priceMaxHandle');
+            const priceFill = document.getElementById('priceFill');
+            const priceSlider = document.querySelector('.price-slider');
+
+            let minPrice = 0;
+            let maxPrice = 100000;
+            let currentMin = 0;
+            let currentMax = 50000;
+            let isDragging = false;
+            let activeHandle = null;
+
+            function updatePriceSlider() {
+                const sliderWidth = priceSlider.offsetWidth;
+                const minPercent = (currentMin - minPrice) / (maxPrice - minPrice) * 100;
+                const maxPercent = (currentMax - minPrice) / (maxPrice - minPrice) * 100;
+
+                priceMinHandle.style.left = minPercent + '%';
+                priceMaxHandle.style.left = maxPercent + '%';
+                priceFill.style.left = minPercent + '%';
+                priceFill.style.width = (maxPercent - minPercent) + '%';
+
+                priceMinInput.value = currentMin;
+                priceMaxInput.value = currentMax;
+            }
+
+            function handleSliderMove(e) {
+                if (!isDragging || !activeHandle) return;
+
+                const sliderRect = priceSlider.getBoundingClientRect();
+                let percent = ((e.clientX - sliderRect.left) / sliderRect.width) * 100;
+                percent = Math.max(0, Math.min(100, percent));
+
+                const value = minPrice + (percent / 100) * (maxPrice - minPrice);
+
+                if (activeHandle === priceMinHandle) {
+                    if (value >= currentMax - 1000) return;
+                    currentMin = Math.round(value / 1000) * 1000;
+                } else {
+                    if (value <= currentMin + 1000) return;
+                    currentMax = Math.round(value / 1000) * 1000;
+                }
+
+                updatePriceSlider();
+            }
+
+            priceMinHandle.addEventListener('mousedown', (e) => {
+                isDragging = true;
+                activeHandle = priceMinHandle;
+                e.preventDefault();
+            });
+
+            priceMaxHandle.addEventListener('mousedown', (e) => {
+                isDragging = true;
+                activeHandle = priceMaxHandle;
+                e.preventDefault();
+            });
+
+            document.addEventListener('mousemove', handleSliderMove);
+            document.addEventListener('mouseup', () => {
+                isDragging = false;
+                activeHandle = null;
+            });
+
+            // Обработка ввода цены
+            priceMinInput.addEventListener('change', function() {
+                let value = parseInt(this.value);
+                if (isNaN(value) || value < minPrice) value = minPrice;
+                if (value >= currentMax - 1000) value = currentMax - 1000;
+                currentMin = value;
+                updatePriceSlider();
+            });
+
+            priceMaxInput.addEventListener('change', function() {
+                let value = parseInt(this.value);
+                if (isNaN(value) || value > maxPrice) value = maxPrice;
+                if (value <= currentMin + 1000) value = currentMin + 1000;
+                currentMax = value;
+                updatePriceSlider();
+            });
+
+            // Инициализация слайдера
+            updatePriceSlider();
+
+            // Переключение вида (сетка/список)
+            const viewBtns = document.querySelectorAll('.view-btn');
+            viewBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    viewBtns.forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+
+                    const view = this.dataset.view;
+                    const productsGrid = document.querySelector('.products-grid');
+
+                    if (view === 'list') {
+                        productsGrid.style.gridTemplateColumns = '1fr';
+                        document.querySelectorAll('.product-card').forEach(card => {
+                            card.style.display = 'flex';
+                            card.style.height = '200px';
+                        });
+                    } else {
+                        productsGrid.style.gridTemplateColumns = 'repeat(auto-fill, minmax(280px, 1fr))';
+                        document.querySelectorAll('.product-card').forEach(card => {
+                            card.style.display = 'block';
+                            card.style.height = 'auto';
+                        });
+                    }
+                });
+            });
+
+            // Сортировка
+            const sortSelect = document.getElementById('sortBy');
+            sortSelect.addEventListener('change', function() {
+                // В реальном проекте здесь будет AJAX запрос
+                console.log('Сортировка:', this.value);
+                showToast('Товары отсортированы', 'info');
+            });
+
+            // Добавление в избранное
+            const favoriteBtns = document.querySelectorAll('.favorite-btn');
+            favoriteBtns.forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const productId = this.dataset.productId;
+                    const icon = this.querySelector('i');
+
+                    this.classList.toggle('active');
+
+                    if (this.classList.contains('active')) {
+                        icon.className = 'bi bi-heart-fill';
+                        showToast('Товар добавлен в избранное', 'success');
+                    } else {
+                        icon.className = 'bi bi-heart';
+                        showToast('Товар удален из избранного', 'info');
+                    }
+
+                    // Анимация сердечка
+                    this.style.animation = 'none';
+                    setTimeout(() => {
+                        this.style.animation = 'heartBeat 0.6s ease';
+                    }, 10);
+                });
+            });
+
+            // Добавление в корзину
+            const addToCartBtns = document.querySelectorAll('.add-to-cart');
+            addToCartBtns.forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const productId = this.dataset.productId;
+                    const originalHTML = this.innerHTML;
+
+                    // Анимация добавления
+                    this.innerHTML = '<i class="bi bi-check-lg"></i><span>Добавлено</span>';
+                    this.disabled = true;
+                    this.style.background = '#10b981';
+
+                    showToast('Товар добавлен в корзину', 'success');
+
+                    setTimeout(() => {
+                        this.innerHTML = originalHTML;
+                        this.disabled = false;
+                        this.style.background = '';
+                    }, 1500);
+                });
+            });
+
+            // Быстрый просмотр
+            const quickViewBtns = document.querySelectorAll('.quick-view-btn');
+            quickViewBtns.forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const productId = this.dataset.productId;
+                    showToast('Быстрый просмотр товара', 'info');
+                });
+            });
+
+            // Купить сейчас
+            const buyNowBtns = document.querySelectorAll('.buy-now');
+            buyNowBtns.forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const productId = this.dataset.productId;
+                    window.location.href = `/product/${productId}/checkout`;
+                });
+            });
+
+            // Применение фильтров
+            const applyFilterBtn = document.querySelector('.filter-btn.apply');
+            const resetFilterBtn = document.querySelector('.filter-btn.reset');
+
+            if (applyFilterBtn) {
+                applyFilterBtn.addEventListener('click', function() {
+                    // В реальном проекте здесь будет AJAX запрос
+                    showToast('Фильтры применены', 'success');
+
+                    // Анимация перезагрузки товаров
+                    const productsGrid = document.querySelector('.products-grid');
+                    productsGrid.style.opacity = '0.5';
+
+                    setTimeout(() => {
+                        productsGrid.style.opacity = '1';
+                    }, 500);
+                });
+            }
+
+            if (resetFilterBtn) {
+                resetFilterBtn.addEventListener('click', function() {
+                    // Сброс всех фильтров
+                    document.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+                        cb.checked = false;
+                        cb.dispatchEvent(new Event('change'));
+                    });
+
+                    document.querySelectorAll('.color-option.active').forEach(color => {
+                        color.classList.remove('active');
+                    });
+
+                    document.querySelectorAll('.tag-option.active').forEach(tag => {
+                        tag.classList.remove('active');
+                    });
+
+                    currentMin = 0;
+                    currentMax = 50000;
+                    updatePriceSlider();
+
+                    showToast('Фильтры сброшены', 'info');
+                });
+            }
+
+            // Toast уведомления
+            function showToast(message, type = 'info') {
+                if (typeof window.showToast === 'function') {
+                    window.showToast(message, type);
+                } else {
+                    alert(message);
+                }
+            }
+        });
+    </script>
+{% endblock %}
