@@ -18,18 +18,6 @@ services:
       - ./:/app
     depends_on:
       - base-db
-  cron-php:
-    restart: always
-    build:
-      context: ./docker/php
-      target: cron
-      args:
-        USER_ID: ${USER_ID:-0}
-    volumes:
-      - ./project:/app
-      - ./project/var/cron_var:/var/log
-    depends_on:
-      - base-db
   base-db:
     restart: always
     image: postgres:16.1-alpine3.19

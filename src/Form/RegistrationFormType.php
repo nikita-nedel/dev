@@ -86,16 +86,6 @@ class RegistrationFormType extends AbstractType
                     new NotBlank(message: 'Пожалуйста, введите пароль'),
                     new Length(min: 8, max: 4096, minMessage: 'Пароль должен содержать минимум {{ limit }} символов'),
                 ],
-            ])
-            ->add('agreeTerms', CheckboxType::class, [
-                'label' => 'Я принимаю условия использования и согласен с политикой конфиденциальности',
-                'mapped' => false,
-                'attr' => [
-                    'class' => 'form-check-input',
-                ],
-                'constraints' => [
-                    new IsTrue(message: 'Вы должны принять условия использования.'),
-                ],
             ]);
     }
 
