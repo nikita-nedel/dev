@@ -1,12 +1,9 @@
-/*
- * Welcome to your app's main JavaScript file!
- *
- * We recommend including the built version of this JavaScript file
- * (and its CSS file) in your base layout (base.html.twig).
- */
+import * as bootstrap from 'bootstrap';
+import './styles/app.css';
+import './styles/global.scss';
+import 'bootstrap-icons/font/bootstrap-icons.css';
+window.bootstrap = bootstrap;
 
-// app.js
-// Функция для показа toast уведомлений
 function showToast(message, type = 'info') {
     const types = {
         'success': { bg: 'bg-success', icon: 'bi-check-circle' },
@@ -61,19 +58,3 @@ function showToast(message, type = 'info') {
 window.showToast = showToast;
 
 const $ = require('jquery');
-// this "modifies" the jquery module: adding behavior to it
-// the bootstrap module doesn't export/return anything
-require('bootstrap');
-
-// or you can include specific pieces
-// require('bootstrap/js/dist/tooltip');
-// require('bootstrap/js/dist/popover');
-
-// $(document).ready(function() {
-//     $('[data-toggle="popover"]').popover();
-// });
-
-// any CSS you import will output into a single css file (app.css in this case)
-import './styles/app.css';
-import  './styles/global.scss';
-import 'bootstrap-icons/font/bootstrap-icons.css';
