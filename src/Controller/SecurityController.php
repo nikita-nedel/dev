@@ -8,8 +8,6 @@ use App\Entity\User;
 use App\Form\RegistrationFormType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Bundle\SecurityBundle\Security;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -20,26 +18,6 @@ use Symfony\Component\Security\Http\Authenticator\FormLoginAuthenticator;
 
 class SecurityController extends AbstractController
 {
-    #[Route('/auth/modal/{type}', name: 'app_auth_modal', methods: ['GET'])]
-    public function authModal(string $type, AuthenticationUtils $authenticationUtils): Response
-    {
-        if ($type === 'login') {
-            return $this->render('components/security/login_form.html.twig', [
-                'error' => $authenticationUtils->getLastAuthenticationError(),
-                'last_username' => $authenticationUtils->getLastUsername(),
-            ]);
-        }
-
-        if ($type === 'register') {
-            $form = $this->createForm(RegistrationFormType::class);
-            return $this->render('components/security/register_form.html.twig', [
-                'registrationForm' => $form->createView(),
-            ]);
-        }
-
-        throw $this->createNotFoundException('Form type not found');
-    }
-
     #[Route(path: '/login', name: 'app_login')]
     public function login(AuthenticationUtils $authenticationUtils): Response
     {
@@ -59,6 +37,8 @@ class SecurityController extends AbstractController
     #[Route('/register', name: 'app_register')]
     public function register(
         Request $request,
+        UserAuthenticatorInterface $userAuthenticator,
+        FormLoginAuthenticator $formLoginAuthenticator,
         UserPasswordHasherInterface $passwordHasher,
         EntityManagerInterface $entityManager,
     ): Response
@@ -85,7 +65,7 @@ class SecurityController extends AbstractController
 
             $this->addFlash('success', 'Регистрация прошла успешно! Теперь вы можете войти.');
 
-            return $this->redirectToRoute('app_login');
+            return $userAuthenticator->authenticateUser($user, $formLoginAuthenticator, $request);
         }
 
         return $this->render('security/register.html.twig', [
