@@ -171,8 +171,104 @@ class HomeController extends AbstractController
     #[Route('/catalog', name: 'cat')]
     public function catalogAction(): Response
     {
-
-    }
+        $category = [
+            'id' => 1,
+            'name' => 'Одежда',
+            'slug' => 'odezhda',
+            'description' => 'Мужская и женская одежда: куртки, платья, футболки, джинсы. Новые коллекции и скидки до 50%.',
+            'productCount' => 1250,
+            'avgRating' => 4.7,
+            'maxDiscount' => 50,
+        ];
+        $brands = [
+            ['id' => 1, 'name' => 'Nike', 'count' => 124],
+            ['id' => 2, 'name' => 'Adidas', 'count' => 98],
+            ['id' => 3, 'name' => 'Zara', 'count' => 156],
+            ['id' => 4, 'name' => 'H&M', 'count' => 87],
+            ['id' => 5, 'name' => 'Uniqlo', 'count' => 64],
+        ];
+        $sizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
+        $colors = [
+            ['name' => 'Чёрный', 'code' => '#000000'],
+            ['name' => 'Белый', 'code' => '#ffffff'],
+            ['name' => 'Серый', 'code' => '#6b7280'],
+            ['name' => 'Синий', 'code' => '#3b82f6'],
+            ['name' => 'Красный', 'code' => '#ef4444'],
+            ['name' => 'Бежевый', 'code' => '#d4b896'],
+        ];
+        $products = [
+            [
+                'id' => 1,
+                'name' => 'Стильные кроссовки Nike Air Max',
+                'image' => 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
+                'price' => 8990,
+                'oldPrice' => 11990,
+                'discount' => 25,
+                'rating' => 4.5,
+                'reviews' => 128,
+                'sellerName' => 'Nike Store',
+                'sellerRating' => 4.9,
+                'isNew' => true,
+                'isHit' => true,
+                'isFavorite' => false,
+                'freeShipping' => true,
+            ],
+            [
+                'id' => 2,
+                'name' => 'Кожаная куртка мужская',
+                'image' => 'https://images.unsplash.com/photo-1551028719-00167b16eac5?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
+                'price' => 12990,
+                'oldPrice' => null,
+                'discount' => 0,
+                'rating' => 4.8,
+                'reviews' => 56,
+                'sellerName' => 'Leather Shop',
+                'sellerRating' => 4.6,
+                'isNew' => false,
+                'isHit' => true,
+                'isFavorite' => true,
+                'freeShipping' => false,
+            ],
+            [
+                'id' => 4,
+                'name' => 'Женское платье вечернее',
+                'image' => 'https://images.unsplash.com/photo-1595777457583-95e059d581b8?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
+                'price' => 5490,
+                'oldPrice' => 7990,
+                'discount' => 31,
+                'rating' => 4.3,
+                'reviews' => 89,
+                'sellerName' => 'Fashion Store',
+                'sellerRating' => 4.5,
+                'isNew' => true,
+                'isHit' => false,
+                'isFavorite' => false,
+                'freeShipping' => true,
+            ],
+            [
+                'id' => 9,
+                'name' => 'Хлопковая футболка oversize',
+                'image' => 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
+                'price' => 1990,
+                'oldPrice' => 2990,
+                'discount' => 33,
+                'rating' => 4.4,
+                'reviews' => 212,
+                'sellerName' => 'Basic Wear',
+                'sellerRating' => 4.7,
+                'isNew' => false,
+                'isHit' => true,
+                'isFavorite' => false,
+                'freeShipping' => true,
+            ],
+        ];
+        return $this->render('catalog/index.html.twig', [
+            'category' => $category,
+            'brands' => $brands,
+            'sizes' => $sizes,
+            'colors' => $colors,
+            'products' => $products,
+        ]);    }
 
     #[Route('/cart', name: 'cart')]
     public function cartAction()
