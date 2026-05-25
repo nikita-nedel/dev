@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Админ-панель{% endblock %} — WB Style</title>
+    {% block stylesheets %}
+        {{ encore_entry_link_tags('app') }}    {# Bootstrap + иконки + общие стили #}
+        {{ encore_entry_link_tags('admin') }}  {# только админка #}
+    {% endblock %}
+</head>
+<body class="admin-body">
+<div class="admin-shell">
+    <aside class="admin-sidebar">
+        <div class="admin-sidebar-brand">
+            <a href="{{ path('app_admin_dashboard') }}">
+                <span class="brand-icon"><i class="bi bi-grid-1x2-fill"></i></span>
+                <span>WB <span class="accent">Admin</span></span>
+            </a>
+        </div>
+
+        <nav class="admin-nav">
+            <div class="admin-nav-section">Пользователи</div>
+            <a href="#" class="admin-nav-link {{ admin_menu|default('') == 'clients' ? 'active' : '' }}">
+                <i class="bi bi-people"></i> Клиенты
+            </a>
+            <a href="#" class="admin-nav-link {{ admin_menu|default('') == 'admins' ? 'active' : '' }}">
+                <i class="bi bi-shield-lock"></i> Администраторы
+            </a>
+            <a href="#" class="admin-nav-link {{ admin_menu|default('') == 'sellers' ? 'active' : '' }}">
+                <i class="bi bi-shop"></i> Продавцы
+            </a>
+
+            <div class="admin-nav-section">Каталог</div>
+            <a href="#" class="admin-nav-link {{ admin_menu|default('') == 'categories' ? 'active' : '' }}">
+                <i class="bi bi-folder2-open"></i> Категории
+            </a>
+            <a href="#" class="admin-nav-link {{ admin_menu|default('') == 'products' ? 'active' : '' }}">
+                <i class="bi bi-box-seam"></i> Товары
+            </a>
+            <a href="#" class="admin-nav-link {{ admin_menu|default('') == 'brands' ? 'active' : '' }}">
+                <i class="bi bi-award"></i> Зарегистрированные бренды
+            </a>
+
+            <div class="admin-nav-section">Продажи</div>
+            <a href="#" class="admin-nav-link {{ admin_menu|default('') == 'orders' ? 'active' : '' }}">
+                <i class="bi bi-receipt"></i> Заказы и корзины
+            </a>
+
+            <div class="admin-nav-section">Доступ</div>
+            <a href="#" class="admin-nav-link {{ admin_menu|default('') == 'roles' ? 'active' : '' }}">
+                <i class="bi bi-key"></i> Роли
+            </a>
+            <a href="#" class="admin-nav-link {{ admin_menu|default('') == 'role_groups' ? 'active' : '' }}">
+                <i class="bi bi-diagram-3"></i> Группы ролей
+            </a>
+        </nav>
+
+        <div class="admin-sidebar-footer">
+            <a href="{{ path('app_home') }}">
+                <i class="bi bi-arrow-left-circle"></i> На сайт
+            </a>
+        </div>
+    </aside>
+
+    <div class="admin-main">
+        <header class="admin-topbar">
+            <h1>{% block page_title %}Панель управления{% endblock %}</h1>
+            <div class="admin-topbar-actions">
+                {% if app.user %}
+                    <div class="admin-user-badge">
+                        <span class="avatar">{{ app.user.userIdentifier|first|upper }}</span>
+                        <span>{{ app.user.userIdentifier }}</span>
+                    </div>
+                {% endif %}
+            </div>
+        </header>
+
+        <div class="admin-content">
+            {% block admin_body %}{% endblock %}
+        </div>
+    </div>
+</div>
+
+{% block javascripts %}
+    {{ encore_entry_script_tags('app') }}   {# bootstrap, showToast #}
+    {# admin.js можно не подключать, если в admin.js только import scss #}
+{% endblock %}
+</body>
+</html>
