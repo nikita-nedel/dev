@@ -38,7 +38,7 @@ class HomeController extends AbstractController
         ];
 
         $categories = [
-            ['id' => 1, 'name' => 'Одежда', 'icon' => 'bi-tshirt', 'count' => 1250],
+            ['id' => 1, 'name' => 'Одежда', 'icon' => 'bi-handbag', 'count' => 1250],
             ['id' => 2, 'name' => 'Обувь', 'icon' => 'bi-bag', 'count' => 890],
             ['id' => 3, 'name' => 'Аксессуары', 'icon' => 'bi-watch', 'count' => 540],
             ['id' => 4, 'name' => 'Электроника', 'icon' => 'bi-phone', 'count' => 1200],

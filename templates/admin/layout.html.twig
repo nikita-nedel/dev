@@ -21,7 +21,7 @@
 
         <nav class="admin-nav">
             <div class="admin-nav-section">Пользователи</div>
-            <a href="#" class="admin-nav-link {{ admin_menu|default('') == 'clients' ? 'active' : '' }}">
+            <a href="{{ path('app_admin_client_index') }}" class="admin-nav-link {{ admin_menu|default('') == 'clients' ? 'active' : '' }}">
                 <i class="bi bi-people"></i> Клиенты
             </a>
             <a href="#" class="admin-nav-link {{ admin_menu|default('') == 'admins' ? 'active' : '' }}">

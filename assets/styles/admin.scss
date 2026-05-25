@@ -1,3 +1,4 @@
+// COMMON
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -23,12 +24,19 @@
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
+  gap: 0.75rem;              /* отступ между текстом и иконкой */
   margin-bottom: 0.75rem;
+}
+
+.stat-card-header > div:first-child {
+  flex: 1;
+  min-width: 0;              /* даёт перенос длинных слов */
 }
 
 .stat-card-icon {
   width: 44px;
   height: 44px;
+  flex-shrink: 0;          /* иконка не сжимается */
   border-radius: 12px;
   display: flex;
   align-items: center;
@@ -44,9 +52,12 @@
 .stat-card-icon.carts { background: linear-gradient(135deg, #ec4899, #db2777); }
 
 .stat-card-label {
-  font-size: 0.85rem;
+  font-size: 0.8rem;       /* чуть меньше — длинные слова лучше влезают */
+  line-height: 1.35;
   color: #64748b;
   margin-bottom: 0.25rem;
+  word-break: break-word;    /* перенос «Заблокированные» на 2 строки */
+  hyphens: auto;
 }
 
 .stat-card-value {
@@ -360,4 +371,266 @@ body.admin-body {
   .admin-nav-section {
     width: 100%;
   }
+}
+
+// CLIENTS PAGE
+/* ——— Страница клиентов ——— */
+.clients-stats {
+  margin-bottom: 1.5rem;
+}
+
+.clients-panel .clients-toolbar {
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.clients-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid #eef1f8;
+  background: #fafbff;
+}
+
+.clients-filter-search {
+  flex: 1;
+  min-width: 220px;
+  position: relative;
+}
+
+.clients-filter-search i {
+  position: absolute;
+  left: 0.85rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #94a3b8;
+  pointer-events: none;
+}
+
+.admin-input,
+.admin-select {
+  padding: 0.55rem 0.85rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  font-size: 0.875rem;
+  color: #334155;
+  background: #fff;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.clients-filter-search .admin-input {
+  width: 100%;
+  padding-left: 2.35rem;
+}
+
+.admin-input:focus,
+.admin-select:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.15);
+}
+
+.admin-select {
+  min-width: 160px;
+  cursor: pointer;
+}
+
+.clients-results-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1.5rem;
+  font-size: 0.875rem;
+  color: #64748b;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.btn-admin-primary,
+.btn-admin-outline {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.45rem 0.9rem;
+  border-radius: 10px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s;
+}
+
+.btn-admin-primary {
+  background: var(--admin-gradient);
+  color: #fff;
+}
+
+.btn-admin-primary:hover {
+  box-shadow: 0 4px 14px rgba(102, 126, 234, 0.4);
+}
+
+.btn-admin-outline {
+  background: #fff;
+  color: #667eea;
+  border: 1px solid #c7d2fe;
+}
+
+.btn-admin-outline:hover {
+  background: #f0f3ff;
+}
+
+.btn-sm {
+  padding: 0.35rem 0.75rem;
+  font-size: 0.8rem;
+}
+
+.client-cell-main {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.client-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: var(--admin-gradient);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 700;
+  flex-shrink: 0;
+  text-transform: uppercase;
+}
+
+.client-name {
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.client-id {
+  font-size: 0.75rem;
+  color: #94a3b8;
+}
+
+.client-contact {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  font-size: 0.85rem;
+}
+
+.client-contact a {
+  color: #667eea;
+  text-decoration: none;
+}
+
+.client-contact a:hover {
+  text-decoration: underline;
+}
+
+.client-contact span {
+  color: #64748b;
+}
+
+.badge-client {
+  display: inline-block;
+  padding: 0.25rem 0.65rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.badge-client.active { background: #d1fae5; color: #047857; }
+.badge-client.new { background: #dbeafe; color: #1d4ed8; }
+.badge-client.inactive { background: #f1f5f9; color: #64748b; }
+.badge-client.blocked { background: #fee2e2; color: #b91c1c; }
+
+.client-actions {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.btn-icon {
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 8px;
+  background: #f1f5f9;
+  color: #64748b;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.btn-icon:hover {
+  background: #e0e7ff;
+  color: #667eea;
+}
+
+.clients-empty {
+  text-align: center;
+  padding: 3rem 1.5rem;
+  color: #94a3b8;
+}
+
+.clients-empty.hidden {
+  display: none;
+}
+
+.clients-empty i {
+  font-size: 2.5rem;
+  margin-bottom: 0.75rem;
+  display: block;
+}
+
+.clients-empty p {
+  margin: 0 0 0.25rem;
+  font-weight: 600;
+  color: #475569;
+}
+
+.clients-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.5rem;
+  border-top: 1px solid #eef1f8;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.pagination-btns {
+  display: flex;
+  gap: 0.35rem;
+}
+
+.pagination-btns .active {
+  background: var(--admin-gradient);
+  color: #fff;
+  border-color: transparent;
+}
+
+.client-row.hidden {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .clients-filters {
+    flex-direction: column;
+  }
+  .admin-select {
+    width: 100%;
+  }
+}
+
+.clients-stats.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1.25rem;
+  margin-bottom: 2rem;
 }
