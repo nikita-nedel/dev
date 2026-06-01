@@ -81,7 +81,7 @@
         </div>
 
         <div class="clients-results-bar">
-            <span>Найдено: <strong id="clients-count-visible">{{ clients|length }}</strong></span>
+            <span>Найдено: <strong id="clients-count-visible">{{ pagination|length }}</strong></span>
             <button type="button" class="btn-admin-primary btn-sm">
                 <i class="bi bi-download"></i> Экспорт
             </button>
@@ -101,21 +101,21 @@
                 </tr>
                 </thead>
                 <tbody>
-                {% for client in clients %}
+                {% for client in pagination %}
                     <tr class="client-row"
                         data-id="{{ client.id }}"
-                        data-name="{{ client.name|lower }}"
+                        data-name="{{ client.fullName|lower }}"
                         data-email="{{ client.email|lower }}"
                         data-phone="{{ client.phone }}"
-                        data-status="{{ client.status }}"
-                        data-registered="{{ client.registeredAt|date('U') }}"
-                        data-orders="{{ client.ordersCount }}"
-                        data-spent="{{ client.totalSpent }}">
+                        data-status="active"
+                        data-registered="{{ client.createdAt|date('U') }}"
+                        data-orders="0"
+                        data-spent="0">
                         <td>
                             <div class="client-cell-main">
-                                <span class="client-avatar">{{ client.name|split(' ')|first|first }}{{ client.name|split(' ')|last|default('')|first }}</span>
+                                <span class="client-avatar">{{ client.fullName|split(' ')|first|first }}{{ client.fullName|split(' ')|last|default('')|first }}</span>
                                 <div>
-                                    <div class="client-name">{{ client.name }}</div>
+                                    <div class="client-name">{{ client.fullName }}</div>
                                     <div class="client-id">ID {{ client.id }}</div>
                                 </div>
                             </div>
@@ -126,11 +126,11 @@
                                 <span>{{ client.phone }}</span>
                             </div>
                         </td>
-                        <td>{{ client.registeredAt|date('d.m.Y') }}</td>
-                        <td><strong>{{ client.ordersCount }}</strong></td>
-                        <td><strong>{{ client.totalSpent|number_format(0, ',', ' ') }} ₽</strong></td>
+                        <td>{{ client.createdAt|date('d.m.Y') }}</td>
+                        <td><strong>0</strong></td>
+                        <td><strong>{{ 0|number_format(0, ',', ' ') }} ₽</strong></td>
                         <td>
-                            <span class="badge-client {{ client.status }}">{{ client.statusLabel }}</span>
+                            <span class="badge-client active">Активный</span>
                         </td>
                         <td>
                             <div class="client-actions">
@@ -152,12 +152,7 @@
         </div>
 
         <div class="clients-pagination">
-            <span class="text-muted">Показано <span id="clients-range">1–{{ clients|length }}</span> из <span id="clients-total">{{ clients|length }}</span></span>
-            <div class="pagination-btns">
-                <button type="button" class="btn-admin-outline btn-sm" disabled><i class="bi bi-chevron-left"></i></button>
-                <button type="button" class="btn-admin-outline btn-sm active">1</button>
-                <button type="button" class="btn-admin-outline btn-sm" disabled><i class="bi bi-chevron-right"></i></button>
-            </div>
+            {{ knp_pagination_render(pagination, 'admin/_pagination.html.twig') }}
         </div>
     </div>
 {% endblock %}

@@ -634,3 +634,17 @@ body.admin-body {
   gap: 1.25rem;
   margin-bottom: 2rem;
 }
+
+// pagination
+.pagination-btns a.btn-admin-outline {
+  text-decoration: none;
+}
+.pagination-btns .pagination-ellipsis {
+  cursor: default;
+  pointer-events: none;
+  opacity: 0.55;
+}
+.pagination-btns button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}

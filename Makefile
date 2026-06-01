@@ -22,7 +22,7 @@ build: ## Builds the Docker images
 	@$(DOCKER_COMP) build
 
 up: ## Start the docker hub in detached mode (no logs)
-	@APP_ENV=dev $(DOCKER_COMP) up -d --build --remove-orphans
+	$(DOCKER_COMP) up -d --build --remove-orphans
 
 down: ## Stop the docker hub
 	@$(DOCKER_COMP) down --remove-orphans
