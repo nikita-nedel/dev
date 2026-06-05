@@ -11,6 +11,7 @@ Encore
 
     .addEntry('app', './assets/app.js')
     .addEntry('admin', './assets/admin.js')
+    .addEntry('admin_clients', './assets/admin/clients-export.js')
 
     // When enabled, Webpack "splits" your files into smaller pieces for greater optimization.
     .splitEntryChunks()

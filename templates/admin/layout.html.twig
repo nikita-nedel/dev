@@ -22,40 +22,53 @@
         <nav class="admin-nav">
             <div class="admin-nav-section">Пользователи</div>
             <a href="{{ path('app_admin_client_index') }}" class="admin-nav-link {{ admin_menu|default('') == 'clients' ? 'active' : '' }}">
-                <i class="bi bi-people"></i> Клиенты
+                <i class="bi bi-people"></i>
+                <span class="admin-nav-link-label">Клиенты</span>
             </a>
-            <a href="#" class="admin-nav-link {{ admin_menu|default('') == 'admins' ? 'active' : '' }}">
-                <i class="bi bi-shield-lock"></i> Администраторы
-            </a>
-            <a href="#" class="admin-nav-link {{ admin_menu|default('') == 'sellers' ? 'active' : '' }}">
-                <i class="bi bi-shop"></i> Продавцы
-            </a>
-
+            <span class="admin-nav-link is-disabled" title="Скоро">
+                <i class="bi bi-shield-lock"></i>
+                <span class="admin-nav-link-label">Администраторы</span>
+                <span class="export-format-badge">Скоро</span>
+            </span>
+            <span class="admin-nav-link is-disabled" title="Скоро">
+                <i class="bi bi-shop"></i>
+                <span class="admin-nav-link-label">Продавцы</span>
+                <span class="export-format-badge">Скоро</span>
+            </span>
             <div class="admin-nav-section">Каталог</div>
-            <a href="#" class="admin-nav-link {{ admin_menu|default('') == 'categories' ? 'active' : '' }}">
-                <i class="bi bi-folder2-open"></i> Категории
-            </a>
-            <a href="#" class="admin-nav-link {{ admin_menu|default('') == 'products' ? 'active' : '' }}">
-                <i class="bi bi-box-seam"></i> Товары
-            </a>
-            <a href="#" class="admin-nav-link {{ admin_menu|default('') == 'brands' ? 'active' : '' }}">
-                <i class="bi bi-award"></i> Зарегистрированные бренды
-            </a>
-
+            <span class="admin-nav-link is-disabled" title="Скоро">
+                <i class="bi bi-folder2-open"></i>
+                <span class="admin-nav-link-label">Категории</span>
+                <span class="export-format-badge">Скоро</span>
+            </span>
+            <span class="admin-nav-link is-disabled" title="Скоро">
+                <i class="bi bi-box-seam"></i>
+                <span class="admin-nav-link-label">Товары</span>
+                <span class="export-format-badge">Скоро</span>
+            </span>
+            <span class="admin-nav-link is-disabled" title="Скоро">
+                <i class="bi bi-award"></i>
+                <span class="admin-nav-link-label">Зарегистрированные бренды</span>
+                <span class="export-format-badge">Скоро</span>
+            </span>
             <div class="admin-nav-section">Продажи</div>
-            <a href="#" class="admin-nav-link {{ admin_menu|default('') == 'orders' ? 'active' : '' }}">
-                <i class="bi bi-receipt"></i> Заказы и корзины
-            </a>
-
+            <span class="admin-nav-link is-disabled" title="Скоро">
+                <i class="bi bi-receipt"></i>
+                <span class="admin-nav-link-label">Заказы и корзины</span>
+                <span class="export-format-badge">Скоро</span>
+            </span>
             <div class="admin-nav-section">Доступ</div>
-            <a href="#" class="admin-nav-link {{ admin_menu|default('') == 'roles' ? 'active' : '' }}">
-                <i class="bi bi-key"></i> Роли
-            </a>
-            <a href="#" class="admin-nav-link {{ admin_menu|default('') == 'role_groups' ? 'active' : '' }}">
-                <i class="bi bi-diagram-3"></i> Группы ролей
-            </a>
+            <span class="admin-nav-link is-disabled" title="Скоро">
+                <i class="bi bi-key"></i>
+                <span class="admin-nav-link-label">Роли</span>
+                <span class="export-format-badge">Скоро</span>
+            </span>
+            <span class="admin-nav-link is-disabled" title="Скоро">
+                <i class="bi bi-diagram-3"></i>
+                <span class="admin-nav-link-label">Группы ролей</span>
+                <span class="export-format-badge">Скоро</span>
+            </span>
         </nav>
-
         <div class="admin-sidebar-footer">
             <a href="{{ path('app_home') }}">
                 <i class="bi bi-arrow-left-circle"></i> На сайт

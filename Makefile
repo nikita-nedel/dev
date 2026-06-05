@@ -63,7 +63,7 @@ npm-dev: ## Run npm dev
 	@ $(NPM) run dev
 
 migrate:
-	@$(PHP_CONT) bin/console doctrine:migrations:migrate --no-interaction
+	@$(SYMFONY) doctrine:migrations:migrate --no-interaction
 
 migration:
-	@$(PHP_CONT) bin/console make:migration --no-interaction
+	@$(SYMFONY) make:migration --no-interaction
