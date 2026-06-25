@@ -19,6 +19,14 @@ final class ClientExportCriteriaFactory implements ExportCriteriaFactoryInterfac
 
     public function createFromRequest(Request $request): ExportCriteriaInterface
     {
-        return ClientListCriteria::fromQuery($request->query->all());
+        return $this->createFromQuery($request->query->all());
+    }
+
+    /**
+     * @param array<string, mixed> $query
+     */
+    public function createFromQuery(array $query): ExportCriteriaInterface
+    {
+        return ClientListCriteria::fromQuery($query);
     }
 }

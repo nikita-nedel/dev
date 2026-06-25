@@ -24,6 +24,23 @@ final class XlsxExportWriter implements ExportWriterInterface
 
     public function write(iterable $rows, array $headers, ExportContext $context): Response
     {
+        $path = $this->createTempPath('.xlsx');
+
+        $this->writeToFile($rows, $headers, $context, $path);
+
+        $response = new BinaryFileResponse($path);
+        $response->setContentDisposition(
+            ResponseHeaderBag::DISPOSITION_ATTACHMENT,
+            $this->buildFilename($context),
+        );
+        $response->headers->set('Content-Type', ExportFormat::Xlsx->getMimeType());
+        $response->deleteFileAfterSend(true);
+
+        return $response;
+    }
+
+    public function writeToFile(iterable $rows, array $headers, ExportContext $context, string $targetPath): void
+    {
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
         $sheet->setTitle('Клиенты');
@@ -54,23 +71,11 @@ final class XlsxExportWriter implements ExportWriterInterface
             $sheet->getColumnDimension($column)->setAutoSize(true);
         }
 
-        $path = $this->createTempPath('.xlsx');
-
         try {
-            new Xlsx($spreadsheet)->save($path);
+            new Xlsx($spreadsheet)->save($targetPath);
         } finally {
             $spreadsheet->disconnectWorksheets();
         }
-
-        $response = new BinaryFileResponse($path);
-        $response->setContentDisposition(
-            ResponseHeaderBag::DISPOSITION_ATTACHMENT,
-            $this->buildFilename($context),
-        );
-        $response->headers->set('Content-Type', ExportFormat::Xlsx->getMimeType());
-        $response->deleteFileAfterSend(true);
-
-        return $response;
     }
 
     private function createTempPath(string $extension): string

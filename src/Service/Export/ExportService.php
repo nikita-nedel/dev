@@ -36,6 +36,19 @@ final class ExportService
         );
     }
 
+    public function exportToFile(ExportContext $context, string $targetPath): void
+    {
+        $provider = $this->resolveProvider($context->resource);
+        $writer = $this->resolveWriter($context->format);
+
+        $writer->writeToFile(
+            $provider->iterateRows($context),
+            $provider->getHeaders($context),
+            $context,
+            $targetPath,
+        );
+    }
+
     private function resolveProvider(ExportResource $resource): ExportDataProviderInterface
     {
         foreach ($this->dataProviders as $provider) {

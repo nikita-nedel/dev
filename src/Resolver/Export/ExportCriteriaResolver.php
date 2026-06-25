@@ -24,9 +24,17 @@ final class ExportCriteriaResolver
 
     public function resolve(ExportResource $resource, Request $request): ExportCriteriaInterface
     {
+        return $this->resolveFromQuery($resource, $request->query->all());
+    }
+
+    /**
+     * @param array<string, mixed> $query
+     */
+    public function resolveFromQuery(ExportResource $resource, array $query): ExportCriteriaInterface
+    {
         foreach ($this->factories as $factory) {
             if ($factory->supports($resource)) {
-                return $factory->createFromRequest($request);
+                return $factory->createFromQuery($query);
             }
         }
 

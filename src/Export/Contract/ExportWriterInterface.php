@@ -17,4 +17,10 @@ interface ExportWriterInterface
      * @param iterable<list<mixed>> $rows
      */
     public function write(iterable $rows, array $headers, ExportContext $context): Response;
+
+    /**
+     * @param list<string> $headers
+     * @param iterable<list<mixed>> $rows
+     */
+    public function writeToFile(iterable $rows, array $headers, ExportContext $context, string $targetPath): void;
 }
