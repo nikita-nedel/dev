@@ -1,0 +1,524 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Профиль пользователя - WB Style{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .profile-page {
+            background: #f8f9fa;
+            min-height: calc(100vh - 120px);
+            padding: 2rem 0;
+        }
+
+        .profile-hero {
+            position: relative;
+            overflow: hidden;
+            background: white;
+            border-radius: 24px;
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+        }
+
+        .profile-hero::before {
+            content: '';
+            position: absolute;
+            inset: 0 0 auto 0;
+            height: 140px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .profile-hero-content {
+            position: relative;
+            display: flex;
+            justify-content: space-between;
+            gap: 2rem;
+            align-items: flex-end;
+            padding-top: 4rem;
+        }
+
+        .profile-user {
+            display: flex;
+            align-items: flex-end;
+            gap: 1.5rem;
+        }
+
+        .profile-avatar {
+            width: 128px;
+            height: 128px;
+            border-radius: 32px;
+            border: 6px solid white;
+            background: linear-gradient(135deg, #f97316 0%, #ec4899 100%);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            font-weight: 800;
+            box-shadow: 0 16px 30px rgba(15, 23, 42, 0.18);
+        }
+
+        .profile-name {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #111827;
+            margin-bottom: 0.35rem;
+        }
+
+        .profile-meta {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            color: #64748b;
+        }
+
+        .profile-meta span {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .profile-actions {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .profile-primary-btn,
+        .profile-secondary-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.8rem 1.25rem;
+            border-radius: 12px;
+            font-weight: 700;
+            text-decoration: none;
+            transition: all 0.25s ease;
+        }
+
+        .profile-primary-btn {
+            color: white;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            box-shadow: 0 10px 22px rgba(102, 126, 234, 0.25);
+        }
+
+        .profile-secondary-btn {
+            color: #4f46e5;
+            background: #eef2ff;
+        }
+
+        .profile-primary-btn:hover,
+        .profile-secondary-btn:hover {
+            transform: translateY(-2px);
+            color: white;
+        }
+
+        .profile-secondary-btn:hover {
+            background: #667eea;
+        }
+
+        .profile-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1.5fr) minmax(320px, 0.75fr);
+            gap: 2rem;
+        }
+
+        .profile-card {
+            background: white;
+            border-radius: 20px;
+            padding: 1.5rem;
+            box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+        }
+
+        .profile-section-title {
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: #111827;
+            margin-bottom: 1.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+        }
+
+        .profile-stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .profile-stat {
+            background: white;
+            border-radius: 18px;
+            padding: 1.25rem;
+            box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+        }
+
+        .profile-stat-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, #667eea20 0%, #764ba220 100%);
+            color: #667eea;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+        }
+
+        .profile-stat-value {
+            font-size: 1.7rem;
+            font-weight: 800;
+            color: #111827;
+            line-height: 1;
+        }
+
+        .profile-stat-label {
+            color: #64748b;
+            margin-top: 0.35rem;
+        }
+
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+
+        .quick-action {
+            display: flex;
+            gap: 1rem;
+            padding: 1rem;
+            border: 1px solid #e5e7eb;
+            border-radius: 16px;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.25s ease;
+        }
+
+        .quick-action:hover {
+            transform: translateY(-2px);
+            border-color: #c7d2fe;
+            box-shadow: 0 12px 24px rgba(102, 126, 234, 0.12);
+            color: inherit;
+        }
+
+        .quick-action-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            background: #f1f5f9;
+            color: #667eea;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .quick-action-title {
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 0.25rem;
+        }
+
+        .quick-action-description {
+            color: #64748b;
+            font-size: 0.92rem;
+            margin: 0;
+        }
+
+        .order-list,
+        .activity-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .order-item {
+            border: 1px solid #e5e7eb;
+            border-radius: 16px;
+            padding: 1rem;
+        }
+
+        .order-head {
+            display: flex;
+            justify-content: space-between;
+            gap: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .order-number {
+            font-weight: 800;
+            color: #111827;
+        }
+
+        .order-status {
+            color: #16a34a;
+            font-weight: 700;
+        }
+
+        .order-title {
+            color: #475569;
+            margin-bottom: 0.75rem;
+        }
+
+        .order-footer {
+            display: flex;
+            justify-content: space-between;
+            gap: 1rem;
+            color: #64748b;
+            font-size: 0.92rem;
+        }
+
+        .order-progress {
+            height: 8px;
+            background: #e5e7eb;
+            border-radius: 999px;
+            overflow: hidden;
+            margin-bottom: 0.75rem;
+        }
+
+        .order-progress span {
+            display: block;
+            height: 100%;
+            background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+            border-radius: inherit;
+        }
+
+        .loyalty-card {
+            background: linear-gradient(135deg, #111827 0%, #312e81 100%);
+            color: white;
+            border-radius: 20px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .loyalty-card::after {
+            content: '';
+            position: absolute;
+            right: -45px;
+            top: -45px;
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.12);
+        }
+
+        .loyalty-level {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            background: rgba(255, 255, 255, 0.16);
+            border-radius: 999px;
+            padding: 0.4rem 0.75rem;
+            margin-bottom: 1.25rem;
+            font-weight: 700;
+        }
+
+        .loyalty-points {
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 0.35rem;
+        }
+
+        .loyalty-caption {
+            color: rgba(255, 255, 255, 0.75);
+            margin: 0;
+        }
+
+        .activity-item {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .activity-icon {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: #eef2ff;
+            color: #667eea;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .activity-text {
+            margin: 0 0 0.2rem;
+            color: #111827;
+            font-weight: 600;
+        }
+
+        .activity-time {
+            color: #94a3b8;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 992px) {
+            .profile-hero-content,
+            .profile-user {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .profile-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .profile-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 576px) {
+            .profile-page {
+                padding: 1rem 0;
+            }
+
+            .profile-hero,
+            .profile-card {
+                border-radius: 16px;
+                padding: 1.25rem;
+            }
+
+            .profile-hero-content {
+                padding-top: 3rem;
+            }
+
+            .profile-avatar {
+                width: 96px;
+                height: 96px;
+                border-radius: 24px;
+                font-size: 2.25rem;
+            }
+
+            .profile-name {
+                font-size: 1.6rem;
+            }
+
+            .profile-stats,
+            .quick-actions {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="profile-page">
+        <div class="container">
+            <section class="profile-hero">
+                <div class="profile-hero-content">
+                    <div class="profile-user">
+                        <div class="profile-avatar">
+                            {{ app.user.firstName|default(app.user.userIdentifier)|first|upper }}
+                        </div>
+                        <div>
+                            <h1 class="profile-name">{{ app.user.fullName|default('Любимый покупатель') }}</h1>
+                            <div class="profile-meta">
+                                <span><i class="bi bi-envelope"></i>{{ app.user.email }}</span>
+                                <span><i class="bi bi-phone"></i>{{ app.user.phone|default('+7 900 000-00-00') }}</span>
+                                <span><i class="bi bi-calendar-heart"></i>С нами с {{ app.user.createdAt ? app.user.createdAt|date('d.m.Y') : '2024' }}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="profile-actions">
+                        <a href="{{ path('app_profile') }}" class="profile-primary-btn">
+                            <i class="bi bi-pencil-square"></i>
+                            Редактировать
+                        </a>
+                        <a href="{{ path('app_profile') }}" class="profile-secondary-btn">
+                            <i class="bi bi-shield-check"></i>
+                            Безопасность
+                        </a>
+                    </div>
+                </div>
+            </section>
+
+            <div class="profile-stats">
+                {% for stat in profileStats %}
+                    <div class="profile-stat">
+                        <div class="profile-stat-icon"><i class="bi {{ stat.icon }}"></i></div>
+                        <div class="profile-stat-value">{{ stat.value }}</div>
+                        <div class="profile-stat-label">{{ stat.label }}</div>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <div class="profile-grid">
+                <div>
+                    <section class="profile-card mb-4">
+                        <h2 class="profile-section-title">Быстрые действия</h2>
+                        <div class="quick-actions">
+                            {% for action in quickActions %}
+                                <a href="{{ action.url }}" class="quick-action">
+                                    <span class="quick-action-icon"><i class="bi {{ action.icon }}"></i></span>
+                                    <span>
+                                        <span class="quick-action-title">{{ action.title }}</span>
+                                        <p class="quick-action-description">{{ action.description }}</p>
+                                    </span>
+                                </a>
+                            {% endfor %}
+                        </div>
+                    </section>
+
+                    <section class="profile-card">
+                        <h2 class="profile-section-title">
+                            Последние заказы
+                            <a href="{{ path('app_orders') }}" class="profile-secondary-btn py-2">Все заказы</a>
+                        </h2>
+                        <div class="order-list">
+                            {% for order in recentOrders %}
+                                <article class="order-item">
+                                    <div class="order-head">
+                                        <span class="order-number">{{ order.number }}</span>
+                                        <span class="order-status">{{ order.status }}</span>
+                                    </div>
+                                    <div class="order-title">{{ order.title }}</div>
+                                    <div class="order-progress">
+                                        <span style="width: {{ order.progress }}%"></span>
+                                    </div>
+                                    <div class="order-footer">
+                                        <span>{{ order.date }}</span>
+                                        <strong>{{ order.total|number_format(0, ',', ' ') }} ₽</strong>
+                                    </div>
+                                </article>
+                            {% endfor %}
+                        </div>
+                    </section>
+                </div>
+
+                <aside>
+                    <div class="loyalty-card">
+                        <div class="loyalty-level">
+                            <i class="bi bi-gem"></i>
+                            Gold покупатель
+                        </div>
+                        <div class="loyalty-points">4 820 бонусов</div>
+                        <p class="loyalty-caption">До Platinum осталось 1 180 бонусов. Тратьте их на скидки до 30%.</p>
+                    </div>
+
+                    <section class="profile-card">
+                        <h2 class="profile-section-title">Активность</h2>
+                        <div class="activity-list">
+                            {% for item in activity %}
+                                <div class="activity-item">
+                                    <span class="activity-icon"><i class="bi {{ item.icon }}"></i></span>
+                                    <div>
+                                        <p class="activity-text">{{ item.text }}</p>
+                                        <span class="activity-time">{{ item.time }}</span>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </section>
+                </aside>
+            </div>
+        </div>
+    </div>
+{% endblock %}

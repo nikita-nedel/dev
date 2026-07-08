@@ -10,7 +10,7 @@ COMPOSER = $(PHP_CONT) composer
 SYMFONY  = $(PHP) bin/console
 NPM      = $(PHP_CONT) npm
 
-.PHONY: help build up start down logs sh bash composer vendor sf test npm-install npm-build npm-watch npm-dev
+.PHONY: help build up start down logs sh bash composer vendor sf test npm-install npm-build npm-watch npm-dev migrate migration
 
 ## —— 🎵 🐳 The Symfony Docker Makefile 🐳 🎵 ——————————————————————————————————
 help: ## Outputs this help screen
@@ -22,7 +22,15 @@ build: ## Builds the Docker images
 	@$(DOCKER_COMP) build
 
 up: ## Start the docker hub in detached mode (no logs)
-	@APP_ENV=dev $(DOCKER_COMP) up -d --build --remove-orphans
+	$(DOCKER_COMP) up -d --remove-orphans
+
+start: ## Full project bootstrap: docker, deps, assets, migrations
+	@$(MAKE) build
+	@$(MAKE) up
+	@$(MAKE) composer
+	@$(MAKE) npm-install
+	@$(MAKE) npm-build
+	@$(MAKE) migrate
 
 down: ## Stop the docker hub
 	@$(DOCKER_COMP) down --remove-orphans
@@ -63,7 +71,7 @@ npm-dev: ## Run npm dev
 	@ $(NPM) run dev
 
 migrate:
-	@$(PHP_CONT) bin/console doctrine:migrations:migrate --no-interaction
+	@$(SYMFONY) doctrine:migrations:migrate --no-interaction
 
 migration:
-	@$(PHP_CONT) bin/console make:migration --no-interaction
+	@$(SYMFONY) make:migration --no-interaction

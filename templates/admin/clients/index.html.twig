@@ -1,0 +1,171 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block title %}Клиенты{% endblock %}
+{% block page_title %}Клиенты{% endblock %}
+
+{% block admin_body %}
+    <div class="clients-stats stats-grid">
+        <div class="stat-card">
+            <div class="stat-card-header">
+                <div>
+                    <div class="stat-card-label">Всего клиентов</div>
+                    <div class="stat-card-value" id="clients-count-total">{{ stats.total }}</div>
+                </div>
+                <div class="stat-card-icon visitors"><i class="bi bi-people"></i></div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-card-header">
+                <div>
+                    <div class="stat-card-label">Активные</div>
+                    <div class="stat-card-value">{{ stats.active }}</div>
+                </div>
+                <div class="stat-card-icon revenue"><i class="bi bi-person-check"></i></div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-card-header">
+                <div>
+                    <div class="stat-card-label">Новые</div>
+                    <div class="stat-card-value">{{ stats.new }}</div>
+                </div>
+                <div class="stat-card-icon orders"><i class="bi bi-person-plus"></i></div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-card-header">
+                <div>
+                    <div class="stat-card-label">Заблокированные</div>
+                    <div class="stat-card-value">{{ stats.blocked }}</div>
+                </div>
+                <div class="stat-card-icon carts"><i class="bi bi-person-x"></i></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="admin-panel clients-panel">
+        <div class="admin-panel-header clients-toolbar">
+            <h2><i class="bi bi-funnel me-2 text-secondary"></i>Фильтры и сортировка</h2>
+            <button type="button" class="btn-admin-outline btn-sm" id="clients-reset-filters">
+                <i class="bi bi-arrow-counterclockwise"></i> Сбросить
+            </button>
+        </div>
+
+        <div class="clients-filters">
+            <div class="clients-filter-search">
+                <i class="bi bi-search"></i>
+                <input type="search" id="clients-search" class="admin-input"
+                       value="{{ app.request.query.get('search')|default('') }}"
+                       placeholder="Поиск по имени, email или телефону…" autocomplete="off">
+            </div>
+            <select id="clients-filter-status" class="admin-select" aria-label="Статус">
+                <option value="" {{ app.request.query.get('status') == '' ? 'selected' : '' }}>Все статусы</option>
+                <option value="active" {{ app.request.query.get('status') == 'active' ? 'selected' : '' }}>Активен</option>
+                <option value="new {{ app.request.query.get('status') == 'new' ? 'selected' : '' }}">Новый</option>
+                <option value="inactive" {{ app.request.query.get('status') == 'inactive' ? 'selected' : '' }}>Неактивен</option>
+                <option value="blocked" {{ app.request.query.get('status') == 'blocked' ? 'selected' : '' }}>Заблокирован</option>
+            </select>
+            <select id="clients-filter-period" class="admin-select" aria-label="Период регистрации">
+                <option value="" {{ app.request.query.get('period') == '' ? 'selected' : '' }}>Любая дата</option>
+                <option value="7" {{ app.request.query.get('period') == '7' ? 'selected' : '' }}>За 7 дней</option>
+                <option value="30" {{ app.request.query.get('period') == '30' ? 'selected' : '' }}>За 30 дней</option>
+                <option value="90" {{ app.request.query.get('period') == '90' ? 'selected' : '' }}>За 3 месяца</option>
+                <option value="365" {{ app.request.query.get('period') == '365' ? 'selected' : '' }}>За год</option>
+            </select>
+            <select id="clients-sort" class="admin-select" aria-label="Сортировка">
+                <option value="name-asc" {{ app.request.query.get('sort', 'date-desc') == 'name-asc' ? 'selected' : '' }}>Имя А→Я</option>
+                <option value="name-desc {{ app.request.query.get('sort', 'date-desc') == 'name-desc' ? 'selected' : '' }}">Имя Я→А</option>
+                <option value="date-desc" {{ app.request.query.get('sort', 'date-desc') == 'date-desc' ? 'selected' : '' }}>Дата регистрации (новые)</option>
+                <option value="date-asc" {{ app.request.query.get('sort', 'date-desc') == 'date-asc' ? 'selected' : '' }}>Дата регистрации (старые)</option>
+                <option value="orders-desc" {{ app.request.query.get('sort', 'date-desc') == 'orders-desc' ? 'selected' : '' }}>Больше заказов</option>
+                <option value="spent-desc" {{ app.request.query.get('sort', 'date-desc') == 'spent-asc' ? 'selected' : '' }}>Больше потрачено</option>
+            </select>
+        </div>
+
+        <div class="clients-results-bar">
+            <span>Найдено: <strong id="clients-count-visible">{{ pagination|length }}</strong></span>
+            <button type="button" class="btn-admin-primary btn-sm" data-export-open="clients-export-modal">
+                <i class="bi bi-download"></i> Экспорт
+            </button>
+        </div>
+
+        <div class="table-responsive">
+            <table class="orders-table clients-table" id="clients-table">
+                <thead>
+                <tr>
+                    <th>Клиент</th>
+                    <th>Контакты</th>
+                    <th>Регистрация</th>
+                    <th>Заказы</th>
+                    <th>Потрачено</th>
+                    <th>Статус</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for client in pagination %}
+                    <tr class="client-row"
+                        data-id="{{ client.id }}"
+                        data-name="{{ client.fullName|lower }}"
+                        data-email="{{ client.email|lower }}"
+                        data-phone="{{ client.phone }}"
+                        data-status="active"
+                        data-registered="{{ client.createdAt|date('U') }}"
+                        data-orders="0"
+                        data-spent="0">
+                        <td>
+                            <div class="client-cell-main">
+                                <span class="client-avatar">{{ client.fullName|split(' ')|first|first }}{{ client.fullName|split(' ')|last|default('')|first }}</span>
+                                <div>
+                                    <div class="client-name">{{ client.fullName }}</div>
+                                    <div class="client-id">ID {{ client.id }}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="client-contact">
+                                <a href="mailto:{{ client.email }}">{{ client.email }}</a>
+                                <span>{{ client.phone }}</span>
+                            </div>
+                        </td>
+                        <td>{{ client.createdAt|date('d.m.Y') }}</td>
+                        <td><strong>0</strong></td>
+                        <td><strong>{{ 0|number_format(0, ',', ' ') }} ₽</strong></td>
+                        <td>
+                            <span class="badge-client active">Активный</span>
+                        </td>
+                        <td>
+                            <div class="client-actions">
+                                <button type="button" class="btn-icon" title="Профиль"><i class="bi bi-eye"></i></button>
+                                <button type="button" class="btn-icon" title="Заказы"><i class="bi bi-bag"></i></button>
+                                <button type="button" class="btn-icon" title="Написать"><i class="bi bi-envelope"></i></button>
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="clients-empty hidden" id="clients-empty">
+            <i class="bi bi-search"></i>
+            <p>Клиенты не найдены</p>
+            <span>Попробуйте изменить фильтры или поисковый запрос</span>
+        </div>
+
+        <div class="clients-pagination">
+            {{ knp_pagination_render(pagination, 'admin/_pagination.html.twig', filter_query|default({})) }}
+        </div>
+    </div>
+    {% include 'admin/_export_modal.html.twig' with {
+        modal_id: 'clients-export-modal',
+    } only %}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        window.__clientsExportUrl = {{ path('app_admin_client_export')|json_encode|raw }};
+    </script>
+    {{ encore_entry_script_tags('admin_clients') }}
+{% endblock %}

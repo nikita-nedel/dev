@@ -26,20 +26,13 @@ COPY --from=composer:2.8.10 /usr/bin/composer /usr/local/bin/composer
 ADD ./conf/php.ini  /usr/local/etc/php/conf.d/php.ini
 ADD ./conf/www.conf /usr/local/etc/php-fpm.d/www.conf
 
-# Chromium and ChromeDriver
-ENV PANTHER_NO_SANDBOX 1
-# Not mandatory, but recommended
-ENV PANTHER_CHROME_ARGUMENTS='--disable-dev-shm-usage'
-ENV PANTHER_DEVTOOLS=0
-RUN apk add --no-cache chromium chromium-chromedriver
-
 RUN apk add --no-cache libzip-dev
 RUN docker-php-ext-configure zip
 RUN docker-php-ext-install opcache zip
 
 COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/local/bin/
 
-RUN install-php-extensions sockets
+RUN install-php-extensions sockets amqp
 
 WORKDIR /app
 

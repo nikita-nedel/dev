@@ -1,0 +1,180 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block title %}Фоновые процессы{% endblock %}
+{% block page_title %}Фоновые процессы{% endblock %}
+
+{% block admin_body %}
+    <div class="stats-grid process-stats">
+        <div class="stat-card">
+            <div class="stat-card-header">
+                <div>
+                    <div class="stat-card-label">Всего процессов</div>
+                    <div class="stat-card-value" data-processes-stat="total">{{ stats.total }}</div>
+                </div>
+                <div class="stat-card-icon visitors"><i class="bi bi-list-task"></i></div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-card-header">
+                <div>
+                    <div class="stat-card-label">В очереди</div>
+                    <div class="stat-card-value" data-processes-stat="pending">{{ stats.pending }}</div>
+                </div>
+                <div class="stat-card-icon orders"><i class="bi bi-hourglass-split"></i></div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-card-header">
+                <div>
+                    <div class="stat-card-label">Выполняются</div>
+                    <div class="stat-card-value" data-processes-stat="processing">{{ stats.processing }}</div>
+                </div>
+                <div class="stat-card-icon sales"><i class="bi bi-arrow-repeat"></i></div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-card-header">
+                <div>
+                    <div class="stat-card-label">Готово</div>
+                    <div class="stat-card-value" data-processes-stat="completed">{{ stats.completed }}</div>
+                </div>
+                <div class="stat-card-icon revenue"><i class="bi bi-check2-circle"></i></div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-card-header">
+                <div>
+                    <div class="stat-card-label">Ошибки</div>
+                    <div class="stat-card-value" data-processes-stat="failed">{{ stats.failed }}</div>
+                </div>
+                <div class="stat-card-icon carts"><i class="bi bi-exclamation-triangle"></i></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="admin-panel process-panel" data-processes-panel>
+        <div class="admin-panel-header clients-toolbar">
+            <h2><i class="bi bi-funnel me-2 text-secondary"></i>Фильтры процессов</h2>
+            <button type="button" class="btn-admin-outline btn-sm" id="processes-reset-filters">
+                <i class="bi bi-arrow-counterclockwise"></i> Сбросить
+            </button>
+        </div>
+
+        <div class="process-filters">
+            <select id="processes-type" class="admin-select" aria-label="Тип процесса">
+                <option value="">Все типы</option>
+                {% for type in job_types %}
+                    <option value="{{ type.value }}" {{ filters.type|default('') == type.value ? 'selected' : '' }}>{{ type.label }}</option>
+                {% endfor %}
+            </select>
+            <select id="processes-status" class="admin-select" aria-label="Статус">
+                <option value="">Все статусы</option>
+                {% for status in job_statuses %}
+                    <option value="{{ status.value }}" {{ filters.status|default('') == status.value ? 'selected' : '' }}>{{ status.label }}</option>
+                {% endfor %}
+            </select>
+            <select id="processes-resource" class="admin-select" aria-label="Что обрабатывается">
+                <option value="">Любые данные</option>
+                {% for resource in export_resources %}
+                    <option value="{{ resource.value }}" {{ filters.resource|default('') == resource.value ? 'selected' : '' }}>
+                        {{ resource.value == 'clients' ? 'Клиенты' : resource.value }}
+                    </option>
+                {% endfor %}
+            </select>
+            <select id="processes-format" class="admin-select" aria-label="Формат">
+                <option value="">Любой формат</option>
+                {% for format in export_formats %}
+                    <option value="{{ format.value }}" {{ filters.format|default('') == format.value ? 'selected' : '' }}>{{ format.value|upper }}</option>
+                {% endfor %}
+            </select>
+            <label class="process-date-filter">
+                <span>с</span>
+                <input type="date" id="processes-date-from" class="admin-input" value="{{ filters.dateFrom|default('') }}">
+            </label>
+            <label class="process-date-filter">
+                <span>по</span>
+                <input type="date" id="processes-date-to" class="admin-input" value="{{ filters.dateTo|default('') }}">
+            </label>
+        </div>
+
+        <div class="clients-results-bar">
+            <span>Найдено: <strong id="processes-count">{{ pagination.getTotalItemCount }}</strong></span>
+            <span class="process-live-indicator"><i class="bi bi-broadcast"></i> Обновляется автоматически</span>
+        </div>
+
+        <div class="table-responsive">
+            <table class="orders-table process-table">
+                <thead>
+                <tr>
+                    <th>Процесс</th>
+                    <th>Тип</th>
+                    <th>Статус</th>
+                    <th>Инициатор</th>
+                    <th>Запущен</th>
+                    <th>Завершён</th>
+                    <th>Данные</th>
+                    <th>Формат</th>
+                    <th>Хранилище</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody id="processes-table-body">
+                {% for job in pagination %}
+                    {% set export = job.exportFile %}
+                    <tr data-job-id="{{ job.jobId }}">
+                        <td>
+                            <div class="process-main">
+                                <span class="order-id">#{{ job.jobId|slice(0, 8) }}</span>
+                                {% if export %}
+                                    <small>{{ export.filePath|default('Файл ещё не создан') }}</small>
+                                {% endif %}
+                            </div>
+                        </td>
+                        <td>{{ job.type.label }}</td>
+                        <td><span class="badge-status {{ job.status.value }}">{{ job.status.label }}</span></td>
+                        <td>{{ export and export.requestedBy ? export.requestedBy.userIdentifier : 'Система' }}</td>
+                        <td>{{ job.createdAt|date('d.m.Y H:i') }}</td>
+                        <td>{{ job.completedAt ? job.completedAt|date('d.m.Y H:i') : '—' }}</td>
+                        <td>{{ export ? (export.resource.value == 'clients' ? 'Клиенты' : export.resource.value) : '—' }}</td>
+                        <td>{{ export ? export.format.value|upper : '—' }}</td>
+                        <td>{{ export and export.storage ? export.storage.label : '—' }}</td>
+                        <td>
+                            {% if export and export.ready %}
+                                <a href="{{ path('app_admin_process_export_download', { exportId: export.exportId }) }}" class="btn-admin-primary btn-sm">
+                                    <i class="bi bi-download"></i> Скачать
+                                </a>
+                            {% elseif job.status.value == 'failed' %}
+                                <span class="process-error" title="{{ job.errorMessage }}">Ошибка</span>
+                            {% else %}
+                                <span class="text-muted">Ожидание</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="10" class="text-center text-muted py-4">Фоновых процессов пока нет</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="clients-empty {{ pagination|length > 0 ? 'hidden' : '' }}" id="processes-empty">
+            <i class="bi bi-search"></i>
+            <p>Процессы не найдены</p>
+            <span>Попробуйте изменить фильтры или дату запуска</span>
+        </div>
+
+        <div class="clients-pagination">
+            {{ knp_pagination_render(pagination, 'admin/_pagination.html.twig', filters) }}
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        window.__processesFeedUrl = {{ path('app_admin_process_feed')|json_encode|raw }};
+    </script>
+    {{ encore_entry_script_tags('admin_processes') }}
+{% endblock %}

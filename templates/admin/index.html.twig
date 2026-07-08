@@ -1,0 +1,111 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block title %}Дашборд{% endblock %}
+{% block page_title %}Дашборд{% endblock %}
+
+{% block admin_body %}
+    {# Карточки метрик #}
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-card-header">
+                <div>
+                    <div class="stat-card-label">Количество продаж</div>
+                    <div class="stat-card-value">{{ stats.salesCount|number_format(0, ',', ' ') }}</div>
+                    {% if stats.salesCountTrend is defined %}
+                        <div class="stat-card-trend {{ stats.salesCountTrend >= 0 ? 'up' : 'down' }}">
+                            <i class="bi bi-arrow-{{ stats.salesCountTrend >= 0 ? 'up' : 'down' }}-short"></i>
+                            {{ stats.salesCountTrend|abs }}% за месяц
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="stat-card-icon sales"><i class="bi bi-graph-up-arrow"></i></div>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-card-header">
+                <div>
+                    <div class="stat-card-label">Сумма продаж</div>
+                    <div class="stat-card-value">{{ stats.salesSum|number_format(0, ',', ' ') }} ₽</div>
+                    {% if stats.salesSumTrend is defined %}
+                        <div class="stat-card-trend {{ stats.salesSumTrend >= 0 ? 'up' : 'down' }}">
+                            <i class="bi bi-arrow-{{ stats.salesSumTrend >= 0 ? 'up' : 'down' }}-short"></i>
+                            {{ stats.salesSumTrend|abs }}% за месяц
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="stat-card-icon revenue"><i class="bi bi-currency-exchange"></i></div>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-card-header">
+                <div>
+                    <div class="stat-card-label">Посетители</div>
+                    <div class="stat-card-value">{{ stats.visitorsCount|number_format(0, ',', ' ') }}</div>
+                </div>
+                <div class="stat-card-icon visitors"><i class="bi bi-eye"></i></div>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-card-header">
+                <div>
+                    <div class="stat-card-label">Заказы</div>
+                    <div class="stat-card-value">{{ stats.ordersCount|number_format(0, ',', ' ') }}</div>
+                </div>
+                <div class="stat-card-icon orders"><i class="bi bi-bag-check"></i></div>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-card-header">
+                <div>
+                    <div class="stat-card-label">Корзины</div>
+                    <div class="stat-card-value">{{ stats.cartsCount|number_format(0, ',', ' ') }}</div>
+                </div>
+                <div class="stat-card-icon carts"><i class="bi bi-cart3"></i></div>
+            </div>
+        </div>
+    </div>
+
+    {# Последние 5 заказов #}
+    <div class="admin-panel">
+        <div class="admin-panel-header">
+            <h2><i class="bi bi-clock-history me-2 text-secondary"></i>Последние заказы</h2>
+            <a href="#">Все заказы <i class="bi bi-chevron-right"></i></a>
+        </div>
+        <div class="table-responsive">
+            <table class="orders-table">
+                <thead>
+                <tr>
+                    <th>№ заказа</th>
+                    <th>Клиент</th>
+                    <th>Дата</th>
+                    <th>Сумма</th>
+                    <th>Статус</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for order in recentOrders %}
+                    <tr>
+                        <td><span class="order-id">#{{ order.number }}</span></td>
+                        <td>{{ order.customerName }}</td>
+                        <td>{{ order.createdAt|date('d.m.Y H:i') }}</td>
+                        <td><strong>{{ order.total|number_format(0, ',', ' ') }} ₽</strong></td>
+                        <td>
+                                <span class="badge-status {{ order.status }}">
+                                    {{ order.statusLabel }}
+                                </span>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="5" class="text-center text-muted py-4">Заказов пока нет</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}

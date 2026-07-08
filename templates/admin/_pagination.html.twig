@@ -1,0 +1,73 @@
+{# Пагинация админки для KnpPaginatorBundle (sliding) #}
+{% if pageCount > 1 %}
+    <div class="pagination-btns" role="navigation" aria-label="Пагинация">
+        {# Назад #}
+        {% if previous is defined %}
+            <a href="{{ path(route, knp_pagination_query(query, previous, options)) }}"
+               class="btn-admin-outline btn-sm"
+               rel="prev"
+               aria-label="Предыдущая страница">
+                <i class="bi bi-chevron-left" aria-hidden="true"></i>
+            </a>
+        {% else %}
+            <button type="button" class="btn-admin-outline btn-sm" disabled aria-label="Предыдущая страница">
+                <i class="bi bi-chevron-left" aria-hidden="true"></i>
+            </button>
+        {% endif %}
+
+        {# Первая страница и «…» слева #}
+        {% if startPage is defined and startPage > 1 %}
+            <a href="{{ path(route, knp_pagination_query(query, 1, options)) }}"
+               class="btn-admin-outline btn-sm"
+               aria-label="Страница 1">1</a>
+            {% if startPage == 3 %}
+                <a href="{{ path(route, knp_pagination_query(query, 2, options)) }}"
+                   class="btn-admin-outline btn-sm"
+                   aria-label="Страница 2">2</a>
+            {% elseif startPage != 2 %}
+                <span class="btn-admin-outline btn-sm pagination-ellipsis" aria-hidden="true">…</span>
+            {% endif %}
+        {% endif %}
+
+        {# Окно страниц #}
+        {% for page in pagesInRange %}
+            {% if page == current %}
+                <span class="btn-admin-outline btn-sm active" aria-current="page">{{ page }}</span>
+            {% else %}
+                <a href="{{ path(route, knp_pagination_query(query, page, options)) }}"
+                   class="btn-admin-outline btn-sm"
+                   aria-label="Страница {{ page }}">{{ page }}</a>
+            {% endif %}
+        {% endfor %}
+
+        {# «…» справа и последняя страница #}
+        {% if endPage is defined and pageCount > endPage %}
+            {% if pageCount > endPage + 1 %}
+                {% if pageCount > endPage + 2 %}
+                    <span class="btn-admin-outline btn-sm pagination-ellipsis" aria-hidden="true">…</span>
+                {% else %}
+                    <a href="{{ path(route, knp_pagination_query(query, pageCount - 1, options)) }}"
+                       class="btn-admin-outline btn-sm"
+                       aria-label="Страница {{ pageCount - 1 }}">{{ pageCount - 1 }}</a>
+                {% endif %}
+            {% endif %}
+            <a href="{{ path(route, knp_pagination_query(query, pageCount, options)) }}"
+               class="btn-admin-outline btn-sm"
+               aria-label="Страница {{ pageCount }}">{{ pageCount }}</a>
+        {% endif %}
+
+        {# Вперёд #}
+        {% if next is defined %}
+            <a href="{{ path(route, knp_pagination_query(query, next, options)) }}"
+               class="btn-admin-outline btn-sm"
+               rel="next"
+               aria-label="Следующая страница">
+                <i class="bi bi-chevron-right" aria-hidden="true"></i>
+            </a>
+        {% else %}
+            <button type="button" class="btn-admin-outline btn-sm" disabled aria-label="Следующая страница">
+                <i class="bi bi-chevron-right" aria-hidden="true"></i>
+            </button>
+        {% endif %}
+    </div>
+{% endif %}

@@ -1,0 +1,377 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Корзина - WB Style{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .cart-page {
+            background: #f8f9fa;
+            min-height: calc(100vh - 120px);
+            padding: 2rem 0;
+        }
+
+        .cart-header {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .cart-title {
+            font-size: 2.3rem;
+            font-weight: 900;
+            color: #111827;
+            margin: 0;
+        }
+
+        .cart-subtitle {
+            color: #64748b;
+            margin: 0.35rem 0 0;
+        }
+
+        .cart-layout {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) 360px;
+            gap: 2rem;
+            align-items: start;
+        }
+
+        .cart-card,
+        .cart-summary,
+        .delivery-card {
+            background: white;
+            border-radius: 22px;
+            box-shadow: 0 10px 28px rgba(15, 23, 42, 0.07);
+        }
+
+        .cart-card {
+            padding: 1.25rem;
+        }
+
+        .cart-item {
+            display: grid;
+            grid-template-columns: 128px minmax(0, 1fr) auto;
+            gap: 1.25rem;
+            padding: 1.25rem 0;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .cart-item:first-child {
+            padding-top: 0;
+        }
+
+        .cart-item:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .cart-item-image {
+            width: 128px;
+            height: 128px;
+            border-radius: 18px;
+            background: #f8fafc;
+            object-fit: contain;
+        }
+
+        .cart-item-title {
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: #111827;
+            text-decoration: none;
+            display: inline-block;
+            margin-bottom: 0.5rem;
+        }
+
+        .cart-item-title:hover {
+            color: #667eea;
+        }
+
+        .cart-item-meta {
+            color: #64748b;
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+            margin-bottom: 0.8rem;
+        }
+
+        .cart-item-actions {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .cart-link-btn {
+            border: none;
+            background: none;
+            color: #667eea;
+            padding: 0;
+            font-weight: 700;
+        }
+
+        .cart-item-side {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            justify-content: space-between;
+            gap: 1rem;
+        }
+
+        .quantity-control {
+            display: inline-flex;
+            align-items: center;
+            border: 1px solid #e5e7eb;
+            border-radius: 14px;
+            overflow: hidden;
+            background: #f8fafc;
+        }
+
+        .quantity-control button {
+            width: 38px;
+            height: 38px;
+            border: none;
+            background: transparent;
+            font-weight: 900;
+            color: #667eea;
+        }
+
+        .quantity-control span {
+            min-width: 36px;
+            text-align: center;
+            font-weight: 800;
+        }
+
+        .cart-item-price {
+            font-size: 1.35rem;
+            font-weight: 900;
+            color: #111827;
+            white-space: nowrap;
+        }
+
+        .cart-summary {
+            padding: 1.5rem;
+            position: sticky;
+            top: 90px;
+        }
+
+        .summary-title {
+            font-size: 1.3rem;
+            font-weight: 900;
+            color: #111827;
+            margin-bottom: 1.25rem;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 1rem;
+            color: #475569;
+            margin-bottom: 0.9rem;
+        }
+
+        .summary-row.discount {
+            color: #16a34a;
+        }
+
+        .summary-total {
+            display: flex;
+            justify-content: space-between;
+            gap: 1rem;
+            font-size: 1.45rem;
+            font-weight: 900;
+            color: #111827;
+            border-top: 1px solid #e5e7eb;
+            padding-top: 1rem;
+            margin-top: 1rem;
+        }
+
+        .checkout-btn {
+            width: 100%;
+            min-height: 54px;
+            border: none;
+            border-radius: 16px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-weight: 900;
+            margin-top: 1.25rem;
+            transition: all 0.25s ease;
+        }
+
+        .checkout-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 14px 28px rgba(102, 126, 234, 0.25);
+        }
+
+        .promo-box {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .promo-box input {
+            flex: 1;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 0.75rem;
+        }
+
+        .promo-box button {
+            border: none;
+            border-radius: 12px;
+            background: #eef2ff;
+            color: #4f46e5;
+            font-weight: 800;
+            padding: 0 1rem;
+        }
+
+        .delivery-card {
+            padding: 1.25rem;
+            margin-top: 1.5rem;
+        }
+
+        .delivery-title {
+            font-weight: 900;
+            color: #111827;
+            margin-bottom: 0.75rem;
+        }
+
+        .delivery-line {
+            display: flex;
+            gap: 0.75rem;
+            color: #475569;
+            margin-bottom: 0.7rem;
+        }
+
+        .delivery-line i {
+            color: #667eea;
+        }
+
+        @media (max-width: 992px) {
+            .cart-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .cart-summary {
+                position: static;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .cart-page {
+                padding: 1rem 0;
+            }
+
+            .cart-header {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .cart-title {
+                font-size: 1.8rem;
+            }
+
+            .cart-item {
+                grid-template-columns: 96px 1fr;
+            }
+
+            .cart-item-image {
+                width: 96px;
+                height: 96px;
+            }
+
+            .cart-item-side {
+                grid-column: 1 / -1;
+                flex-direction: row;
+                align-items: center;
+            }
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="cart-page">
+        <div class="container">
+            <div class="cart-header">
+                <div>
+                    <h1 class="cart-title">Корзина</h1>
+                    <p class="cart-subtitle">{{ cartItems|length }} товара готовы к оформлению</p>
+                </div>
+                <a href="{{ path('cat') }}" class="btn btn-outline-primary rounded-pill px-4">
+                    <i class="bi bi-arrow-left me-2"></i>Продолжить покупки
+                </a>
+            </div>
+
+            <div class="cart-layout">
+                <main class="cart-card">
+                    {% for item in cartItems %}
+                        {% set product = item.product %}
+                        <article class="cart-item">
+                            <a href="{{ path('app_product_show', {id: product.id}) }}">
+                                <img class="cart-item-image" src="{{ product.image }}" alt="{{ product.name }}">
+                            </a>
+
+                            <div>
+                                <a href="{{ path('app_product_show', {id: product.id}) }}" class="cart-item-title">{{ product.name }}</a>
+                                <div class="cart-item-meta">
+                                    <span>Размер: {{ item.size }}</span>
+                                    <span>Цвет: {{ item.color }}</span>
+                                    <span>{{ product.sellerName }}</span>
+                                </div>
+                                <div class="cart-item-actions">
+                                    <button class="cart-link-btn" type="button"><i class="bi bi-heart me-1"></i>В избранное</button>
+                                    <button class="cart-link-btn text-danger" type="button"><i class="bi bi-trash me-1"></i>Удалить</button>
+                                </div>
+                            </div>
+
+                            <div class="cart-item-side">
+                                <div class="quantity-control">
+                                    <button type="button">−</button>
+                                    <span>{{ item.quantity }}</span>
+                                    <button type="button">+</button>
+                                </div>
+                                <div class="cart-item-price">{{ (product.price * item.quantity)|number_format(0, ',', ' ') }} ₽</div>
+                            </div>
+                        </article>
+                    {% endfor %}
+                </main>
+
+                <aside>
+                    <section class="cart-summary">
+                        <div class="summary-title">Итого</div>
+                        <div class="summary-row">
+                            <span>Товары</span>
+                            <strong>{{ subtotal|number_format(0, ',', ' ') }} ₽</strong>
+                        </div>
+                        <div class="summary-row discount">
+                            <span>Скидка WB Style</span>
+                            <strong>−{{ discount|number_format(0, ',', ' ') }} ₽</strong>
+                        </div>
+                        <div class="summary-row">
+                            <span>Доставка</span>
+                            <strong>{{ delivery == 0 ? 'Бесплатно' : delivery|number_format(0, ',', ' ') ~ ' ₽' }}</strong>
+                        </div>
+                        <div class="summary-total">
+                            <span>К оплате</span>
+                            <span>{{ total|number_format(0, ',', ' ') }} ₽</span>
+                        </div>
+
+                        <button class="checkout-btn" type="button">Оформить заказ</button>
+
+                        <div class="promo-box">
+                            <input type="text" placeholder="Промокод">
+                            <button type="button">OK</button>
+                        </div>
+                    </section>
+
+                    <section class="delivery-card">
+                        <div class="delivery-title">Доставка</div>
+                        <div class="delivery-line"><i class="bi bi-geo-alt"></i><span>ПВЗ WB Style, ул. Лесная, 7</span></div>
+                        <div class="delivery-line"><i class="bi bi-calendar-check"></i><span>Можно забрать завтра после 14:00</span></div>
+                        <div class="delivery-line"><i class="bi bi-shield-check"></i><span>Оплата безопасно через WB Pay</span></div>
+                    </section>
+                </aside>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -24,5 +24,23 @@ services:
             - '../src/Entity/'
             - '../src/Kernel.php'
 
-    # add more service definitions when explicit configuration is needed
-    # please note that last definitions always *replace* previous ones
+    _instanceof:
+        App\Export\Contract\ExportDataProviderInterface:
+            tags: [ 'app.export.data_provider' ]
+        App\Export\Contract\ExportWriterInterface:
+            tags: [ 'app.export.writer' ]
+        App\Export\Contract\ExportCriteriaFactoryInterface:
+            tags: [ 'app.export.criteria_factory' ]
+
+    App\Service\Export\ExportService:
+        arguments:
+            $dataProviders: !tagged_iterator app.export.data_provider
+            $writers: !tagged_iterator app.export.writer
+
+    App\Resolver\Export\ExportCriteriaResolver:
+        arguments:
+            $factories: !tagged_iterator app.export.criteria_factory
+
+    App\MessageHandler\ExportHandler:
+        arguments:
+            $projectDir: '%kernel.project_dir%'

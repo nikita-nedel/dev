@@ -1,9 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Repository;
 
 use App\Entity\User;
+use App\Export\Client\ClientListCriteria;
+use App\Export\Contract\ExportCriteriaInterface;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\DBAL\Types\Types;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -19,9 +25,6 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         parent::__construct($registry, User::class);
     }
 
-    /**
-     * Used to upgrade (rehash) the user's password automatically over time.
-     */
     public function upgradePassword(PasswordAuthenticatedUserInterface $user, string $newHashedPassword): void
     {
         if (!$user instanceof User) {
@@ -33,28 +36,50 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         $this->getEntityManager()->flush();
     }
 
-    //    /**
-    //     * @return User[] Returns an array of User objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('u')
-    //            ->andWhere('u.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('u.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    public function createClientsQueryBuilder(?ClientListCriteria $criteria = null): QueryBuilder
+    {
+        $qb = $this->createQueryBuilder('u');
 
-    //    public function findOneBySomeField($value): ?User
-    //    {
-    //        return $this->createQueryBuilder('u')
-    //            ->andWhere('u.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+        if (null !== $criteria) {
+            $this->applyClientListCriteria($qb, $criteria);
+        } else {
+            $qb->orderBy('u.createdAt', 'DESC');
+        }
+
+        return $qb;
+    }
+
+    public function applyClientListCriteria(QueryBuilder $qb, ClientListCriteria $criteria): void
+    {
+        if (null !== $criteria->search) {
+            $term = '%' . addcslashes(mb_strtolower($criteria->search), '%_') . '%';
+            $qb->andWhere(
+                'LOWER(u.email) LIKE :search OR LOWER(u.firstName) LIKE :search OR LOWER(u.lastName) LIKE :search OR u.phone LIKE :searchPhone',
+            )
+                ->setParameter('search', $term)
+                ->setParameter('searchPhone', '%' . $criteria->search . '%');
+        }
+
+        if (null !== $criteria->periodDays) {
+            $qb->andWhere('u.createdAt >= :registeredSince')
+                ->setParameter('registeredSince', new \DateTimeImmutable('-' . $criteria->periodDays . ' days'));
+        }
+
+        // TODO: фильтр status — когда появится поле в User
+
+        match ($criteria->sort) {
+            'name-asc' => $qb->orderBy('u.lastName', 'ASC')->addOrderBy('u.firstName', 'ASC'),
+            'name-desc' => $qb->orderBy('u.lastName', 'DESC')->addOrderBy('u.firstName', 'DESC'),
+            'date-asc' => $qb->orderBy('u.createdAt', 'ASC'),
+            default => $qb->orderBy('u.createdAt', 'DESC'),
+        };
+    }
+
+    /**
+     * @return iterable<User>
+     */
+    public function iterateClients(ClientListCriteria $criteria): iterable
+    {
+        return $this->createClientsQueryBuilder($criteria)->getQuery()->toIterable();
+    }
 }

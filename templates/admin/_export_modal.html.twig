@@ -1,0 +1,72 @@
+<div class="admin-modal-backdrop hidden" id="{{ modal_id }}-backdrop" aria-hidden="true"></div>
+<div class="admin-modal hidden" id="{{ modal_id }}" role="dialog" aria-modal="true" aria-labelledby="{{ modal_id }}-title">
+    <div class="admin-modal-dialog" role="document">
+        <div class="admin-modal-header">
+            <div class="admin-modal-header-text">
+                <div class="admin-modal-icon" aria-hidden="true">
+                    <i class="bi bi-download"></i>
+                </div>
+                <div>
+                    <h3 class="admin-modal-title" id="{{ modal_id }}-title">Экспорт данных</h3>
+                    <p class="admin-modal-subtitle">Будут выгружены все записи с учётом текущих фильтров</p>
+                </div>
+            </div>
+            <button type="button" class="admin-modal-close" data-export-modal-close aria-label="Закрыть">
+                <i class="bi bi-x-lg"></i>
+            </button>
+        </div>
+
+        <div class="admin-modal-body">
+            <p class="admin-modal-section-label">Формат файла</p>
+            <div class="export-format-list">
+                <a href="#" class="export-format-option is-available" data-export-format="xlsx">
+                    <span class="export-format-option-icon xlsx">
+                        <i class="bi bi-file-earmark-spreadsheet"></i>
+                    </span>
+                    <span class="export-format-option-text">
+                        <span class="export-format-option-title">Excel</span>
+                        <span class="export-format-option-ext">.xlsx</span>
+                    </span>
+                    <i class="bi bi-chevron-right export-format-option-arrow"></i>
+                </a>
+
+                <span class="export-format-option is-disabled" title="Скоро">
+                    <span class="export-format-option-icon">
+                        <i class="bi bi-filetype-json"></i>
+                    </span>
+                    <span class="export-format-option-text">
+                        <span class="export-format-option-title">JSON</span>
+                        <span class="export-format-option-ext">.json</span>
+                    </span>
+                    <span class="export-format-badge">Скоро</span>
+                </span>
+
+                <span class="export-format-option is-disabled" title="Скоро">
+                    <span class="export-format-option-icon">
+                        <i class="bi bi-filetype-xml"></i>
+                    </span>
+                    <span class="export-format-option-text">
+                        <span class="export-format-option-title">XML</span>
+                        <span class="export-format-option-ext">.xml</span>
+                    </span>
+                    <span class="export-format-badge">Скоро</span>
+                </span>
+
+                <span class="export-format-option is-disabled" title="Скоро">
+                    <span class="export-format-option-icon">
+                        <i class="bi bi-filetype-csv"></i>
+                    </span>
+                    <span class="export-format-option-text">
+                        <span class="export-format-option-title">CSV</span>
+                        <span class="export-format-option-ext">.csv</span>
+                    </span>
+                    <span class="export-format-badge">Скоро</span>
+                </span>
+            </div>
+        </div>
+
+        <div class="admin-modal-footer">
+            <button type="button" class="btn-admin-outline btn-sm" data-export-modal-close>Отмена</button>
+        </div>
+    </div>
+</div>
