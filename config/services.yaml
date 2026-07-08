@@ -41,6 +41,6 @@ services:
         arguments:
             $factories: !tagged_iterator app.export.criteria_factory
 
-    App\MessageHandler\ClientExportHandler:
+    App\MessageHandler\ExportHandler:
         arguments:
             $projectDir: '%kernel.project_dir%'

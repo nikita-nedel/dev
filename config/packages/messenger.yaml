@@ -27,7 +27,7 @@ framework:
 
         routing:
             # Route your messages to the transports
-            App\Message\ClientExportMessage: async
+            App\Message\ExportMessage: async
 
 # when@test:
 #    framework:
