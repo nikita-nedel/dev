@@ -41,12 +41,12 @@
 
                 <div class="user-actions">
                     {% if app.user %}
-                        <a href="" class="action-btn wishlist-btn" title="Избранное">
+                        <a href="{{ path('app_profile') }}" class="action-btn wishlist-btn" title="Избранное">
                             <i class="bi bi-heart"></i>
                             <span class="action-badge">3</span>
                         </a>
 
-                        <a href="" class="action-btn cart-btn" title="Корзина">
+                        <a href="{{ path('cart') }}" class="action-btn cart-btn" title="Корзина">
                             <i class="bi bi-cart"></i>
                             <span class="action-badge">2</span>
                             <span class="cart-text">Корзина</span>
@@ -58,13 +58,13 @@
                                 <span>{{ app.user.firstName ?? 'Аккаунт' }}</span>
                             </button>
                             <div class="dropdown-menu dropdown-menu-end">
-                                <a class="dropdown-item" href="">
+                                <a class="dropdown-item" href="{{ path('app_profile') }}">
                                     <i class="bi bi-person me-2"></i>Профиль
                                 </a>
-                                <a class="dropdown-item" href="">
+                                <a class="dropdown-item" href="{{ path('app_orders') }}">
                                     <i class="bi bi-bag me-2"></i>Заказы
                                 </a>
-                                <a class="dropdown-item" href="">
+                                <a class="dropdown-item" href="{{ path('app_profile') }}">
                                     <i class="bi bi-heart me-2"></i>Избранное
                                 </a>
                                 {% if is_granted('ROLE_ADMIN') %}
@@ -104,35 +104,35 @@
     </div>
     <div class="offcanvas-body">
         <div class="category-list">
-            <a href="#" class="category-item">
+            <a href="{{ path('cat', {slug: 'elektronika'}) }}" class="category-item">
                 <i class="bi bi-phone"></i>
                 <span>Электроника</span>
             </a>
-            <a href="#" class="category-item">
+            <a href="{{ path('cat', {slug: 'odezhda'}) }}" class="category-item">
                 <i class="bi bi-handbag"></i>
                 <span>Одежда</span>
             </a>
-            <a href="#" class="category-item">
+            <a href="{{ path('cat', {slug: 'obuv'}) }}" class="category-item">
                 <i class="bi bi-bag"></i>
                 <span>Обувь и аксессуары</span>
             </a>
-            <a href="#" class="category-item">
+            <a href="{{ path('cat', {slug: 'dom-i-sad'}) }}" class="category-item">
                 <i class="bi bi-house"></i>
                 <span>Дом и сад</span>
             </a>
-            <a href="#" class="category-item">
+            <a href="{{ path('cat', {slug: 'krasota'}) }}" class="category-item">
                 <i class="bi bi-heart-pulse"></i>
                 <span>Красота и здоровье</span>
             </a>
-            <a href="#" class="category-item">
+            <a href="{{ path('cat') }}" class="category-item">
                 <i class="bi bi-cup-straw"></i>
                 <span>Продукты питания</span>
             </a>
-            <a href="#" class="category-item">
+            <a href="{{ path('cat') }}" class="category-item">
                 <i class="bi bi-controller"></i>
                 <span>Игры и развлечения</span>
             </a>
-            <a href="#" class="category-item">
+            <a href="{{ path('cat') }}" class="category-item">
                 <i class="bi bi-book"></i>
                 <span>Книги и канцелярия</span>
             </a>

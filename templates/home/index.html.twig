@@ -797,12 +797,12 @@
             <div class="container">
                 <h2 class="section-title">
                     Популярные категории
-                    <a href="">Все категории →</a>
+                    <a href="{{ path('cat') }}">Все категории →</a>
                 </h2>
 
                 <div class="categories-grid">
                     {% for category in categories %}
-                        <a href="" class="category-card">
+                        <a href="{{ path('cat', {slug: category.slug}) }}" class="category-card">
                             <div class="category-icon">
                                 <i class="bi {{ category.icon }}"></i>
                             </div>
@@ -862,7 +862,11 @@
                             </div>
 
                             <div class="product-info">
-                                <h3 class="product-title">{{ product.name }}</h3>
+                                <h3 class="product-title">
+                                    <a href="{{ path('app_product_show', {id: product.id}) }}" class="text-decoration-none text-dark">
+                                        {{ product.name }}
+                                    </a>
+                                </h3>
 
                                 <div class="product-rating">
                                     <div class="stars">
@@ -890,9 +894,9 @@
                                     <button class="add-to-cart" data-product-id="{{ product.id }}">
                                         <i class="bi bi-cart me-1"></i> В корзину
                                     </button>
-                                    <button class="quick-view" data-product-id="{{ product.id }}">
+                                    <a href="{{ path('app_product_show', {id: product.id}) }}" class="quick-view" data-product-id="{{ product.id }}">
                                         <i class="bi bi-eye"></i>
-                                    </button>
+                                    </a>
                                 </div>
                             </div>
                         </div>
@@ -915,7 +919,7 @@
                         <div class="banner-content">
                             <h3 class="banner-title">Большая распродажа</h3>
                             <p class="banner-subtitle">Скидки до 70% на осеннюю коллекцию</p>
-                            <a href="#" class="banner-button">Смотреть</a>
+                            <a href="{{ path('cat', {slug: 'odezhda'}) }}" class="banner-button">Смотреть</a>
                         </div>
                     </div>
 
@@ -925,7 +929,7 @@
                         <div class="banner-content">
                             <h3 class="banner-title">Новая коллекция</h3>
                             <p class="banner-subtitle">Самые модные новинки сезона</p>
-                            <a href="#" class="banner-button">Смотреть</a>
+                            <a href="{{ path('cat') }}" class="banner-button">Смотреть</a>
                         </div>
                     </div>
                 </div>

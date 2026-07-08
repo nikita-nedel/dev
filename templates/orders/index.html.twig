@@ -1,0 +1,330 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Мои заказы - WB Style{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .orders-page {
+            background: #f8f9fa;
+            min-height: calc(100vh - 120px);
+            padding: 2rem 0;
+        }
+
+        .orders-hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 24px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 16px 36px rgba(102, 126, 234, 0.22);
+        }
+
+        .orders-title {
+            font-size: 2.3rem;
+            font-weight: 900;
+            margin-bottom: 0.5rem;
+        }
+
+        .orders-subtitle {
+            margin: 0;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .orders-tabs {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+            margin-bottom: 1.5rem;
+        }
+
+        .orders-tab {
+            border: none;
+            border-radius: 999px;
+            padding: 0.75rem 1.1rem;
+            background: white;
+            color: #475569;
+            font-weight: 800;
+            box-shadow: 0 8px 20px rgba(15, 23, 42, 0.06);
+        }
+
+        .orders-tab.active {
+            background: #111827;
+            color: white;
+        }
+
+        .orders-list {
+            display: grid;
+            gap: 1.25rem;
+        }
+
+        .order-card {
+            background: white;
+            border-radius: 22px;
+            padding: 1.5rem;
+            box-shadow: 0 10px 28px rgba(15, 23, 42, 0.07);
+        }
+
+        .order-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 1rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .order-number {
+            font-size: 1.25rem;
+            font-weight: 900;
+            color: #111827;
+            margin-bottom: 0.25rem;
+        }
+
+        .order-date {
+            color: #64748b;
+        }
+
+        .order-status {
+            border-radius: 999px;
+            padding: 0.45rem 0.8rem;
+            font-weight: 900;
+            white-space: nowrap;
+        }
+
+        .order-status.shipping {
+            background: #dbeafe;
+            color: #1d4ed8;
+        }
+
+        .order-status.done {
+            background: #dcfce7;
+            color: #15803d;
+        }
+
+        .order-products {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .order-product {
+            display: flex;
+            gap: 0.75rem;
+            align-items: center;
+            border: 1px solid #e5e7eb;
+            border-radius: 16px;
+            padding: 0.75rem;
+            color: inherit;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .order-product:hover {
+            color: inherit;
+            border-color: #c7d2fe;
+            transform: translateY(-2px);
+        }
+
+        .order-product img {
+            width: 64px;
+            height: 64px;
+            border-radius: 12px;
+            object-fit: contain;
+            background: #f8fafc;
+            flex-shrink: 0;
+        }
+
+        .order-product-name {
+            font-weight: 800;
+            color: #111827;
+            line-height: 1.25;
+            margin-bottom: 0.25rem;
+        }
+
+        .order-product-price {
+            color: #64748b;
+            font-size: 0.92rem;
+        }
+
+        .order-progress {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0.5rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .order-step {
+            position: relative;
+            color: #94a3b8;
+            font-weight: 700;
+            font-size: 0.9rem;
+            padding-top: 1.5rem;
+        }
+
+        .order-step::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 6px;
+            border-radius: 999px;
+            background: #e5e7eb;
+        }
+
+        .order-step.active {
+            color: #111827;
+        }
+
+        .order-step.active::before {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .order-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            border-top: 1px solid #e5e7eb;
+            padding-top: 1.25rem;
+        }
+
+        .order-address {
+            color: #475569;
+        }
+
+        .order-total {
+            font-size: 1.25rem;
+            font-weight: 900;
+            color: #111827;
+            white-space: nowrap;
+        }
+
+        .order-actions {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+            margin-top: 1rem;
+        }
+
+        .order-btn {
+            border-radius: 12px;
+            padding: 0.7rem 1rem;
+            font-weight: 800;
+            border: none;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .order-btn.primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .order-btn.secondary {
+            background: #eef2ff;
+            color: #4f46e5;
+        }
+
+        .order-btn:hover {
+            transform: translateY(-2px);
+            color: white;
+        }
+
+        .order-btn.secondary:hover {
+            background: #667eea;
+        }
+
+        @media (max-width: 768px) {
+            .order-head,
+            .order-footer {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .order-progress {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .orders-page {
+                padding: 1rem 0;
+            }
+
+            .orders-hero,
+            .order-card {
+                border-radius: 16px;
+                padding: 1.25rem;
+            }
+
+            .orders-title {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="orders-page">
+        <div class="container">
+            <section class="orders-hero">
+                <h1 class="orders-title">Мои заказы</h1>
+                <p class="orders-subtitle">Следите за доставкой, повторяйте покупки и оставляйте отзывы в одном месте.</p>
+            </section>
+
+            <div class="orders-tabs">
+                <button class="orders-tab active" type="button">Все</button>
+                <button class="orders-tab" type="button">В пути</button>
+                <button class="orders-tab" type="button">Получены</button>
+                <button class="orders-tab" type="button">Возвраты</button>
+            </div>
+
+            <div class="orders-list">
+                {% for order in orders %}
+                    <article class="order-card">
+                        <div class="order-head">
+                            <div>
+                                <div class="order-number">Заказ {{ order.number }}</div>
+                                <div class="order-date">{{ order.date|date('d.m.Y') }}</div>
+                            </div>
+                            <span class="order-status {{ order.statusType }}">{{ order.status }}</span>
+                        </div>
+
+                        <div class="order-products">
+                            {% for product in order.products %}
+                                <a href="{{ path('app_product_show', {id: product.id}) }}" class="order-product">
+                                    <img src="{{ product.image }}" alt="{{ product.name }}">
+                                    <span>
+                                        <span class="order-product-name">{{ product.name }}</span>
+                                        <span class="order-product-price">{{ product.price|number_format(0, ',', ' ') }} ₽</span>
+                                    </span>
+                                </a>
+                            {% endfor %}
+                        </div>
+
+                        <div class="order-progress">
+                            {% for step in order.steps %}
+                                <div class="order-step {{ loop.index <= order.activeStep ? 'active' : '' }}">{{ step }}</div>
+                            {% endfor %}
+                        </div>
+
+                        <div class="order-footer">
+                            <div class="order-address"><i class="bi bi-geo-alt me-2"></i>{{ order.address }}</div>
+                            <div class="order-total">{{ order.total|number_format(0, ',', ' ') }} ₽</div>
+                        </div>
+
+                        <div class="order-actions">
+                            <a href="{{ path('cart') }}" class="order-btn primary">Повторить заказ</a>
+                            <button class="order-btn secondary" type="button">Подробнее</button>
+                            {% if order.statusType == 'done' %}
+                                <button class="order-btn secondary" type="button">Оставить отзыв</button>
+                            {% endif %}
+                        </div>
+                    </article>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

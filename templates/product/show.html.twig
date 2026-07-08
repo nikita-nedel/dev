@@ -1,0 +1,505 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ product.name }} - WB Style{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .product-page {
+            background: #f8f9fa;
+            min-height: calc(100vh - 120px);
+            padding: 2rem 0;
+        }
+
+        .product-breadcrumbs {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+            color: #64748b;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .product-breadcrumbs a {
+            color: #667eea;
+            text-decoration: none;
+        }
+
+        .product-shell {
+            display: grid;
+            grid-template-columns: minmax(0, 1.05fr) minmax(360px, 0.8fr);
+            gap: 2rem;
+            align-items: start;
+        }
+
+        .product-gallery,
+        .product-panel,
+        .product-card {
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
+        }
+
+        .product-gallery {
+            padding: 1.5rem;
+        }
+
+        .product-main-image {
+            height: 560px;
+            border-radius: 20px;
+            background: linear-gradient(135deg, #f6f8ff 0%, #eef2ff 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            margin-bottom: 1rem;
+        }
+
+        .product-main-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .product-thumbs {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.75rem;
+        }
+
+        .product-thumb {
+            height: 110px;
+            border-radius: 16px;
+            border: 2px solid #e5e7eb;
+            background: #f8fafc;
+            overflow: hidden;
+            padding: 0;
+            cursor: pointer;
+        }
+
+        .product-thumb.active {
+            border-color: #667eea;
+        }
+
+        .product-thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .product-panel {
+            padding: 2rem;
+            position: sticky;
+            top: 90px;
+        }
+
+        .product-category {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            background: #eef2ff;
+            color: #4f46e5;
+            border-radius: 999px;
+            padding: 0.45rem 0.8rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .product-title {
+            font-size: 2.1rem;
+            font-weight: 800;
+            color: #111827;
+            margin-bottom: 1rem;
+            line-height: 1.15;
+        }
+
+        .product-rating-row,
+        .product-seller-row {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+            color: #64748b;
+            margin-bottom: 1rem;
+        }
+
+        .stars i {
+            color: #f59e0b;
+        }
+
+        .product-price-row {
+            display: flex;
+            align-items: baseline;
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .product-price {
+            font-size: 2.4rem;
+            font-weight: 900;
+            color: #111827;
+        }
+
+        .product-old-price {
+            color: #94a3b8;
+            text-decoration: line-through;
+            font-size: 1.25rem;
+        }
+
+        .product-discount {
+            background: #fee2e2;
+            color: #dc2626;
+            border-radius: 10px;
+            padding: 0.35rem 0.6rem;
+            font-weight: 800;
+        }
+
+        .option-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .option-title {
+            font-weight: 800;
+            color: #111827;
+            margin-bottom: 0.75rem;
+        }
+
+        .option-list {
+            display: flex;
+            gap: 0.6rem;
+            flex-wrap: wrap;
+        }
+
+        .option-pill {
+            border: 2px solid #e5e7eb;
+            background: white;
+            border-radius: 12px;
+            padding: 0.65rem 0.9rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .option-pill.active,
+        .option-pill:hover {
+            border-color: #667eea;
+            color: #667eea;
+            background: #eef2ff;
+        }
+
+        .product-actions {
+            display: grid;
+            grid-template-columns: 1fr 56px;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .add-cart-btn,
+        .favorite-action {
+            border: none;
+            border-radius: 16px;
+            min-height: 56px;
+            font-weight: 800;
+            transition: all 0.25s ease;
+        }
+
+        .add-cart-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .favorite-action {
+            background: #f8fafc;
+            color: #ef4444;
+            font-size: 1.25rem;
+        }
+
+        .add-cart-btn:hover,
+        .favorite-action:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 14px 26px rgba(102, 126, 234, 0.22);
+        }
+
+        .delivery-box {
+            border: 1px solid #e5e7eb;
+            border-radius: 18px;
+            padding: 1rem;
+            display: grid;
+            gap: 0.75rem;
+        }
+
+        .delivery-row {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: #475569;
+        }
+
+        .product-details {
+            margin-top: 2rem;
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) minmax(320px, 0.7fr);
+            gap: 2rem;
+        }
+
+        .product-card {
+            padding: 1.5rem;
+        }
+
+        .section-title {
+            font-size: 1.35rem;
+            font-weight: 800;
+            color: #111827;
+            margin-bottom: 1rem;
+        }
+
+        .feature-list {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.75rem;
+            padding: 0;
+            list-style: none;
+            margin: 0;
+        }
+
+        .feature-list li {
+            display: flex;
+            gap: 0.6rem;
+            align-items: center;
+            color: #475569;
+        }
+
+        .feature-list i {
+            color: #22c55e;
+        }
+
+        .related-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .related-card {
+            background: white;
+            border-radius: 18px;
+            padding: 1rem;
+            text-decoration: none;
+            color: inherit;
+            box-shadow: 0 8px 22px rgba(15, 23, 42, 0.06);
+            transition: all 0.25s ease;
+        }
+
+        .related-card:hover {
+            color: inherit;
+            transform: translateY(-4px);
+            box-shadow: 0 16px 32px rgba(15, 23, 42, 0.12);
+        }
+
+        .related-card img {
+            width: 100%;
+            height: 180px;
+            object-fit: contain;
+            background: #f8fafc;
+            border-radius: 14px;
+            margin-bottom: 0.75rem;
+        }
+
+        .related-name {
+            font-weight: 700;
+            color: #111827;
+            min-height: 44px;
+        }
+
+        .related-price {
+            font-weight: 900;
+            color: #111827;
+            margin-top: 0.5rem;
+        }
+
+        @media (max-width: 992px) {
+            .product-shell,
+            .product-details {
+                grid-template-columns: 1fr;
+            }
+
+            .product-panel {
+                position: static;
+            }
+
+            .related-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 576px) {
+            .product-page {
+                padding: 1rem 0;
+            }
+
+            .product-main-image {
+                height: 360px;
+            }
+
+            .product-title {
+                font-size: 1.6rem;
+            }
+
+            .product-price {
+                font-size: 2rem;
+            }
+
+            .feature-list,
+            .related-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="product-page">
+        <div class="container">
+            <nav class="product-breadcrumbs">
+                <a href="{{ path('app_home') }}">Главная</a>
+                <span>/</span>
+                <a href="{{ path('cat') }}">Каталог</a>
+                <span>/</span>
+                <span>{{ product.name }}</span>
+            </nav>
+
+            <div class="product-shell">
+                <section class="product-gallery">
+                    <div class="product-main-image">
+                        <img id="productMainImage" src="{{ product.images|first }}" alt="{{ product.name }}">
+                    </div>
+                    <div class="product-thumbs">
+                        {% for image in product.images %}
+                            <button class="product-thumb {{ loop.first ? 'active' : '' }}" data-image="{{ image }}">
+                                <img src="{{ image }}" alt="{{ product.name }} {{ loop.index }}">
+                            </button>
+                        {% endfor %}
+                    </div>
+                </section>
+
+                <aside class="product-panel">
+                    <span class="product-category"><i class="bi bi-grid"></i>{{ product.category }}</span>
+                    <h1 class="product-title">{{ product.name }}</h1>
+
+                    <div class="product-rating-row">
+                        <span class="stars">
+                            {% for i in 1..5 %}
+                                <i class="bi {{ i <= product.rating ? 'bi-star-fill' : 'bi-star' }}"></i>
+                            {% endfor %}
+                        </span>
+                        <strong>{{ product.rating }}</strong>
+                        <span>{{ product.reviews }} отзывов</span>
+                    </div>
+
+                    <div class="product-seller-row">
+                        <i class="bi bi-shop"></i>
+                        <span>{{ product.sellerName }}</span>
+                        <strong><i class="bi bi-star-fill text-warning"></i> {{ product.sellerRating }}</strong>
+                    </div>
+
+                    <div class="product-price-row">
+                        <span class="product-price">{{ product.price|number_format(0, ',', ' ') }} ₽</span>
+                        {% if product.oldPrice %}
+                            <span class="product-old-price">{{ product.oldPrice|number_format(0, ',', ' ') }} ₽</span>
+                            <span class="product-discount">-{{ product.discount }}%</span>
+                        {% endif %}
+                    </div>
+
+                    <div class="option-group">
+                        <div class="option-title">Цвет</div>
+                        <div class="option-list">
+                            {% for color in product.colors %}
+                                <button class="option-pill {{ loop.first ? 'active' : '' }}">{{ color }}</button>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <div class="option-group">
+                        <div class="option-title">Размер</div>
+                        <div class="option-list">
+                            {% for size in product.sizes %}
+                                <button class="option-pill {{ loop.first ? 'active' : '' }}">{{ size }}</button>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <div class="product-actions">
+                        <button class="add-cart-btn" type="button">
+                            <i class="bi bi-cart-plus me-2"></i>Добавить в корзину
+                        </button>
+                        <button class="favorite-action" type="button" title="В избранное">
+                            <i class="bi {{ product.isFavorite ? 'bi-heart-fill' : 'bi-heart' }}"></i>
+                        </button>
+                    </div>
+
+                    <div class="delivery-box">
+                        <div class="delivery-row"><i class="bi bi-truck text-success"></i>Доставка завтра, бесплатно от 3 000 ₽</div>
+                        <div class="delivery-row"><i class="bi bi-arrow-counterclockwise text-primary"></i>Возврат в течение 14 дней</div>
+                        <div class="delivery-row"><i class="bi bi-shield-check text-info"></i>Проверенный продавец WB Style</div>
+                    </div>
+                </aside>
+            </div>
+
+            <div class="product-details">
+                <section class="product-card">
+                    <h2 class="section-title">Описание</h2>
+                    <p class="text-secondary mb-0">{{ product.description }}</p>
+                </section>
+
+                <section class="product-card">
+                    <h2 class="section-title">Особенности</h2>
+                    <ul class="feature-list">
+                        {% for feature in product.features %}
+                            <li><i class="bi bi-check-circle-fill"></i>{{ feature }}</li>
+                        {% endfor %}
+                    </ul>
+                </section>
+            </div>
+
+            <section class="mt-5">
+                <h2 class="section-title">Похожие товары</h2>
+                <div class="related-grid">
+                    {% for item in relatedProducts %}
+                        <a href="{{ path('app_product_show', {id: item.id}) }}" class="related-card">
+                            <img src="{{ item.image }}" alt="{{ item.name }}">
+                            <div class="related-name">{{ item.name }}</div>
+                            <div class="related-price">{{ item.price|number_format(0, ',', ' ') }} ₽</div>
+                        </a>
+                    {% endfor %}
+                </div>
+            </section>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const mainImage = document.getElementById('productMainImage');
+            document.querySelectorAll('.product-thumb').forEach((thumb) => {
+                thumb.addEventListener('click', () => {
+                    document.querySelectorAll('.product-thumb').forEach((item) => item.classList.remove('active'));
+                    thumb.classList.add('active');
+                    mainImage.src = thumb.dataset.image;
+                });
+            });
+
+            document.querySelectorAll('.option-pill').forEach((pill) => {
+                pill.addEventListener('click', () => {
+                    pill.parentElement.querySelectorAll('.option-pill').forEach((item) => item.classList.remove('active'));
+                    pill.classList.add('active');
+                });
+            });
+
+            document.querySelector('.add-cart-btn')?.addEventListener('click', () => {
+                window.showToast ? window.showToast('Товар добавлен в корзину', 'success') : alert('Товар добавлен в корзину');
+            });
+        });
+    </script>
+{% endblock %}

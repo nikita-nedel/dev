@@ -57,6 +57,11 @@
                 <span class="admin-nav-link-label">Заказы и корзины</span>
                 <span class="export-format-badge">Скоро</span>
             </span>
+            <div class="admin-nav-section">Процессы</div>
+            <a href="{{ path('app_admin_process_index') }}" class="admin-nav-link {{ admin_menu|default('') == 'processes' ? 'active' : '' }}">
+                <i class="bi bi-list-task"></i>
+                <span class="admin-nav-link-label">Фоновые процессы</span>
+            </a>
             <div class="admin-nav-section">Доступ</div>
             <span class="admin-nav-link is-disabled" title="Скоро">
                 <i class="bi bi-key"></i>

@@ -117,7 +117,7 @@
     });
 
     modal.querySelectorAll('[data-export-format].is-available').forEach((link) => {
-        link.addEventListener('click', (event) => {
+        link.addEventListener('click', async (event) => {
             event.preventDefault();
 
             const format = link.getAttribute('data-export-format');
@@ -128,7 +128,25 @@
             }
 
             closeModal();
-            window.location.href = url;
+
+            try {
+                const response = await fetch(url, {
+                    headers: {
+                        'Accept': 'application/json',
+                    },
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Export request failed with status ${response.status}`);
+                }
+
+                const payload = await response.json();
+                window.showToast?.('Экспорт поставлен в очередь', 'success');
+                window.location.href = payload.processesUrl;
+            } catch (error) {
+                console.error(error);
+                window.showToast?.('Не удалось поставить экспорт в очередь', 'error');
+            }
         });
     });
 

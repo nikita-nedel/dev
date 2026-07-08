@@ -154,6 +154,9 @@
 .badge-status.shipped { background: #e0e7ff; color: #4338ca; }
 .badge-status.delivered { background: #d1fae5; color: #047857; }
 .badge-status.cancelled { background: #fee2e2; color: #b91c1c; }
+.badge-status.pending { background: #e0e7ff; color: #4338ca; }
+.badge-status.completed { background: #d1fae5; color: #047857; }
+.badge-status.failed { background: #fee2e2; color: #b91c1c; }
 
 :root {
   --admin-primary: #667eea;
@@ -615,6 +618,51 @@ body.admin-body {
 
 .clients-empty.hidden {
   display: none;
+}
+
+.process-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid #eef1f8;
+}
+
+.process-date-filter {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  color: #64748b;
+  font-size: 0.85rem;
+}
+
+.process-date-filter .admin-input {
+  min-width: 150px;
+}
+
+.process-live-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: #64748b;
+  font-size: 0.85rem;
+}
+
+.process-main {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.process-main span:nth-child(2),
+.process-main small {
+  color: #64748b;
+  font-size: 0.82rem;
+}
+
+.process-error {
+  color: #b91c1c;
+  font-weight: 600;
 }
 
 .clients-empty i {
