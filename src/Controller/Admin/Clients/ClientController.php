@@ -11,7 +11,7 @@ use App\Enum\JobType;
 use App\Enum\Export\ExportFormat;
 use App\Enum\Export\ExportResource;
 use App\Export\Client\ClientListCriteria;
-use App\Message\ClientExportMessage;
+use App\Message\ExportMessage;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
@@ -89,7 +89,7 @@ class ClientController extends AbstractController
         $entityManager->persist($exportFile);
         $entityManager->flush();
 
-        $messageBus->dispatch(new ClientExportMessage($exportId));
+        $messageBus->dispatch(new ExportMessage($exportId));
 
         return $this->json([
             'status' => 'queued',

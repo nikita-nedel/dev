@@ -8,7 +8,7 @@ use App\Entity\ExportFile;
 use App\Enum\Export\ExportFormat;
 use App\Enum\Export\ExportStorage;
 use App\Export\ExportContext;
-use App\Message\ClientExportMessage;
+use App\Message\ExportMessage;
 use App\Repository\ExportFileRepository;
 use App\Resolver\Export\ExportCriteriaResolver;
 use App\Service\Export\ExportService;
@@ -27,7 +27,7 @@ class ExportHandler
     ) {
     }
 
-    public function __invoke(ClientExportMessage $message): void
+    public function __invoke(ExportMessage $message): void
     {
         $exportFile = $this->exportFileRepository->getByExportId($message->exportId);
         $job = $exportFile->getJob();
