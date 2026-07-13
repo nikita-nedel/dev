@@ -440,6 +440,31 @@
                 </div>
             </section>
 
+            {% set sellerAccount = customer_seller(app.user) %}
+            {% if sellerAccount %}
+                <section class="profile-hero mb-4" style="padding: 1.5rem;">
+                    <h2 class="h5 mb-2"><i class="bi bi-shop me-2"></i>Аккаунт продавца</h2>
+                    {% set sellerRequest = sellerAccount.request %}
+                    {% if sellerRequest %}
+                        <p class="mb-1">Статус заявки: <strong>{{ sellerRequest.status.label }}</strong></p>
+                        {% if sellerRequest.status.value == 'rejected' %}
+                            <p class="text-secondary">{{ sellerRequest.rejectionReason|default('Заявка отклонена.') }}</p>
+                        {% elseif sellerAccount.isActive %}
+                            <a href="{{ path('app_seller_dashboard') }}" class="btn btn-primary btn-sm">Открыть кабинет продавца</a>
+                        {% else %}
+                            <p class="text-secondary mb-2">Ожидается активация аккаунта продавца.</p>
+                            <a href="{{ path('seller_login') }}" class="btn btn-outline-primary btn-sm">Вход для продавца</a>
+                        {% endif %}
+                    {% endif %}
+                </section>
+            {% else %}
+                <section class="profile-hero mb-4" style="padding: 1.5rem;">
+                    <h2 class="h5 mb-2"><i class="bi bi-shop me-2"></i>Хотите продавать на WB Style?</h2>
+                    <p class="text-secondary mb-3">Подайте заявку и получите доступ к кабинету продавца после проверки.</p>
+                    <a href="{{ path('seller_apply') }}" class="btn btn-primary btn-sm">Стать продавцом</a>
+                </section>
+            {% endif %}
+
             <div class="profile-stats">
                 {% for stat in profileStats %}
                     <div class="profile-stat">

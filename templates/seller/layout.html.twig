@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Кабинет продавца{% endblock %} — WB Style</title>
+    {% block stylesheets %}
+        {{ encore_entry_link_tags('app') }}
+        {{ encore_entry_link_tags('admin') }}
+    {% endblock %}
+</head>
+<body class="admin-body">
+<div class="admin-shell">
+    <aside class="admin-sidebar">
+        <div class="admin-sidebar-brand">
+            <a href="{{ path('app_seller_dashboard') }}">
+                <span class="brand-icon"><i class="bi bi-shop"></i></span>
+                <span>WB <span class="accent">Seller</span></span>
+            </a>
+        </div>
+        <nav class="admin-nav">
+            <a href="{{ path('app_seller_dashboard') }}" class="admin-nav-link active">
+                <i class="bi bi-speedometer2"></i>
+                <span class="admin-nav-link-label">Дашборд</span>
+            </a>
+        </nav>
+        <div class="admin-sidebar-footer">
+            <a href="{{ path('app_home') }}"><i class="bi bi-arrow-left-circle"></i> На сайт</a>
+            <a href="{{ path('seller_logout') }}" class="mt-2 d-block"><i class="bi bi-box-arrow-right"></i> Выйти</a>
+        </div>
+    </aside>
+    <div class="admin-main">
+        <header class="admin-topbar">
+            <h1>{% block page_title %}Кабинет продавца{% endblock %}</h1>
+            {% if app.user %}
+                <div class="admin-user-badge">
+                    <span class="avatar">{{ app.user.userIdentifier|first|upper }}</span>
+                    <span>{{ app.user.userIdentifier }}</span>
+                </div>
+            {% endif %}
+        </header>
+        <div class="admin-content">
+            {% block seller_body %}{% endblock %}
+        </div>
+    </div>
+</div>
+{% block javascripts %}{{ encore_entry_script_tags('app') }}{% endblock %}
+</body>
+</html>

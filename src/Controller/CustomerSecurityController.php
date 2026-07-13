@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Entity\User;
-use App\Form\RegistrationFormType;
+use App\Entity\Customer;
+use App\Form\CustomerRegistrationFormType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -16,21 +16,18 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Symfony\Component\Security\Http\Authentication\UserAuthenticatorInterface;
 use Symfony\Component\Security\Http\Authenticator\FormLoginAuthenticator;
 
-class SecurityController extends AbstractController
+class CustomerSecurityController extends AbstractController
 {
     #[Route(path: '/login', name: 'app_login')]
     public function login(AuthenticationUtils $authenticationUtils): Response
     {
-        if ($this->getUser()) {
+        if ($this->getUser() instanceof Customer) {
             return $this->redirectToRoute('app_home');
         }
 
-        $error = $authenticationUtils->getLastAuthenticationError();
-        $lastUsername = $authenticationUtils->getLastUsername();
-
         return $this->render('security/login.html.twig', [
-            'error' => $error,
-            'last_username' => $lastUsername
+            'error' => $authenticationUtils->getLastAuthenticationError(),
+            'last_username' => $authenticationUtils->getLastUsername(),
         ]);
     }
 
@@ -38,34 +35,33 @@ class SecurityController extends AbstractController
     public function register(
         Request $request,
         UserAuthenticatorInterface $userAuthenticator,
-        FormLoginAuthenticator $formLoginAuthenticator,
+        FormLoginAuthenticator $customerFormLoginAuthenticator,
         UserPasswordHasherInterface $passwordHasher,
         EntityManagerInterface $entityManager,
-    ): Response
-    {
-        if ($this->getUser()) {
+    ): Response {
+        if ($this->getUser() instanceof Customer) {
             return $this->redirectToRoute('app_home');
         }
 
-        $user = new User();
-        $form = $this->createForm(RegistrationFormType::class, $user);
+        $customer = new Customer();
+        $form = $this->createForm(CustomerRegistrationFormType::class, $customer);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $user->setPassword(
+            $customer->setPassword(
                 $passwordHasher->hashPassword(
-                    $user,
+                    $customer,
                     $form->get('plainPassword')->getData()
                 )
             );
+            $customer->setRoles(['ROLE_CUSTOMER']);
 
-            $user->setRoles(['ROLE_USER']);
-            $entityManager->persist($user);
+            $entityManager->persist($customer);
             $entityManager->flush();
 
             $this->addFlash('success', 'Регистрация прошла успешно! Теперь вы можете войти.');
 
-            return $userAuthenticator->authenticateUser($user, $formLoginAuthenticator, $request);
+            return $userAuthenticator->authenticateUser($customer, $customerFormLoginAuthenticator, $request);
         }
 
         return $this->render('security/register.html.twig', [

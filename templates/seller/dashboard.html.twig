@@ -1,0 +1,20 @@
+{% extends 'seller/layout.html.twig' %}
+
+{% block title %}Кабинет продавца{% endblock %}
+{% block page_title %}Кабинет продавца{% endblock %}
+
+{% block seller_body %}
+    <div class="card p-4 shadow-sm">
+        <h2 class="h5">{{ seller.profile.shopName }}</h2>
+        <p class="text-secondary mb-1">Email: {{ seller.email }}</p>
+        <p class="text-secondary">Статус: {{ seller.isActive ? 'Активен' : 'Неактивен' }}</p>
+
+        {% if sellerRequest %}
+            <hr>
+            <p><strong>Заявка:</strong> {{ sellerRequest.status.label }}</p>
+            {% if sellerRequest.reviewedAt %}
+                <p class="text-secondary small">Рассмотрена: {{ sellerRequest.reviewedAt|date('d.m.Y H:i') }}</p>
+            {% endif %}
+        {% endif %}
+    </div>
+{% endblock %}

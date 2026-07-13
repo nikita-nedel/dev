@@ -323,7 +323,7 @@ class HomeController extends AbstractController
     }
 
     #[Route('/orders', name: 'app_orders')]
-    #[IsGranted('ROLE_USER')]
+    #[IsGranted('ROLE_CUSTOMER')]
     public function ordersAction(): Response
     {
         $orders = [
@@ -376,7 +376,7 @@ class HomeController extends AbstractController
     }
 
     #[Route('/profile', name: 'app_profile')]
-    #[IsGranted('ROLE_USER')]
+    #[IsGranted('ROLE_CUSTOMER')]
     public function profileAction(): Response
     {
         $profileStats = [

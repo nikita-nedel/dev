@@ -1,20 +1,21 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Entity;
 
-use App\Repository\UserRepository;
+use App\Repository\AdminRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
-use Gedmo\Mapping\Annotation as Gedmo;
 
-#[ORM\Entity(repositoryClass: UserRepository::class)]
-#[ORM\Table(name: '`user`')]
-#[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
+#[ORM\Entity(repositoryClass: AdminRepository::class)]
+#[ORM\Table(name: 'admin')]
+#[ORM\UniqueConstraint(name: 'UNIQ_ADMIN_EMAIL', fields: ['email'])]
 #[UniqueEntity(fields: ['email'], message: 'Этот email уже используется')]
-#[UniqueEntity(fields: ['phone'], message: 'Этот номер телефона уже используется')]
-class User implements UserInterface, PasswordAuthenticatedUserInterface
+class Admin implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -25,25 +26,19 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $email = null;
 
     /**
-     * @var list<string> The user roles
+     * @var list<string>
      */
     #[ORM\Column]
     private array $roles = [];
 
-    /**
-     * @var ?string The hashed password
-     */
     #[ORM\Column]
     private ?string $password = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $firstName = null;
+    #[ORM\Column]
+    private bool $isActive = true;
 
-    #[ORM\Column(length: 255)]
-    private ?string $lastName = null;
-
-    #[ORM\Column(length: 255)]
-    private ?string $phone = null;
+    #[ORM\OneToOne(mappedBy: 'admin', targetEntity: AdminProfile::class, cascade: ['persist', 'remove'])]
+    private ?AdminProfile $profile = null;
 
     #[ORM\Column]
     #[Gedmo\Timestampable(on: 'create')]
@@ -66,23 +61,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    /**
-     * A visual identifier that represents this user.
-     *
-     * @see UserInterface
-     */
     public function getUserIdentifier(): string
     {
         return (string) $this->email;
     }
 
-    /**
-     * @see UserInterface
-     */
     public function getRoles(): array
     {
         $roles = $this->roles;
-        $roles[] = 'ROLE_USER';
+        $roles[] = 'ROLE_ADMIN';
 
         return array_unique($roles);
     }
@@ -97,9 +84,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    /**
-     * @see PasswordAuthenticatedUserInterface
-     */
     public function getPassword(): ?string
     {
         return $this->password;
@@ -112,9 +96,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    /**
-     * Ensure the session doesn't contain actual password hashes by CRC32C-hashing them, as supported since Symfony 7.3.
-     */
     public function __serialize(): array
     {
         $data = (array) $this;
@@ -126,41 +107,32 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[\Deprecated]
     public function eraseCredentials(): void
     {
-        // @deprecated, to be removed when upgrading to Symfony 8
     }
 
-    public function getFirstName(): ?string
+    public function isActive(): bool
     {
-        return $this->firstName;
+        return $this->isActive;
     }
 
-    public function setFirstName(string $firstName): static
+    public function setIsActive(bool $isActive): static
     {
-        $this->firstName = $firstName;
+        $this->isActive = $isActive;
 
         return $this;
     }
 
-    public function getLastName(): ?string
+    public function getProfile(): ?AdminProfile
     {
-        return $this->lastName;
+        return $this->profile;
     }
 
-    public function setLastName(string $lastName): static
+    public function setProfile(AdminProfile $profile): static
     {
-        $this->lastName = $lastName;
+        if ($profile->getAdmin() !== $this) {
+            $profile->setAdmin($this);
+        }
 
-        return $this;
-    }
-
-    public function getPhone(): ?string
-    {
-        return $this->phone;
-    }
-
-    public function setPhone(string $phone): static
-    {
-        $this->phone = $phone;
+        $this->profile = $profile;
 
         return $this;
     }
@@ -170,15 +142,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeImmutable $createdAt): static
-    {
-        $this->createdAt = $createdAt;
-
-        return $this;
-    }
-
     public function getFullName(): string
     {
-        return ($this->firstName ?? 'Клиент' . $this->id) . ' ' . ($this->lastName ?? '');
+        $fullName = $this->profile?->getFullName();
+
+        return '' !== $fullName ? $fullName : (string) $this->email;
     }
 }

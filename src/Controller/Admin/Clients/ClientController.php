@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace App\Controller\Admin\Clients;
 
+use App\Entity\Admin;
 use App\Entity\ExportFile;
 use App\Entity\Job;
-use App\Entity\User;
 use App\Enum\JobType;
 use App\Enum\Export\ExportFormat;
 use App\Enum\Export\ExportResource;
 use App\Export\Client\ClientListCriteria;
 use App\Message\ExportMessage;
-use App\Repository\UserRepository;
+use App\Repository\CustomerRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -29,7 +29,7 @@ class ClientController extends AbstractController
     #[Route('/client', name: 'client_index', methods: ['GET'])]
     public function index(
         Request $request,
-        UserRepository $userRepository,
+        CustomerRepository $customerRepository,
         PaginatorInterface $paginator,
         #[MapQueryParameter] int $page = 1,
         #[MapQueryParameter] int $perPage = 10,
@@ -37,7 +37,7 @@ class ClientController extends AbstractController
         $criteria = ClientListCriteria::fromQuery($request->query->all());
 
         $pagination = $paginator->paginate(
-            $userRepository->createClientsQueryBuilder($criteria),
+            $customerRepository->createClientsQueryBuilder($criteria),
             $page,
             $perPage,
         );
@@ -81,7 +81,7 @@ class ClientController extends AbstractController
             resource: ExportResource::Clients,
             format: $exportFormat,
             filters: $filters,
-            requestedBy: $requestedBy instanceof User ? $requestedBy : null,
+            requestedBy: $requestedBy instanceof Admin ? $requestedBy : null,
             job: $job,
         );
 

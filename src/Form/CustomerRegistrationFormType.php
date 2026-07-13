@@ -4,26 +4,28 @@ declare(strict_types=1);
 
 namespace App\Form;
 
-use App\Entity\User;
+use App\Entity\Customer;
+use App\Entity\CustomerProfile;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\TelType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Validator\Constraints\IsTrue;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
-class RegistrationFormType extends AbstractType
+class CustomerRegistrationFormType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add('firstName', TextType::class, [
                 'label' => 'Имя',
+                'mapped' => false,
                 'attr' => [
                     'class' => 'form-control',
                     'placeholder' => 'Иван',
@@ -37,6 +39,7 @@ class RegistrationFormType extends AbstractType
             ])
             ->add('lastName', TextType::class, [
                 'label' => 'Фамилия',
+                'mapped' => false,
                 'attr' => [
                     'class' => 'form-control',
                     'placeholder' => 'Иванов',
@@ -54,6 +57,7 @@ class RegistrationFormType extends AbstractType
             ])
             ->add('phone', TelType::class, [
                 'label' => 'Номер телефона',
+                'mapped' => false,
                 'attr' => [
                     'class' => 'form-control phone-input',
                     'placeholder' => 'phone',
@@ -87,12 +91,27 @@ class RegistrationFormType extends AbstractType
                     new Length(min: 8, max: 4096, minMessage: 'Пароль должен содержать минимум {{ limit }} символов'),
                 ],
             ]);
+
+        $builder->addEventListener(FormEvents::SUBMIT, function (FormEvent $event): void {
+            $customer = $event->getData();
+            if (!$customer instanceof Customer) {
+                return;
+            }
+
+            $form = $event->getForm();
+            $profile = (new CustomerProfile())
+                ->setFirstName((string) $form->get('firstName')->getData())
+                ->setLastName((string) $form->get('lastName')->getData())
+                ->setPhone((string) $form->get('phone')->getData());
+
+            $customer->setProfile($profile);
+        });
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => User::class,
+            'data_class' => Customer::class,
         ]);
     }
 }

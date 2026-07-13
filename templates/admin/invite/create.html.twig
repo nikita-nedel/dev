@@ -1,0 +1,20 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block title %}Приглашение администратора{% endblock %}
+{% block page_title %}Пригласить администратора{% endblock %}
+
+{% block admin_body %}
+    <div class="admin-panel" style="max-width: 520px;">
+        {{ form_start(form) }}
+            {{ form_row(form.email) }}
+            <button type="submit" class="btn-admin-primary mt-3">Создать инвайт</button>
+        {{ form_end(form) }}
+
+        {% if inviteUrl %}
+            <div class="mt-4 p-3 bg-light rounded">
+                <div class="small text-secondary mb-2">Ссылка для регистрации:</div>
+                <code style="word-break: break-all;">{{ inviteUrl }}</code>
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}

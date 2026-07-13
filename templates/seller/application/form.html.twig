@@ -1,0 +1,19 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Стать продавцом{% endblock %}
+
+{% block body %}
+    <div class="container py-5" style="max-width: 640px;">
+        <h1 class="h3 mb-2">Заявка на становление продавцом</h1>
+        <p class="text-secondary mb-4">Заполните данные магазина. После проверки администратором вы получите доступ в кабинет продавца.</p>
+
+        {{ form_start(form, { attr: { class: 'card p-4 shadow-sm' } }) }}
+            {{ form_row(form.shopName) }}
+            {{ form_row(form.legalName) }}
+            {{ form_row(form.inn) }}
+            {{ form_row(form.contactPhone) }}
+            {{ form_row(form.description) }}
+            <button type="submit" class="btn btn-primary w-100 mt-2">Отправить заявку</button>
+        {{ form_end(form) }}
+    </div>
+{% endblock %}
