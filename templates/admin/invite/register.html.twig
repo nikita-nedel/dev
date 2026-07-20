@@ -1,0 +1,35 @@
+{% extends 'admin/security/layout.html.twig' %}
+
+{% block title %}Регистрация администратора{% endblock %}
+
+{% block auth_body %}
+    <div class="admin-auth-page">
+        <div class="admin-auth-card">
+            <div class="admin-auth-card-header">
+                <a href="{{ path('admin_login') }}" class="admin-auth-brand">
+                    <span class="admin-auth-brand-icon"><i class="bi bi-shield-lock"></i></span>
+                    <span>WB <span class="accent">Admin</span></span>
+                </a>
+                <h1>Активация аккаунта</h1>
+                <p>Завершите регистрацию по приглашению</p>
+            </div>
+
+            <div class="admin-auth-card-body">
+                <div class="admin-auth-meta">
+                    Email: <strong>{{ inviteEmail }}</strong>
+                </div>
+
+                {{ form_start(form, { attr: { class: 'admin-auth-form' } }) }}
+                    {{ form_row(form.firstName, { label_attr: { class: '' }, row_attr: { class: 'admin-auth-field' } }) }}
+                    {{ form_row(form.lastName, { label_attr: { class: '' }, row_attr: { class: 'admin-auth-field' } }) }}
+                    {{ form_row(form.plainPassword, { label_attr: { class: '' }, row_attr: { class: 'admin-auth-field' } }) }}
+                    <button type="submit" class="btn-admin-primary admin-auth-submit">Создать аккаунт</button>
+                {{ form_end(form) }}
+
+                <div class="admin-auth-footer">
+                    <a href="{{ path('admin_login') }}">Уже есть аккаунт? Войти</a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

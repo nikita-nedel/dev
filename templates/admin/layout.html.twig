@@ -25,16 +25,14 @@
                 <i class="bi bi-people"></i>
                 <span class="admin-nav-link-label">Клиенты</span>
             </a>
-            <span class="admin-nav-link is-disabled" title="Скоро">
+            <a href="{{ path('admin_invite_create') }}" class="admin-nav-link {{ admin_menu|default('') == 'admins' ? 'active' : '' }}">
                 <i class="bi bi-shield-lock"></i>
                 <span class="admin-nav-link-label">Администраторы</span>
-                <span class="export-format-badge">Скоро</span>
-            </span>
-            <span class="admin-nav-link is-disabled" title="Скоро">
+            </a>
+            <a href="{{ path('app_admin_seller_request_index') }}" class="admin-nav-link {{ admin_menu|default('') == 'seller_requests' ? 'active' : '' }}">
                 <i class="bi bi-shop"></i>
-                <span class="admin-nav-link-label">Продавцы</span>
-                <span class="export-format-badge">Скоро</span>
-            </span>
+                <span class="admin-nav-link-label">Заявки продавцов</span>
+            </a>
             <div class="admin-nav-section">Каталог</div>
             <span class="admin-nav-link is-disabled" title="Скоро">
                 <i class="bi bi-folder2-open"></i>
@@ -88,8 +86,9 @@
                 {% if app.user %}
                     <div class="admin-user-badge">
                         <span class="avatar">{{ app.user.userIdentifier|first|upper }}</span>
-                        <span>{{ app.user.userIdentifier }}</span>
+                        <span>{{ app.user.fullName|default(app.user.userIdentifier) }}</span>
                     </div>
+                    <a href="{{ path('admin_logout') }}" class="btn-admin-outline btn-sm ms-2">Выйти</a>
                 {% endif %}
             </div>
         </header>

@@ -1,0 +1,57 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block title %}Заявки продавцов{% endblock %}
+{% block page_title %}Заявки продавцов{% endblock %}
+
+{% block admin_body %}
+    <div class="admin-panel">
+        <div class="mb-3">
+            <a href="{{ path('app_admin_seller_request_index') }}" class="btn btn-sm {{ currentStatus is empty ? 'btn-admin-primary' : 'btn-admin-outline' }}">Все</a>
+            <a href="{{ path('app_admin_seller_request_index', {status: 'pending'}) }}" class="btn btn-sm {{ currentStatus == 'pending' ? 'btn-admin-primary' : 'btn-admin-outline' }}">На рассмотрении</a>
+            <a href="{{ path('app_admin_seller_request_index', {status: 'approved'}) }}" class="btn btn-sm {{ currentStatus == 'approved' ? 'btn-admin-primary' : 'btn-admin-outline' }}">Одобренные</a>
+            <a href="{{ path('app_admin_seller_request_index', {status: 'rejected'}) }}" class="btn btn-sm {{ currentStatus == 'rejected' ? 'btn-admin-primary' : 'btn-admin-outline' }}">Отклонённые</a>
+        </div>
+
+        <div class="table-responsive">
+            <table class="orders-table">
+                <thead>
+                <tr>
+                    <th>Магазин</th>
+                    <th>Покупатель</th>
+                    <th>Статус</th>
+                    <th>Дата</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for request in pagination %}
+                    <tr>
+                        <td>{{ request.shopName }}</td>
+                        <td>
+                            {{ request.customer.fullName }}<br>
+                            <small class="text-secondary">{{ request.customer.email }}</small>
+                        </td>
+                        <td>{{ request.status.label }}</td>
+                        <td>{{ request.createdAt|date('d.m.Y H:i') }}</td>
+                        <td>
+                            {% if request.status.value == 'pending' %}
+                                <form method="post" action="{{ path('app_admin_seller_request_approve', {id: request.id}) }}" class="d-inline">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('seller_request_' ~ request.id) }}">
+                                    <button class="btn btn-sm btn-admin-primary">Одобрить</button>
+                                </form>
+                                <form method="post" action="{{ path('app_admin_seller_request_reject', {id: request.id}) }}" class="d-inline">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('seller_request_' ~ request.id) }}">
+                                    <input type="text" name="reason" class="admin-input d-inline-block" style="width: 140px;" placeholder="Причина">
+                                    <button class="btn btn-sm btn-admin-outline">Отклонить</button>
+                                </form>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr><td colspan="5">Заявок нет</td></tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}

@@ -8,12 +8,12 @@ use App\Enum\Export\ExportResource;
 use App\Export\Client\ClientListCriteria;
 use App\Export\Contract\ExportDataProviderInterface;
 use App\Export\ExportContext;
-use App\Repository\UserRepository;
+use App\Repository\CustomerRepository;
 
 final class ClientExportDataProvider implements ExportDataProviderInterface
 {
     public function __construct(
-        private readonly UserRepository $userRepository,
+        private readonly CustomerRepository $customerRepository,
     ) {
     }
 
@@ -31,13 +31,13 @@ final class ClientExportDataProvider implements ExportDataProviderInterface
     {
         $criteria = $context->criteriaAs(ClientListCriteria::class);
 
-        foreach ($this->userRepository->iterateClients($criteria) as $user) {
+        foreach ($this->customerRepository->iterateClients($criteria) as $customer) {
             yield [
-                $user->getId(),
-                $user->getFullName(),
-                $user->getEmail(),
-                $user->getPhone(),
-                $user->getCreatedAt()?->format('d.m.Y H:i'),
+                $customer->getId(),
+                $customer->getFullName(),
+                $customer->getEmail(),
+                $customer->getPhone(),
+                $customer->getCreatedAt()?->format('d.m.Y H:i'),
             ];
         }
     }

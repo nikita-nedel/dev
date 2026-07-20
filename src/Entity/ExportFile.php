@@ -40,9 +40,9 @@ class ExportFile
     #[ORM\Column(type: Types::JSON)]
     private array $filters = [];
 
-    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\ManyToOne(targetEntity: Admin::class)]
     #[ORM\JoinColumn(name: 'requested_by_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
-    private ?User $requestedBy = null;
+    private ?Admin $requestedBy = null;
 
     #[ORM\Column(length: 32, nullable: true, enumType: ExportStorage::class)]
     private ?ExportStorage $storage = null;
@@ -67,7 +67,7 @@ class ExportFile
         ExportResource $resource,
         ExportFormat $format,
         array $filters = [],
-        ?User $requestedBy = null,
+        ?Admin $requestedBy = null,
         ?Job $job = null,
         ExportStorage $storage = ExportStorage::Local,
     ) {
@@ -117,7 +117,7 @@ class ExportFile
         return $this->filters;
     }
 
-    public function getRequestedBy(): ?User
+    public function getRequestedBy(): ?Admin
     {
         return $this->requestedBy;
     }
