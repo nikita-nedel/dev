@@ -1,354 +1,363 @@
 <footer class="wb-footer mt-auto">
+    <div class="footer-atmosphere" aria-hidden="true"></div>
     <div class="container">
-        <div class="footer-content">
-            <!-- Верхняя часть футера -->
-            <div class="footer-top">
-                <div class="row">
-                    <!-- Колонка 1: О компании -->
-                    <div class="col-lg-3 col-md-6 mb-4">
-                        <div class="footer-logo mb-3">
-                            <a href="{{ path('app_home') }}" class="logo-link">
-                                <div class="logo-icon">
-                                    <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M16 2L30 8V24L16 30L2 24V8L16 2Z" fill="url(#logo-gradient)"/>
-                                        <path d="M16 10L22 14V22L16 26L10 22V14L16 10Z" fill="white" fill-opacity="0.9"/>
-                                        <defs>
-                                            <linearGradient id="logo-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                                                <stop offset="0%" stop-color="#667eea"/>
-                                                <stop offset="100%" stop-color="#764ba2"/>
-                                            </linearGradient>
-                                        </defs>
-                                    </svg>
-                                </div>
-                                <span class="logo-text">WB Style</span>
-                            </a>
-                        </div>
-                        <p class="footer-description">
-                            Интернет-магазин модной одежды, обуви и аксессуаров.
-                            Мы предлагаем лучшие товары по доступным ценам.
-                        </p>
-                    </div>
-
-                    <!-- Колонка 2: Категории -->
-                    <div class="col-lg-3 col-md-6 mb-4">
-                        <h5 class="footer-title">Категории</h5>
-                        <ul class="footer-links">
-                            <li><a href="{{ path('cat', {slug: 'odezhda'}) }}">Одежда</a></li>
-                            <li><a href="{{ path('cat', {slug: 'obuv'}) }}">Обувь</a></li>
-                            <li><a href="{{ path('cat', {slug: 'aksessuary'}) }}">Аксессуары</a></li>
-                            <li><a href="{{ path('cat', {slug: 'elektronika'}) }}">Электроника</a></li>
-                            <li><a href="{{ path('cat', {slug: 'krasota'}) }}">Красота и здоровье</a></li>
-                        </ul>
-                    </div>
-
-                    <!-- Колонка 3: Информация -->
-                    <div class="col-lg-3 col-md-6 mb-4">
-                        <h5 class="footer-title">Информация</h5>
-                        <ul class="footer-links">
-                            <li><a href="#">О нас</a></li>
-                            <li><a href="#">Доставка и оплата</a></li>
-                            <li><a href="#">Возврат товара</a></li>
-                            <li><a href="#">Контакты</a></li>
-                            <li><a href="#">Политика конфиденциальности</a></li>
-                        </ul>
-                    </div>
-
-                    <!-- Колонка 4: Контакты -->
-                    <div class="col-lg-3 col-md-6 mb-4">
-                        <h5 class="footer-title">Контакты</h5>
-                        <div class="footer-contacts">
-                            <div class="contact-item">
-                                <i class="bi bi-telephone"></i>
-                                <div>
-                                    <div class="contact-label">Телефон</div>
-                                    <a href="tel:+78005553535" class="contact-value">8 800 555-35-35</a>
-                                    <div class="contact-note">Бесплатный звонок по России</div>
-                                </div>
-                            </div>
-                            <div class="contact-item">
-                                <i class="bi bi-envelope"></i>
-                                <div>
-                                    <div class="contact-label">Email</div>
-                                    <a href="mailto:support@wbstyle.ru" class="contact-value">support@wbstyle.ru</a>
-                                    <div class="contact-note">Поддержка 24/7</div>
-                                </div>
-                            </div>
-                            <div class="contact-item">
-                                <i class="bi bi-clock"></i>
-                                <div>
-                                    <div class="contact-label">Время работы</div>
-                                    <div class="contact-value">Пн-Вс: 9:00 - 21:00</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+        <div class="footer-shell">
+            <div class="footer-brand-block">
+                <a href="{{ path('app_home') }}" class="footer-brand">
+                    <span class="footer-brand-mark" aria-hidden="true">
+                        <svg width="28" height="28" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M16 2L30 8V24L16 30L2 24V8L16 2Z" fill="url(#footer-logo-gradient)"/>
+                            <path d="M16 10L22 14V22L16 26L10 22V14L16 10Z" fill="white" fill-opacity="0.92"/>
+                            <defs>
+                                <linearGradient id="footer-logo-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" stop-color="#667eea"/>
+                                    <stop offset="100%" stop-color="#764ba2"/>
+                                </linearGradient>
+                            </defs>
+                        </svg>
+                    </span>
+                    <span class="footer-brand-name">WB Style</span>
+                </a>
+                <p class="footer-lead">
+                    Модная одежда, обувь и аксессуары — с доставкой по всей России.
+                </p>
+                <div class="footer-cta-row">
+                    <a href="tel:+78005553535" class="footer-phone">8 800 555-35-35</a>
+                    <span class="footer-phone-note">бесплатно по России</span>
                 </div>
             </div>
 
-            <!-- Нижняя часть футера -->
-            <div class="footer-bottom">
-                <div class="row align-items-center">
-                    <div class="col-md-6 mb-3 mb-md-0">
-                        <div class="copyright">
-                            © 2024 WB Style. Все права защищены.
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="payment-methods">
-                            <span class="payment-label">Принимаем к оплате:</span>
-                            <div class="payment-icons">
-                                <i class="bi bi-credit-card" title="Банковские карты"></i>
-                                <i class="bi bi-paypal" title="PayPal"></i>
-                                <i class="bi bi-cash-coin" title="Наличные"></i>
-                                <i class="bi bi-phone" title="Мобильные платежи"></i>
-                            </div>
-                        </div>
-                    </div>
+            <nav class="footer-nav" aria-label="Навигация в подвале">
+                <div class="footer-nav-col">
+                    <h2 class="footer-heading">Каталог</h2>
+                    <ul class="footer-list">
+                        <li><a href="{{ path('cat', {slug: 'odezhda'}) }}">Одежда</a></li>
+                        <li><a href="{{ path('cat', {slug: 'obuv'}) }}">Обувь</a></li>
+                        <li><a href="{{ path('cat', {slug: 'aksessuary'}) }}">Аксессуары</a></li>
+                        <li><a href="{{ path('cat', {slug: 'elektronika'}) }}">Электроника</a></li>
+                        <li><a href="{{ path('cat', {slug: 'krasota'}) }}">Красота</a></li>
+                    </ul>
                 </div>
+
+                <div class="footer-nav-col">
+                    <h2 class="footer-heading">Покупателям</h2>
+                    <ul class="footer-list">
+                        <li><a href="#">О нас</a></li>
+                        <li><a href="#">Доставка и оплата</a></li>
+                        <li><a href="#">Возврат</a></li>
+                        <li><a href="#">Контакты</a></li>
+                        <li><a href="#">Конфиденциальность</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-nav-col footer-nav-col--support">
+                    <h2 class="footer-heading">Поддержка</h2>
+                    <a href="mailto:support@wbstyle.ru" class="footer-support-link">support@wbstyle.ru</a>
+                    <p class="footer-support-meta">Пн–Вс · 9:00–21:00</p>
+                    <p class="footer-support-meta">Ответим в течение дня</p>
+                </div>
+            </nav>
+        </div>
+
+        <div class="footer-bar">
+            <p class="footer-copy">© {{ "now"|date("Y") }} WB Style</p>
+            <div class="footer-payments" aria-label="Способы оплаты">
+                <span>Карты</span>
+                <span>СБП</span>
+                <span>Наличные</span>
             </div>
         </div>
     </div>
 </footer>
 
 <style>
-    /* Основные стили футера */
     .wb-footer {
-        background: #1f2937;
-        color: #9ca3af;
-        padding: 3rem 0 1.5rem;
+        --footer-ink: #14121f;
+        --footer-panel: rgba(255, 255, 255, 0.04);
+        --footer-line: rgba(255, 255, 255, 0.1);
+        --footer-muted: #a8a3b8;
+        --footer-text: #f4f1fb;
+        --footer-accent: #8b7cf6;
+        --footer-accent-2: #c084fc;
+
+        position: relative;
+        isolation: isolate;
+        overflow: hidden;
         margin-top: auto;
         width: 100%;
+        color: var(--footer-muted);
+        background:
+            radial-gradient(ellipse 80% 60% at 10% 0%, rgba(102, 126, 234, 0.22), transparent 55%),
+            radial-gradient(ellipse 70% 50% at 95% 100%, rgba(118, 75, 162, 0.28), transparent 50%),
+            linear-gradient(180deg, #1a1730 0%, var(--footer-ink) 100%);
+        padding: 3.5rem 0 1.5rem;
+    }
+
+    .footer-atmosphere {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        background-image:
+            linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+        background-size: 48px 48px;
+        mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.55), transparent 85%);
+        opacity: 0.45;
+        z-index: 0;
     }
 
     .wb-footer .container {
+        position: relative;
+        z-index: 1;
         width: 100%;
         max-width: 1200px;
         margin: 0 auto;
         padding: 0 15px;
     }
 
-    .footer-content {
-        width: 100%;
-    }
-
-    /* Верхняя часть футера */
-    .footer-top {
-        padding-bottom: 2rem;
-        border-bottom: 1px solid #374151;
-        margin-bottom: 1.5rem;
-    }
-
-    .footer-logo .logo-link {
-        display: flex;
-        align-items: center;
-        gap: 0.75rem;
-        text-decoration: none;
-        color: white;
-        margin-bottom: 1rem;
-    }
-
-    .footer-logo .logo-icon {
-        width: 40px;
-        height: 40px;
-    }
-
-    .footer-logo .logo-text {
-        font-size: 1.5rem;
-        font-weight: 700;
-        color: white;
-    }
-
-    .footer-description {
-        font-size: 0.9rem;
-        line-height: 1.6;
-        margin-bottom: 0;
-        color: #9ca3af;
-    }
-
-    .footer-title {
-        color: white;
-        font-size: 1.1rem;
-        font-weight: 600;
+    .footer-shell {
+        display: grid;
+        grid-template-columns: minmax(0, 1.15fr) minmax(0, 1.6fr);
+        gap: 3rem 4rem;
+        padding-bottom: 2.25rem;
+        border-bottom: 1px solid var(--footer-line);
         margin-bottom: 1.25rem;
-        position: relative;
-        padding-bottom: 0.5rem;
     }
 
-    .footer-title::after {
-        content: '';
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        width: 40px;
-        height: 2px;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        border-radius: 2px;
-    }
-
-    .footer-links {
-        list-style: none;
-        padding: 0;
-        margin: 0;
-    }
-
-    .footer-links li {
-        margin-bottom: 0.75rem;
-    }
-
-    .footer-links a {
-        color: #9ca3af;
+    .footer-brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.7rem;
         text-decoration: none;
-        transition: all 0.3s ease;
-        font-size: 0.95rem;
-        display: inline-block;
+        color: var(--footer-text);
+        margin-bottom: 1rem;
+        transition: transform 0.35s ease;
     }
 
-    .footer-links a:hover {
-        color: white;
-        transform: translateX(5px);
+    .footer-brand:hover {
+        color: var(--footer-text);
+        transform: translateY(-2px);
     }
 
-    /* Контакты */
-    .footer-contacts {
+    .footer-brand-mark {
+        width: 42px;
+        height: 42px;
+        border-radius: 12px;
+        display: grid;
+        place-items: center;
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        box-shadow: 0 10px 30px rgba(102, 126, 234, 0.18);
+    }
+
+    .footer-brand-name {
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: 1.55rem;
+        font-weight: 700;
+        letter-spacing: -0.03em;
+        line-height: 1;
+    }
+
+    .footer-lead {
+        max-width: 28ch;
+        margin: 0 0 1.35rem;
+        font-size: 0.98rem;
+        line-height: 1.65;
+        color: var(--footer-muted);
+    }
+
+    .footer-cta-row {
         display: flex;
-        flex-direction: column;
-        gap: 1.25rem;
+        flex-wrap: wrap;
+        align-items: baseline;
+        gap: 0.55rem 0.85rem;
     }
 
-    .contact-item {
-        display: flex;
-        align-items: flex-start;
-        gap: 1rem;
+    .footer-phone {
+        color: var(--footer-text);
+        font-size: 1.2rem;
+        font-weight: 650;
+        letter-spacing: -0.02em;
+        text-decoration: none;
+        background: linear-gradient(90deg, var(--footer-text), var(--footer-accent-2));
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        transition: opacity 0.25s ease;
     }
 
-    .contact-item i {
-        color: #667eea;
-        font-size: 1.25rem;
-        margin-top: 0.25rem;
-        flex-shrink: 0;
+    .footer-phone:hover {
+        opacity: 0.85;
+        text-decoration: none;
     }
 
-    .contact-label {
-        font-size: 0.8rem;
-        color: #6b7280;
-        margin-bottom: 0.25rem;
+    .footer-phone-note {
+        font-size: 0.78rem;
         text-transform: uppercase;
-        letter-spacing: 0.5px;
+        letter-spacing: 0.08em;
+        color: #7c7692;
     }
 
-    .contact-value {
-        color: white;
-        font-weight: 500;
+    .footer-nav {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 1.75rem 2rem;
+    }
+
+    .footer-heading {
+        margin: 0 0 1rem;
+        color: var(--footer-text);
+        font-size: 0.78rem;
+        font-weight: 650;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+    }
+
+    .footer-list {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: grid;
+        gap: 0.65rem;
+    }
+
+    .footer-list a {
+        position: relative;
+        display: inline-block;
+        color: var(--footer-muted);
+        text-decoration: none;
+        font-size: 0.95rem;
+        transition: color 0.25s ease, transform 0.25s ease;
+    }
+
+    .footer-list a::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        bottom: -2px;
+        width: 100%;
+        height: 1px;
+        background: linear-gradient(90deg, var(--footer-accent), transparent);
+        transform: scaleX(0);
+        transform-origin: left;
+        transition: transform 0.3s ease;
+    }
+
+    .footer-list a:hover {
+        color: var(--footer-text);
+        transform: translateX(3px);
+        text-decoration: none;
+    }
+
+    .footer-list a:hover::after {
+        transform: scaleX(1);
+    }
+
+    .footer-support-link {
+        display: inline-block;
+        margin-bottom: 0.75rem;
+        color: var(--footer-text);
         font-size: 1rem;
+        font-weight: 550;
         text-decoration: none;
-        display: block;
-        margin-bottom: 0.25rem;
-        transition: color 0.3s ease;
+        transition: color 0.25s ease;
     }
 
-    .contact-value:hover {
-        color: #667eea;
+    .footer-support-link:hover {
+        color: var(--footer-accent-2);
         text-decoration: none;
     }
 
-    .contact-note {
-        font-size: 0.85rem;
-        color: #6b7280;
-    }
-
-    /* Нижняя часть футера */
-    .footer-bottom {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        flex-wrap: wrap;
-    }
-
-    .copyright {
+    .footer-support-meta {
+        margin: 0 0 0.35rem;
         font-size: 0.9rem;
-        color: #9ca3af;
+        color: #7c7692;
     }
 
-    .payment-methods {
+    .footer-bar {
         display: flex;
         align-items: center;
+        justify-content: space-between;
         gap: 1rem;
         flex-wrap: wrap;
-        justify-content: flex-end;
+        padding-top: 0.25rem;
     }
 
-    .payment-label {
-        font-size: 0.9rem;
-        color: #9ca3af;
+    .footer-copy {
+        margin: 0;
+        font-size: 0.88rem;
+        color: #7c7692;
     }
 
-    .payment-icons {
+    .footer-payments {
         display: flex;
-        gap: 0.75rem;
+        flex-wrap: wrap;
+        gap: 0.5rem;
     }
 
-    .payment-icons i {
-        font-size: 1.5rem;
-        color: #9ca3af;
-        transition: color 0.3s ease;
-        cursor: pointer;
+    .footer-payments span {
+        display: inline-flex;
+        align-items: center;
+        min-height: 2rem;
+        padding: 0.25rem 0.7rem;
+        border: 1px solid var(--footer-line);
+        border-radius: 999px;
+        background: var(--footer-panel);
+        color: #cfc9dd;
+        font-size: 0.75rem;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        transition: border-color 0.25s ease, color 0.25s ease, transform 0.25s ease;
     }
 
-    .payment-icons i:hover {
-        color: white;
+    .footer-payments span:hover {
+        border-color: rgba(139, 124, 246, 0.45);
+        color: var(--footer-text);
+        transform: translateY(-1px);
     }
 
-    /* Адаптивность футера */
+    @media (max-width: 992px) {
+        .footer-shell {
+            grid-template-columns: 1fr;
+            gap: 2.25rem;
+        }
+
+        .footer-lead {
+            max-width: 40ch;
+        }
+    }
+
     @media (max-width: 768px) {
         .wb-footer {
-            padding: 2rem 0 1rem;
+            padding: 2.5rem 0 1.25rem;
         }
 
-        .footer-top {
-            padding-bottom: 1.5rem;
+        .footer-nav {
+            grid-template-columns: 1fr 1fr;
+            gap: 1.75rem 1.25rem;
         }
 
-        .footer-title {
-            font-size: 1rem;
+        .footer-nav-col--support {
+            grid-column: 1 / -1;
         }
 
-        .footer-links a {
-            font-size: 0.9rem;
-        }
-
-        .contact-value {
-            font-size: 0.95rem;
-        }
-
-        .payment-methods {
-            justify-content: flex-start;
-            margin-top: 1rem;
+        .footer-bar {
+            flex-direction: column;
+            align-items: flex-start;
         }
     }
 
-    @media (max-width: 576px) {
-        .wb-footer {
-            padding: 1.5rem 0 1rem;
+    @media (max-width: 480px) {
+        .footer-nav {
+            grid-template-columns: 1fr;
         }
 
-        .footer-logo .logo-text {
-            font-size: 1.25rem;
+        .footer-brand-name {
+            font-size: 1.35rem;
         }
 
-        .footer-description {
-            font-size: 0.85rem;
-        }
-
-        .contact-item {
-            gap: 0.75rem;
-        }
-
-        .contact-item i {
+        .footer-phone {
             font-size: 1.1rem;
-        }
-
-        .copyright {
-            font-size: 0.85rem;
         }
     }
 </style>

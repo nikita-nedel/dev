@@ -44,6 +44,13 @@
                                     <input type="text" name="reason" class="admin-input d-inline-block" style="width: 140px;" placeholder="Причина">
                                     <button class="btn btn-sm btn-admin-outline">Отклонить</button>
                                 </form>
+                            {% elseif request.status.value == 'approved' and request.seller and not request.seller.isActive and request.seller.activationToken %}
+                                <a class="btn btn-sm btn-admin-outline"
+                                   href="{{ url('seller_activate', {token: request.seller.activationToken}) }}"
+                                   target="_blank"
+                                   rel="noopener">
+                                    Ссылка активации
+                                </a>
                             {% endif %}
                         </td>
                     </tr>

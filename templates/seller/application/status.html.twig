@@ -12,10 +12,18 @@
             <p><strong>Дата подачи:</strong> {{ sellerRequest.createdAt|date('d.m.Y H:i') }}</p>
 
             {% if sellerRequest.status.value == 'approved' and not seller.isActive %}
-                <div class="alert alert-info mt-3">
-                    Заявка одобрена. Установите пароль продавца по ссылке из уведомления или обратитесь к администратору.
+                <div class="alert alert-success mt-3">
+                    Заявка одобрена. Осталось установить пароль для входа в кабинет продавца.
                 </div>
-                <a href="{{ path('seller_login') }}" class="btn btn-primary">Перейти ко входу продавца</a>
+                {% if seller.activationToken %}
+                    <a href="{{ path('seller_activate', {token: seller.activationToken}) }}" class="btn btn-primary">
+                        Установить пароль продавца
+                    </a>
+                {% else %}
+                    <div class="alert alert-warning mt-3 mb-0">
+                        Ссылка активации недоступна. Обратитесь к администратору.
+                    </div>
+                {% endif %}
             {% elseif sellerRequest.status.value == 'approved' and seller.isActive %}
                 <a href="{{ path('app_seller_dashboard') }}" class="btn btn-primary mt-3">Открыть кабинет продавца</a>
             {% elseif sellerRequest.status.value == 'rejected' %}

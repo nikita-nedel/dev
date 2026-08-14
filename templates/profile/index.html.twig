@@ -451,9 +451,14 @@
                             <p class="text-secondary">{{ sellerRequest.rejectionReason|default('Заявка отклонена.') }}</p>
                         {% elseif sellerAccount.isActive %}
                             <a href="{{ path('app_seller_dashboard') }}" class="btn btn-primary btn-sm">Открыть кабинет продавца</a>
+                        {% elseif sellerRequest.status.value == 'approved' and sellerAccount.activationToken %}
+                            <p class="text-secondary mb-2">Заявка одобрена. Установите пароль для входа в кабинет продавца.</p>
+                            <a href="{{ path('seller_activate', {token: sellerAccount.activationToken}) }}" class="btn btn-primary btn-sm">Установить пароль продавца</a>
+                        {% elseif sellerRequest.status.value == 'pending' %}
+                            <p class="text-secondary mb-0">Заявка ожидает рассмотрения администратором.</p>
                         {% else %}
                             <p class="text-secondary mb-2">Ожидается активация аккаунта продавца.</p>
-                            <a href="{{ path('seller_login') }}" class="btn btn-outline-primary btn-sm">Вход для продавца</a>
+                            <a href="{{ path('seller_apply') }}" class="btn btn-outline-primary btn-sm">Статус заявки</a>
                         {% endif %}
                     {% endif %}
                 </section>

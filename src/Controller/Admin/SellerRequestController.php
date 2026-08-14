@@ -15,6 +15,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/admin', 'app_admin_')]
@@ -63,8 +64,19 @@ class SellerRequestController extends AbstractController
 
         try {
             $seller = $this->sellerRequestService->approve($sellerRequest, $admin);
-            $activationUrl = $this->generateUrl('seller_activate', ['token' => $seller->getActivationToken()], 0);
-            $this->addFlash('success', 'Заявка одобрена. Ссылка активации: ' . $activationUrl);
+            $activationUrl = $this->generateUrl(
+                'seller_activate',
+                ['token' => $seller->getActivationToken()],
+                UrlGeneratorInterface::ABSOLUTE_URL,
+            );
+
+            $this->addFlash(
+                'success',
+                sprintf(
+                    'Заявка одобрена. Ссылка для установки пароля продавца: <a href="%1$s" target="_blank" rel="noopener">%1$s</a>',
+                    htmlspecialchars($activationUrl, ENT_QUOTES),
+                ),
+            );
         } catch (\RuntimeException $e) {
             $this->addFlash('error', $e->getMessage());
         }
