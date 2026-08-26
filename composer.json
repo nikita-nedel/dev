@@ -11,6 +11,7 @@
         "doctrine/doctrine-bundle": "^3.2",
         "doctrine/doctrine-migrations-bundle": "^4.0",
         "doctrine/orm": "^3.6",
+        "elasticsearch/elasticsearch": "^9.5",
         "gedmo/doctrine-extensions": "^3.22",
         "knplabs/knp-paginator-bundle": "^6.10",
         "phpoffice/phpspreadsheet": "^5.7",
