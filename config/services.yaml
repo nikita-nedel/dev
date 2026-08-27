@@ -14,10 +14,6 @@ services:
 
     App\:
         resource: '../src/'
-        exclude:
-            - '../src/DependencyInjection/'
-            - '../src/Entity/'
-            - '../src/Kernel.php'
 
     _instanceof:
         App\Export\Contract\ExportDataProviderInterface:
