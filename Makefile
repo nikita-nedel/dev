@@ -57,6 +57,10 @@ sf: ## List all Symfony commands or pass the parameter "c=" to run a given comma
 cc: c=c:c ## Clear the cache
 cc: sf
 
+test: ## Runs the test suite (test env, fresh cache)
+	@$(DOCKER_COMP) exec -T php php bin/console cache:clear --env=test --no-warmup
+	@$(DOCKER_COMP) exec -T php php bin/phpunit
+
 ## —— Npm 🎵 ———————————————————————————————————————————————————————————————
 npm-install: ## Install node modules
 	@ $(NPM) install

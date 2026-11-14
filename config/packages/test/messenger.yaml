@@ -1,0 +1,7 @@
+framework:
+    messenger:
+        transports:
+            # В тестах не нужен RabbitMQ: сообщения складываются в память
+            # и проверяются через messenger.transport.async::getSent().
+            async:
+                dsn: 'in-memory://'

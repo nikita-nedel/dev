@@ -1,0 +1,11 @@
+security:
+    firewalls:
+        admin:
+            form_login:
+                enable_csrf: false
+        seller:
+            form_login:
+                enable_csrf: false
+        main:
+            form_login:
+                enable_csrf: false
