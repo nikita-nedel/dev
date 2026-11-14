@@ -1,0 +1,61 @@
+{% extends 'seller/layout.html.twig' %}
+
+{% block title %}{{ product ? 'Редактирование товара' : 'Новый товар' }}{% endblock %}
+{% block page_title %}{{ product ? 'Редактирование товара' : 'Добавление товара' }}{% endblock %}
+
+{% block seller_body %}
+    <div class="admin-panel">
+        <div class="admin-panel-header">
+            <h2>{{ product ? 'Редактировать' : 'Создать' }} товар</h2>
+            <a href="{{ path('app_seller_products') }}" class="btn-admin-outline btn-sm"><i class="bi bi-arrow-left"></i> Назад</a>
+        </div>
+
+        <form method="post" enctype="multipart/form-data" action="{{ product ? path('app_seller_products_edit', {id: product.id}) : path('app_seller_products_new') }}" class="admin-auth-form" style="padding: 1.5rem;">
+{#            {{ form_start(form) }}#}
+            <div class="row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem;">
+                <div class="form-group">
+                    <label>Название</label>
+{#                    {{ form_widget(form.name, {'attr': {'class': 'admin-input', 'placeholder': 'Введите название'}}) }}#}
+                </div>
+                <div class="form-group">
+                    <label>Артикул (SKU)</label>
+{#                    {{ form_widget(form.sku, {'attr': {'class': 'admin-input', 'placeholder': 'Уникальный артикул'}}) }}#}
+                </div>
+                <div class="form-group" style="grid-column: 1 / -1;">
+                    <label>Описание</label>
+{#                    {{ form_widget(form.description, {'attr': {'class': 'admin-input', 'rows': 4, 'style': 'resize: vertical;'}}) }}#}
+                </div>
+                <div class="form-group">
+                    <label>Категория</label>
+{#                    {{ form_widget(form.category, {'attr': {'class': 'admin-select'}}) }}#}
+                </div>
+                <div class="form-group">
+                    <label>Цена (₽)</label>
+{#                    {{ form_widget(form.price, {'attr': {'class': 'admin-input', 'type': 'number', 'step': '0.01'}}) }}#}
+                </div>
+                <div class="form-group">
+                    <label>Остаток</label>
+{#                    {{ form_widget(form.stock, {'attr': {'class': 'admin-input', 'type': 'number'}}) }}#}
+                </div>
+                <div class="form-group">
+                    <label>Статус</label>
+{#                    {{ form_widget(form.active, {'attr': {'class': 'admin-select'}}) }}#}
+                </div>
+                <div class="form-group">
+                    <label>Изображение</label>
+{#                    {{ form_widget(form.image, {'attr': {'class': 'admin-input', 'type': 'file'}}) }}#}
+{#                    {% if product.image %}#}
+{#                        <div style="margin-top: 0.5rem;">#}
+{#                            <img src="{{ asset('uploads/products/' ~ product.image) }}" alt="" style="max-width: 100px; max-height: 100px; border-radius: 8px;">#}
+{#                        </div>#}
+{#                    {% endif %}#}
+                </div>
+                <div class="form-group" style="grid-column: 1 / -1; display: flex; gap: 0.75rem; margin-top: 0.5rem;">
+                    <button type="submit" class="btn-admin-primary">Сохранить</button>
+                    <a href="{{ path('app_seller_products') }}" class="btn-admin-outline">Отмена</a>
+                </div>
+            </div>
+{#            {{ form_end(form) }}#}
+        </form>
+    </div>
+{% endblock %}

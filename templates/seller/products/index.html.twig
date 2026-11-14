@@ -1,0 +1,168 @@
+{% extends 'seller/layout.html.twig' %}
+
+{% block title %}Товары{% endblock %}
+{% block page_title %}Управление товарами{% endblock %}
+
+{% block seller_body %}
+    <div class="admin-panel clients-panel">
+        <div class="admin-panel-header">
+            <h2>Список товаров</h2>
+            <a href="{{ path('app_seller_products_new') }}" class="btn-admin-primary">+ Добавить товар</a>
+        </div>
+
+        {# Фильтры #}
+        <div class="clients-filters">
+            <div class="clients-filter-search">
+                <i class="bi bi-search"></i>
+                <input type="text" class="admin-input" placeholder="Поиск по названию или артикулу" id="productSearch">
+            </div>
+            <select class="admin-select" id="categoryFilter">
+                <option value="">Все категории</option>
+                {# цикл по категориям #}
+                {% for category in categories %}
+                    <option value="{{ category.id }}">{{ category.name }}</option>
+                {% endfor %}
+            </select>
+            <select class="admin-select" id="statusFilter">
+                <option value="">Все статусы</option>
+                <option value="active">Активен</option>
+                <option value="inactive">Неактивен</option>
+            </select>
+            <button class="btn-admin-outline btn-sm" onclick="applyFilters()">Применить</button>
+        </div>
+
+        {# Статистика #}
+        <div class="clients-results-bar">
+            <span>Найдено товаров: <strong>{{ products|length }}</strong></span>
+            <div>
+                <button class="btn-admin-outline btn-sm" onclick="openExportModal()"><i class="bi bi-download"></i> Экспорт</button>
+            </div>
+        </div>
+
+        {# Таблица товаров #}
+        <div class="table-responsive">
+            <table class="orders-table">
+                <thead>
+                <tr>
+                    <th>Фото</th>
+                    <th>Название / Артикул</th>
+                    <th>Категория</th>
+                    <th>Цена</th>
+                    <th>Остаток</th>
+                    <th>Статус</th>
+                    <th style="text-align: right;">Действия</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for product in products %}
+                    <tr>
+                        <td>
+                            {% if product.image %}
+                                <img src="{{ asset('uploads/products/' ~ product.image) }}" alt="" style="width: 50px; height: 50px; object-fit: cover; border-radius: 8px;">
+                            {% else %}
+                                <div style="width: 50px; height: 50px; background: #f1f5f9; border-radius: 8px;"></div>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <div class="client-cell-main">
+                                <div>
+                                    <div class="client-name">{{ product.name }}</div>
+                                    <div class="client-id">Арт. {{ product.sku }}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>{{ product.category.name|default('—') }}</td>
+                        <td>{{ product.price|number_format(2, '.', ' ') }} ₽</td>
+                        <td>{{ product.stock }}</td>
+                        <td>
+                                <span class="badge-status {{ product.active ? 'delivered' : 'cancelled' }}">
+                                    {{ product.active ? 'Активен' : 'Неактивен' }}
+                                </span>
+                        </td>
+                        <td style="text-align: right;">
+                            <div class="client-actions" style="justify-content: flex-end;">
+                                <a href="" class="btn-icon"><i class="bi bi-pencil"></i></a>
+                                <button class="btn-icon" onclick="if(confirm('Удалить?')){ document.getElementById('delete-form-{{ product.id }}').submit(); }"><i class="bi bi-trash"></i></button>
+                                <form id="delete-form-{{ product.id }}" action="" method="post" style="display:none;">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ product.id) }}">
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr><td colspan="7" class="clients-empty"><i class="bi bi-box"></i><p>Товаров пока нет</p><span>Добавьте первый товар</span></td></tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        {# Пагинация (пример) #}
+        <div class="clients-pagination">
+            <span>Показано 1–10 из {{ products|length }}</span>
+            <div class="pagination-btns">
+                <button class="btn-admin-outline btn-sm" disabled><i class="bi bi-chevron-left"></i></button>
+                <a href="#" class="btn-admin-outline btn-sm active">1</a>
+                <a href="#" class="btn-admin-outline btn-sm">2</a>
+                <span class="pagination-ellipsis btn-admin-outline btn-sm">…</span>
+                <button class="btn-admin-outline btn-sm"><i class="bi bi-chevron-right"></i></button>
+            </div>
+        </div>
+    </div>
+
+    {# Модальное окно экспорта (можно переиспользовать из клиентов) #}
+    <div class="admin-modal-backdrop hidden" id="exportModalBackdrop"></div>
+    <div class="admin-modal hidden" id="exportModal">
+        <div class="admin-modal-dialog">
+            <div class="admin-modal-header">
+                <div class="admin-modal-header-text">
+                    <div class="admin-modal-icon"><i class="bi bi-download"></i></div>
+                    <div>
+                        <h3 class="admin-modal-title">Экспорт товаров</h3>
+                        <p class="admin-modal-subtitle">Выберите формат для выгрузки</p>
+                    </div>
+                </div>
+                <button class="admin-modal-close" onclick="closeExportModal()"><i class="bi bi-x-lg"></i></button>
+            </div>
+            <div class="admin-modal-body">
+                <div class="export-format-list">
+                    <a href="#" class="export-format-option is-available" data-format="xlsx">
+                        <div class="export-format-option-icon xlsx"><i class="bi bi-file-earmark-spreadsheet"></i></div>
+                        <div class="export-format-option-text">
+                            <span class="export-format-option-title">Excel</span>
+                            <span class="export-format-option-ext">.xlsx</span>
+                        </div>
+                        <span class="export-format-option-arrow"><i class="bi bi-chevron-right"></i></span>
+                    </a>
+                    <a href="#" class="export-format-option is-available" data-format="csv">
+                        <div class="export-format-option-icon"><i class="bi bi-filetype-csv"></i></div>
+                        <div class="export-format-option-text">
+                            <span class="export-format-option-title">CSV</span>
+                            <span class="export-format-option-ext">.csv</span>
+                        </div>
+                        <span class="export-format-option-arrow"><i class="bi bi-chevron-right"></i></span>
+                    </a>
+                </div>
+            </div>
+            <div class="admin-modal-footer">
+                <button class="btn-admin-outline" onclick="closeExportModal()">Отмена</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openExportModal() {
+            document.getElementById('exportModal').classList.remove('hidden');
+            document.getElementById('exportModalBackdrop').classList.remove('hidden');
+            document.body.classList.add('admin-modal-open');
+        }
+        function closeExportModal() {
+            document.getElementById('exportModal').classList.add('hidden');
+            document.getElementById('exportModalBackdrop').classList.add('hidden');
+            document.body.classList.remove('admin-modal-open');
+        }
+        function applyFilters() {
+            // простая фильтрация на клиенте или отправка формы
+            alert('Применить фильтры (реализуйте через AJAX или GET-параметры)');
+        }
+    </script>
+{% endblock %}
