@@ -10,7 +10,7 @@ COMPOSER = $(PHP_CONT) composer
 SYMFONY  = $(PHP) bin/console
 NPM      = $(PHP_CONT) npm
 
-.PHONY: help build up start down logs sh bash composer vendor sf test npm-install npm-build npm-watch npm-dev migrate migration
+.PHONY: help build up start down logs sh bash composer vendor sf test npm-install npm-build npm-watch npm-dev migrate migration test test-db
 
 ## —— 🎵 🐳 The Symfony Docker Makefile 🐳 🎵 ——————————————————————————————————
 help: ## Outputs this help screen
@@ -56,6 +56,17 @@ sf: ## List all Symfony commands or pass the parameter "c=" to run a given comma
 
 cc: c=c:c ## Clear the cache
 cc: sf
+
+test: ## Runs the test suite (creates and migrates the test DB if needed)
+	@$(DOCKER_COMP) exec -T php php bin/console doctrine:database:create --env=test --if-not-exists
+	@$(DOCKER_COMP) exec -T php php bin/console doctrine:migrations:migrate --env=test --no-interaction --allow-no-migration
+	@$(DOCKER_COMP) exec -T php php bin/console cache:clear --env=test --no-warmup
+	@$(DOCKER_COMP) exec -T php php bin/phpunit
+
+test-db: ## Recreates the test database from scratch and runs migrations
+	@$(DOCKER_COMP) exec -T php php bin/console doctrine:database:drop --env=test --force --if-exists
+	@$(DOCKER_COMP) exec -T php php bin/console doctrine:database:create --env=test
+	@$(DOCKER_COMP) exec -T php php bin/console doctrine:migrations:migrate --env=test --no-interaction
 
 ## —— Npm 🎵 ———————————————————————————————————————————————————————————————
 npm-install: ## Install node modules

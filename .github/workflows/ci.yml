@@ -1,0 +1,85 @@
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  APP_ENV: test
+  APP_DEBUG: '0'
+  # Совпадает с docker-compose.yml (сервис base-db), но хост — локальный раннер.
+  # В test-окружении doctrine сам добавит суффикс _test (dbname_suffix).
+  DATABASE_URL: 'postgresql://db_user:db_password@127.0.0.1:5432/db_name?serverVersion=16&charset=utf8'
+  DEFAULT_URI: 'http://localhost'
+
+jobs:
+  tests:
+    name: PHPUnit
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16.1-alpine3.19
+        env:
+          POSTGRES_USER: db_user
+          POSTGRES_PASSWORD: db_password
+          POSTGRES_DB: db_name
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U db_user -d db_name"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: ctype, iconv, zip, pdo_pgsql, gd
+          coverage: none
+          tools: composer:v2
+
+      - name: Composer cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.composer/cache
+          key: composer-${{ hashFiles('composer.lock') }}
+          restore-keys: composer-
+
+      # ext-amqp нужен только прод-транспорту RabbitMQ.
+      # В тестах messenger.async = in-memory://, поэтому расширение не ставим.
+      # --no-scripts: cache:clear запустим сами, после создания тестовой БД.
+      - name: Install dependencies
+        run: >-
+          composer install --prefer-dist --no-interaction --no-progress --no-scripts
+          --ignore-platform-req=ext-amqp
+
+      - name: Create test database
+        run: bin/console doctrine:database:create --if-not-exists
+
+      - name: Apply migrations to test database
+        run: bin/console doctrine:migrations:migrate --no-interaction --allow-no-migration
+
+      - name: Check that mapping has no pending migration
+        run: bin/console doctrine:migrations:diff --allow-empty-diff
+
+      - name: Lint DI container
+        run: bin/console lint:container
+
+      - name: Validate mapping against schema
+        run: bin/console doctrine:schema:validate
+
+      - name: Warm up test cache
+        run: bin/console cache:clear --env=test
+
+      - name: Run tests
+        run: bin/phpunit
