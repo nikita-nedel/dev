@@ -17,7 +17,14 @@ services:
         exclude:
             - '../src/DependencyInjection/'
             - '../src/Entity/'
+            - '../src/*/Domain/'
             - '../src/Kernel.php'
+
+    App\Shared\Domain\Port\ClockInterface:
+        alias: App\Shared\Infrastructure\Clock\SystemClock
+
+    App\Shared\Domain\Port\TransactionManagerInterface:
+        alias: App\Shared\Infrastructure\Doctrine\DoctrineTransactionManager
 
     _instanceof:
         App\Export\Contract\ExportDataProviderInterface:
