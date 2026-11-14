@@ -1,3 +1,4 @@
+{# templates/seller/base.html.twig (или как у вас называется layout) #}
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -19,10 +20,25 @@
             </a>
         </div>
         <nav class="admin-nav">
-            <a href="{{ path('app_seller_dashboard') }}" class="admin-nav-link active">
+            {# Дашборд #}
+            <a href="{{ path('app_seller_dashboard') }}" class="admin-nav-link {{ app.request.attributes.get('_route') == 'app_seller_dashboard' ? 'active' : '' }}">
                 <i class="bi bi-speedometer2"></i>
                 <span class="admin-nav-link-label">Дашборд</span>
             </a>
+
+            {# Товары #}
+            <a href="{{ path('app_seller_products') }}" class="admin-nav-link {{ app.request.attributes.get('_route') starts with 'app_seller_products' ? 'active' : '' }}">
+                <i class="bi bi-box-seam"></i>
+                <span class="admin-nav-link-label">Товары</span>
+            </a>
+
+            {# Категории #}
+            <a href="" class="admin-nav-link {{ app.request.attributes.get('_route') starts with 'app_seller_categories' ? 'active' : '' }}">
+                <i class="bi bi-tags"></i>
+                <span class="admin-nav-link-label">Категории</span>
+            </a>
+
+            {# Остальные разделы (заказы, клиенты и т.д.) можно добавить позже #}
         </nav>
         <div class="admin-sidebar-footer">
             <a href="{{ path('app_home') }}"><i class="bi bi-arrow-left-circle"></i> На сайт</a>

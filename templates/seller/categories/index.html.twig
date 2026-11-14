@@ -1,0 +1,46 @@
+{% extends 'seller/layout.html.twig' %}
+
+{% block title %}Категории{% endblock %}
+{% block page_title %}Управление категориями{% endblock %}
+
+{% block seller_body %}
+    <div class="admin-panel clients-panel">
+        <div class="admin-panel-header">
+            <h2>Список категорий</h2>
+            <a href="" class="btn-admin-primary">+ Новая категория</a>
+        </div>
+
+        <div class="table-responsive">
+            <table class="orders-table">
+                <thead>
+                <tr>
+                    <th>Название</th>
+                    <th>Родительская категория</th>
+                    <th>Товаров</th>
+                    <th style="text-align: right;">Действия</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for category in categories %}
+                    <tr>
+                        <td><strong>{{ category.name }}</strong></td>
+                        <td>{{ category.parent ? category.parent.name : '—' }}</td>
+                        <td>{{ category.products|length }}</td>
+                        <td style="text-align: right;">
+                            <div class="client-actions" style="justify-content: flex-end;">
+                                <a href="" class="btn-icon"><i class="bi bi-pencil"></i></a>
+                                <button class="btn-icon" onclick="if(confirm('Удалить?')){ document.getElementById('delete-cat-{{ category.id }}').submit(); }"><i class="bi bi-trash"></i></button>
+                                <form id="delete-cat-{{ category.id }}" action="" method="post" style="display:none;">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ category.id) }}">
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr><td colspan="4" class="clients-empty"><i class="bi bi-tags"></i><p>Категорий пока нет</p><span>Создайте первую категорию</span></td></tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}
