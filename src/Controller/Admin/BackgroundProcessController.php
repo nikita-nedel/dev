@@ -4,24 +4,28 @@ declare(strict_types=1);
 
 namespace App\Controller\Admin;
 
-use App\Entity\ExportFile;
-use App\Enum\Export\ExportFormat;
-use App\Enum\Export\ExportResource;
-use App\Enum\Export\ExportStorage;
+use App\Export\Domain\Model\ExportFile;
+use App\Export\Domain\Model\ExportFormat;
+use App\Export\Domain\Model\ExportResource;
+use App\Export\Domain\Repository\ExportFileRepositoryInterface;
 use App\Process\Domain\Model\Job;
 use App\Process\Domain\Model\JobStatus;
 use App\Process\Domain\Model\JobType;
 use App\Process\Domain\Repository\JobRepositoryInterface;
-use App\Repository\ExportFileRepository;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\Routing\Attribute\Route;
 
+/**
+ * Список фоновых процессов в админке (рендер + JSON-feed для автообновления).
+ *
+ * Контроллер сознательно читает оба контекста: Job из Process и ExportFile из Export.
+ * Домен Process при этом про Export не знает — обратной связи у Job нет, поэтому
+ * контроллер сам собирает карту «jobId -> ExportFile» одним запросом.
+ */
 #[Route('/admin/processes', 'app_admin_process_')]
 final class BackgroundProcessController extends AbstractController
 {
@@ -29,6 +33,7 @@ final class BackgroundProcessController extends AbstractController
     public function index(
         Request $request,
         JobRepositoryInterface $jobRepository,
+        ExportFileRepositoryInterface $exportFiles,
         PaginatorInterface $paginator,
     ): Response {
         $filters = $this->extractFilters($request);
@@ -41,6 +46,7 @@ final class BackgroundProcessController extends AbstractController
         return $this->render('admin/processes/index.html.twig', [
             'admin_menu' => 'processes',
             'pagination' => $pagination,
+            'export_files' => $this->exportFilesByJobId($pagination, $exportFiles),
             'stats' => $jobRepository->countStats($filters),
             'filters' => $filters,
             'job_types' => JobType::cases(),
@@ -54,6 +60,7 @@ final class BackgroundProcessController extends AbstractController
     public function feed(
         Request $request,
         JobRepositoryInterface $jobRepository,
+        ExportFileRepositoryInterface $exportFiles,
         PaginatorInterface $paginator,
     ): JsonResponse {
         $filters = $this->extractFilters($request);
@@ -63,10 +70,12 @@ final class BackgroundProcessController extends AbstractController
             $request->query->getInt('perPage', 20),
         );
 
+        $exportFilesByJobId = $this->exportFilesByJobId($pagination, $exportFiles);
+
         $items = [];
         foreach ($pagination as $job) {
             if ($job instanceof Job) {
-                $items[] = $this->serializeJob($job);
+                $items[] = $this->serializeJob($job, $exportFilesByJobId[$job->getJobId()] ?? null);
             }
         }
 
@@ -77,33 +86,32 @@ final class BackgroundProcessController extends AbstractController
         ]);
     }
 
-    #[Route('/exports/{exportId}/download', name: 'export_download', methods: ['GET'])]
-    public function downloadExport(string $exportId, ExportFileRepository $exportFileRepository): Response
+    /**
+     * Один запрос на страницу: собираем ExportFile для всех jobId сразу.
+     *
+     * @param iterable<mixed> $jobs
+     *
+     * @return array<string, ExportFile>
+     */
+    private function exportFilesByJobId(iterable $jobs, ExportFileRepositoryInterface $exportFiles): array
     {
-        $exportFile = $exportFileRepository->getByExportId($exportId);
-        $filePath = $exportFile->getFilePath();
-
-        if (!$exportFile->isReady() || null === $filePath) {
-            throw $this->createNotFoundException('Export file is not ready yet.');
+        $jobIds = [];
+        foreach ($jobs as $job) {
+            if ($job instanceof Job) {
+                $jobIds[] = $job->getJobId();
+            }
         }
 
-        if (ExportStorage::Local !== $exportFile->getStorage()) {
-            throw $this->createNotFoundException('Only local export files can be downloaded from this endpoint.');
+        $map = [];
+        foreach ($exportFiles->findByJobIds($jobIds) as $exportFile) {
+            $jobId = $exportFile->getJob()?->getJobId();
+
+            if (null !== $jobId) {
+                $map[$jobId] = $exportFile;
+            }
         }
 
-        $absolutePath = $this->getParameter('kernel.project_dir') . '/' . ltrim($filePath, '/');
-        if (!is_file($absolutePath)) {
-            throw $this->createNotFoundException('Export file was not found.');
-        }
-
-        $response = new BinaryFileResponse($absolutePath);
-        $response->setContentDisposition(
-            ResponseHeaderBag::DISPOSITION_ATTACHMENT,
-            sprintf('export_%s.%s', $exportFile->getExportId(), $exportFile->getFormat()->getFileExtension()),
-        );
-        $response->headers->set('Content-Type', $exportFile->getFormat()->getMimeType());
-
-        return $response;
+        return $map;
     }
 
     /**
@@ -125,9 +133,8 @@ final class BackgroundProcessController extends AbstractController
     /**
      * @return array<string, mixed>
      */
-    private function serializeJob(Job $job): array
+    private function serializeJob(Job $job, ?ExportFile $exportFile): array
     {
-        $exportFile = $job->getExportFile();
         $downloadUrl = null;
 
         if ($exportFile instanceof ExportFile && $exportFile->isReady()) {

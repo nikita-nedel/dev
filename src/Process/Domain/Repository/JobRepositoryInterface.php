@@ -9,6 +9,8 @@ use Doctrine\ORM\QueryBuilder;
 
 interface JobRepositoryInterface
 {
+    public function add(Job $job): void;
+
     public function getByJobId(string $jobId): Job;
 
     /**

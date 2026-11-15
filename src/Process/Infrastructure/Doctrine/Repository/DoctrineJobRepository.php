@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace App\Process\Infrastructure\Doctrine\Repository;
 
+use App\Export\Domain\Model\ExportFile;
 use App\Process\Domain\Model\Job;
 use App\Process\Domain\Model\JobStatus;
 use App\Process\Domain\Repository\JobRepositoryInterface;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -19,6 +21,11 @@ final class DoctrineJobRepository extends ServiceEntityRepository implements Job
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Job::class);
+    }
+
+    public function add(Job $job): void
+    {
+        $this->getEntityManager()->persist($job);
     }
 
     public function getByJobId(string $jobId): Job
@@ -38,9 +45,13 @@ final class DoctrineJobRepository extends ServiceEntityRepository implements Job
     public function createFilteredQueryBuilder(array $filters = []): QueryBuilder
     {
         $qb = $this->createQueryBuilder('j')
-            ->leftJoin('j.exportFile', 'e')
+            // Join по классу ExportFile: Process не держит обратную сторону связи,
+            // поэтому связь объявляется здесь, в инфраструктуре, а не в домене.
+            // Join нужен только для фильтров (resource/format/requestedBy).
+            // addSelect здесь добавлять нельзя: fetch-join подмешивает ExportFile
+            // в результат KnpPaginator-а, и в шаблоне в цикле по job приходит не Job.
+            ->leftJoin(ExportFile::class, 'e', Join::WITH, 'e.job = j')
             ->leftJoin('e.requestedBy', 'u')
-            ->addSelect('e', 'u')
             ->orderBy('j.createdAt', 'DESC');
 
         if (isset($filters['type']) && '' !== (string) $filters['type']) {

@@ -25,6 +25,11 @@ doctrine:
                 is_bundle: false
                 dir: '%kernel.project_dir%/src/Process/Domain/Model'
                 prefix: 'App\Process\Domain\Model'
+            Export:
+                type: attribute
+                is_bundle: false
+                dir: '%kernel.project_dir%/src/Export/Domain/Model'
+                prefix: 'App\Export\Domain\Model'
         controller_resolver:
             auto_mapping: false
         dql:

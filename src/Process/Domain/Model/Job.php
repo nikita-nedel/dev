@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Process\Domain\Model;
 
-use App\Entity\ExportFile;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -43,9 +42,6 @@ class Job
 
     #[ORM\Column]
     private \DateTimeImmutable $updatedAt;
-
-    #[ORM\OneToOne(targetEntity: ExportFile::class, mappedBy: 'job')]
-    private ?ExportFile $exportFile = null;
 
     public function __construct(string $jobId, JobType $type)
     {
@@ -100,11 +96,6 @@ class Job
     public function getUpdatedAt(): \DateTimeImmutable
     {
         return $this->updatedAt;
-    }
-
-    public function getExportFile(): ?ExportFile
-    {
-        return $this->exportFile;
     }
 
     public function markProcessing(): void

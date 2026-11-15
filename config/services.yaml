@@ -29,23 +29,23 @@ services:
     App\Process\Domain\Repository\JobRepositoryInterface:
         alias: App\Process\Infrastructure\Doctrine\Repository\DoctrineJobRepository
 
+    App\Export\Domain\Repository\ExportFileRepositoryInterface:
+        alias: App\Export\Infrastructure\Doctrine\Repository\DoctrineExportFileRepository
+
     _instanceof:
-        App\Export\Contract\ExportDataProviderInterface:
+        App\Export\Application\Port\ExportDataProviderInterface:
             tags: [ 'app.export.data_provider' ]
-        App\Export\Contract\ExportWriterInterface:
+        App\Export\Application\Port\ExportWriterInterface:
             tags: [ 'app.export.writer' ]
-        App\Export\Contract\ExportCriteriaFactoryInterface:
+        App\Export\Application\Port\ExportCriteriaFactoryInterface:
             tags: [ 'app.export.criteria_factory' ]
 
-    App\Service\Export\ExportService:
-        arguments:
-            $dataProviders: !tagged_iterator app.export.data_provider
-            $writers: !tagged_iterator app.export.writer
-
-    App\Resolver\Export\ExportCriteriaResolver:
+    App\Export\Application\Criteria\ExportCriteriaResolver:
         arguments:
             $factories: !tagged_iterator app.export.criteria_factory
 
-    App\MessageHandler\ExportHandler:
+    App\Export\Application\Command\RunExport\RunExportHandler:
         arguments:
+            $dataProviders: !tagged_iterator app.export.data_provider
+            $writers: !tagged_iterator app.export.writer
             $projectDir: '%kernel.project_dir%'
