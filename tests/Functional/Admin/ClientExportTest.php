@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace App\Tests\Functional\Admin;
 
 use App\Entity\ExportFile;
-use App\Entity\Job;
 use App\Enum\Export\ExportFormat;
 use App\Enum\Export\ExportResource;
-use App\Enum\JobStatus;
-use App\Enum\JobType;
 use App\Message\ExportMessage;
+use App\Process\Domain\Model\Job;
+use App\Process\Domain\Model\JobStatus;
+use App\Process\Domain\Model\JobType;
 use App\Tests\Functional\FunctionalTestCase;
 
 final class ClientExportTest extends FunctionalTestCase

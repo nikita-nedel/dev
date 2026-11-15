@@ -2,10 +2,11 @@
 
 declare(strict_types=1);
 
-namespace App\Repository;
+namespace App\Process\Infrastructure\Doctrine\Repository;
 
-use App\Entity\Job;
-use App\Enum\JobStatus;
+use App\Process\Domain\Model\Job;
+use App\Process\Domain\Model\JobStatus;
+use App\Process\Domain\Repository\JobRepositoryInterface;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
@@ -13,7 +14,7 @@ use Doctrine\Persistence\ManagerRegistry;
 /**
  * @extends ServiceEntityRepository<Job>
  */
-final class JobRepository extends ServiceEntityRepository
+final class DoctrineJobRepository extends ServiceEntityRepository implements JobRepositoryInterface
 {
     public function __construct(ManagerRegistry $registry)
     {
@@ -83,6 +84,7 @@ final class JobRepository extends ServiceEntityRepository
 
     /**
      * @param array<string, mixed> $filters
+     *
      * @return array{total: int, pending: int, processing: int, completed: int, failed: int}
      */
     public function countStats(array $filters = []): array

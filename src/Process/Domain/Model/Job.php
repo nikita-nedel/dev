@@ -2,18 +2,16 @@
 
 declare(strict_types=1);
 
-namespace App\Entity;
+namespace App\Process\Domain\Model;
 
-use App\Enum\JobStatus;
-use App\Enum\JobType;
-use App\Repository\JobRepository;
+use App\Entity\ExportFile;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: JobRepository::class)]
+#[ORM\Entity]
 #[ORM\Table(name: 'job')]
-#[ORM\Index(columns: ['status'], name: 'idx_job_status')]
-#[ORM\Index(columns: ['created_at'], name: 'idx_job_created_at')]
+#[ORM\Index(name: 'idx_job_status', columns: ['status'])]
+#[ORM\Index(name: 'idx_job_created_at', columns: ['created_at'])]
 #[ORM\UniqueConstraint(name: 'uniq_job_job_id', fields: ['jobId'])]
 class Job
 {
@@ -46,7 +44,7 @@ class Job
     #[ORM\Column]
     private \DateTimeImmutable $updatedAt;
 
-    #[ORM\OneToOne(mappedBy: 'job', targetEntity: ExportFile::class)]
+    #[ORM\OneToOne(targetEntity: ExportFile::class, mappedBy: 'job')]
     private ?ExportFile $exportFile = null;
 
     public function __construct(string $jobId, JobType $type)

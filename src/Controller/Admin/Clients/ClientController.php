@@ -6,12 +6,12 @@ namespace App\Controller\Admin\Clients;
 
 use App\Entity\Admin;
 use App\Entity\ExportFile;
-use App\Entity\Job;
-use App\Enum\JobType;
 use App\Enum\Export\ExportFormat;
 use App\Enum\Export\ExportResource;
 use App\Export\Client\ClientListCriteria;
 use App\Message\ExportMessage;
+use App\Process\Domain\Model\Job;
+use App\Process\Domain\Model\JobType;
 use App\Repository\CustomerRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;

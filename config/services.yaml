@@ -26,6 +26,9 @@ services:
     App\Shared\Domain\Port\TransactionManagerInterface:
         alias: App\Shared\Infrastructure\Doctrine\DoctrineTransactionManager
 
+    App\Process\Domain\Repository\JobRepositoryInterface:
+        alias: App\Process\Infrastructure\Doctrine\Repository\DoctrineJobRepository
+
     _instanceof:
         App\Export\Contract\ExportDataProviderInterface:
             tags: [ 'app.export.data_provider' ]

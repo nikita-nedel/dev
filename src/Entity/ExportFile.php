@@ -7,6 +7,7 @@ namespace App\Entity;
 use App\Enum\Export\ExportFormat;
 use App\Enum\Export\ExportResource;
 use App\Enum\Export\ExportStorage;
+use App\Process\Domain\Model\Job;
 use App\Repository\ExportFileRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;

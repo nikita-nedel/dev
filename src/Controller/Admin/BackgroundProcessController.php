@@ -5,14 +5,14 @@ declare(strict_types=1);
 namespace App\Controller\Admin;
 
 use App\Entity\ExportFile;
-use App\Entity\Job;
 use App\Enum\Export\ExportFormat;
 use App\Enum\Export\ExportResource;
 use App\Enum\Export\ExportStorage;
-use App\Enum\JobStatus;
-use App\Enum\JobType;
+use App\Process\Domain\Model\Job;
+use App\Process\Domain\Model\JobStatus;
+use App\Process\Domain\Model\JobType;
+use App\Process\Domain\Repository\JobRepositoryInterface;
 use App\Repository\ExportFileRepository;
-use App\Repository\JobRepository;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
@@ -28,7 +28,7 @@ final class BackgroundProcessController extends AbstractController
     #[Route('', name: 'index', methods: ['GET'])]
     public function index(
         Request $request,
-        JobRepository $jobRepository,
+        JobRepositoryInterface $jobRepository,
         PaginatorInterface $paginator,
     ): Response {
         $filters = $this->extractFilters($request);
@@ -53,7 +53,7 @@ final class BackgroundProcessController extends AbstractController
     #[Route('/feed', name: 'feed', methods: ['GET'])]
     public function feed(
         Request $request,
-        JobRepository $jobRepository,
+        JobRepositoryInterface $jobRepository,
         PaginatorInterface $paginator,
     ): JsonResponse {
         $filters = $this->extractFilters($request);
