@@ -164,7 +164,13 @@ final class DemoCatalogQuery implements CatalogQueryInterface
             ],
         ];
 
-        return ['slides' => $slides, 'categories' => $categories, 'products' => $products];
+        $sellers = [
+            ['name' => 'Nike Store', 'rating' => 4.9, 'count' => 124, 'city' => 'Москва', 'since' => 2019],
+            ['name' => 'Samsung Official', 'rating' => 4.8, 'count' => 86, 'city' => 'Санкт-Петербург', 'since' => 2020],
+            ['name' => 'Fashion Store', 'rating' => 4.7, 'count' => 64, 'city' => 'Казань', 'since' => 2021],
+        ];
+
+        return ['slides' => $slides, 'categories' => $categories, 'products' => $products, 'sellers' => $sellers];
     }
 
     public function catalogPage(string $slug): array

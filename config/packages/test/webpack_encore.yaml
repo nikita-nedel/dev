@@ -1,6 +1,6 @@
-# Webpack Encore в тестах: собранные ассеты (public/build) не коммитятся,
-# а тесты рендерят страницы. Без этого флага Twig падает с
-# "Could not find the entrypoints file from Webpack".
-# В dev/prod strict_mode остаётся включённым — там отсутствие сборки должно быть ошибкой.
 webpack_encore:
     strict_mode: false
+
+framework:
+    assets:
+        json_manifest_path: null

@@ -60,7 +60,7 @@ class CustomerRegistrationFormType extends AbstractType
                 'mapped' => false,
                 'attr' => [
                     'class' => 'form-control phone-input',
-                    'placeholder' => 'phone',
+                    'placeholder' => '+7 (999) 123-45-67',
                 ],
                 'constraints' => [
                     new NotBlank(message: 'Пожалуйста, введите номер телефона'),

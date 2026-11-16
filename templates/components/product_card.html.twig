@@ -1,0 +1,58 @@
+<article class="p-card">
+    <div class="p-card__media">
+        <a href="{{ path('app_product_show', {id: product.id}) }}" aria-label="{{ product.name }}">
+            <img src="{{ product.image }}" alt="{{ product.name }}" loading="lazy">
+        </a>
+        <div class="p-card__badges">
+            {% if product.discount and product.discount > 0 %}
+                <span class="p-card__badge p-card__badge--sale">−{{ product.discount }}%</span>
+            {% endif %}
+            {% if product.isNew %}
+                <span class="p-card__badge">Новинка</span>
+            {% elseif product.isHit %}
+                <span class="p-card__badge p-card__badge--hit">Хит</span>
+            {% endif %}
+        </div>
+        <button class="p-card__fav {{ product.isFavorite ? 'is-active' : '' }}"
+                type="button"
+                aria-label="Добавить в избранное"
+                aria-pressed="{{ product.isFavorite ? 'true' : 'false' }}"
+                data-wb-favorite>
+            <i class="bi {{ product.isFavorite ? 'bi-heart-fill' : 'bi-heart' }}"></i>
+        </button>
+    </div>
+    <div class="p-card__body">
+        <div class="p-card__seller">
+            <span class="p-card__mark">{{ product.sellerName|split(' ')|first|first|upper }}{{ product.sellerName|split(' ')|length > 1 ? product.sellerName|split(' ')|last|first|upper : '' }}</span>
+            <span>{{ product.sellerName }}</span>
+            <i class="bi bi-patch-check p-card__verified" aria-label="Проверенный продавец"></i>
+        </div>
+        <h3 class="p-card__name">
+            <a href="{{ path('app_product_show', {id: product.id}) }}">{{ product.name }}</a>
+        </h3>
+        <div class="p-card__rating">
+            <i class="bi bi-star-fill"></i>
+            <strong>{{ product.rating }}</strong>
+            <span>· {{ product.reviews }} отзывов</span>
+        </div>
+        <div class="p-card__delivery">
+            <i class="bi bi-truck"></i>
+            <span>Завтра, 19 ноября</span>
+        </div>
+        <div class="p-card__bottom">
+            <div class="p-card__price">
+                <span class="p-card__now">{{ product.price|number_format(0, ',', ' ') }} ₽</span>
+                {% if product.oldPrice %}
+                    <s class="p-card__old">{{ product.oldPrice|number_format(0, ',', ' ') }} ₽</s>
+                    <span class="p-card__off">−{{ product.discount }}%</span>
+                {% endif %}
+            </div>
+            <button class="p-card__add"
+                    type="button"
+                    aria-label="Добавить «{{ product.name }}» в корзину"
+                    data-wb-add-to-cart="{{ product.name }}">
+                <i class="bi bi-bag"></i>
+            </button>
+        </div>
+    </div>
+</article>
