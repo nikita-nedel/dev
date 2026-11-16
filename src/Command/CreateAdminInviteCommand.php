@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace App\Command;
 
-use App\Service\AdminInviteService;
+use App\Identity\Application\Command\CreateAdminInvite\CreateAdminInvite;
+use App\Identity\Application\Command\CreateAdminInvite\CreateAdminInviteHandler;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -20,7 +21,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 class CreateAdminInviteCommand extends Command
 {
     public function __construct(
-        private readonly AdminInviteService $adminInviteService,
+        private readonly CreateAdminInviteHandler $createAdminInvite,
         private readonly UrlGeneratorInterface $urlGenerator,
     ) {
         parent::__construct();
@@ -36,7 +37,7 @@ class CreateAdminInviteCommand extends Command
         $io = new SymfonyStyle($input, $output);
         $email = (string) $input->getArgument('email');
 
-        $invite = $this->adminInviteService->createInvite($email);
+        $invite = ($this->createAdminInvite)(new CreateAdminInvite(email: $email));
         $url = $this->urlGenerator->generate(
             'admin_invite_register',
             ['token' => $invite->getToken()],

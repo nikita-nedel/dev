@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Export\Domain\Model;
 
-use App\Entity\Admin;
+use App\Identity\Domain\Model\Admin;
 use App\Process\Domain\Model\Job;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;

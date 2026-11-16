@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Tests\Functional\Admin;
 
-use App\Entity\Admin;
-use App\Entity\AdminInvite;
+use App\Identity\Domain\Model\Admin;
+use App\Identity\Domain\Model\AdminInvite;
 use App\Tests\Functional\FunctionalTestCase;
 
 final class AdminInviteTest extends FunctionalTestCase

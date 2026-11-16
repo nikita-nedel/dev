@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Export\Application\Dto;
 
-use App\Export\Application\Port\ExportCriteriaInterface;
+use App\Shared\Domain\Port\QueryCriteriaInterface;
 use App\Export\Domain\Model\ExportFormat;
 use App\Export\Domain\Model\ExportResource;
 
@@ -13,11 +13,11 @@ final readonly class ExportContext
     public function __construct(
         public ExportResource $resource,
         public ExportFormat $format,
-        public ExportCriteriaInterface $criteria,
+        public QueryCriteriaInterface $criteria,
     ) {
     }
 
-    public function criteriaAs(string $class): ExportCriteriaInterface
+    public function criteriaAs(string $class): QueryCriteriaInterface
     {
         if (!$this->criteria instanceof $class) {
             throw new \InvalidArgumentException(sprintf(
@@ -31,7 +31,7 @@ final readonly class ExportContext
         return $this->criteria;
     }
 
-    public static function forClients(ExportFormat $format, ExportCriteriaInterface $criteria): self
+    public static function forClients(ExportFormat $format, QueryCriteriaInterface $criteria): self
     {
         return new self(ExportResource::Clients, $format, $criteria);
     }

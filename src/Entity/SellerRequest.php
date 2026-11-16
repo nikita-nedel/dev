@@ -5,6 +5,9 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use App\Enum\SellerRequestStatus;
+use App\Identity\Domain\Model\Admin;
+use App\Identity\Domain\Model\Customer;
+use App\Identity\Domain\Model\Seller;
 use App\Repository\SellerRequestRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;

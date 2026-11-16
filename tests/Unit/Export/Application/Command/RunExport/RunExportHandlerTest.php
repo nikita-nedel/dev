@@ -6,7 +6,7 @@ namespace App\Tests\Unit\Export\Application\Command\RunExport;
 
 use App\Export\Application\Command\RunExport\RunExportHandler;
 use App\Export\Application\Command\RunExport\RunExportMessage;
-use App\Export\Application\Criteria\ClientListCriteria;
+use App\Identity\Domain\Query\ClientListCriteria;
 use App\Export\Application\Criteria\ExportCriteriaResolver;
 use App\Export\Application\Criteria\ClientExportCriteriaFactory;
 use App\Export\Application\Dto\ExportContext;

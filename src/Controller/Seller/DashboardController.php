@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller\Seller;
 
-use App\Entity\Seller;
+use App\Identity\Domain\Model\Seller;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;

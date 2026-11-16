@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Export\Application\Command\RequestExport;
 
-use App\Entity\Admin;
+use App\Identity\Domain\Model\Admin;
 use App\Export\Domain\Model\ExportFormat;
 use App\Export\Domain\Model\ExportResource;
 

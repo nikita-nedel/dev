@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Functional\Registration;
 
-use App\Entity\Customer;
+use App\Identity\Domain\Model\Customer;
 use App\Tests\Functional\FunctionalTestCase;
 
 final class CustomerRegistrationTest extends FunctionalTestCase

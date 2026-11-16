@@ -4,18 +4,15 @@ declare(strict_types=1);
 
 namespace App\Tests\Functional;
 
-use App\Entity\Admin;
-use App\Entity\AdminProfile;
-use App\Entity\Customer;
-use App\Entity\Seller;
+use App\Identity\Domain\Model\Admin;
+use App\Identity\Domain\Model\AdminProfile;
+use App\Identity\Domain\Model\Customer;
+use App\Identity\Domain\Model\Seller;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
-/**
- * База для функциональных тестов: чистка БД перед каждым тестом и фабрики пользователей.
- */
 abstract class FunctionalTestCase extends WebTestCase
 {
     protected KernelBrowser $client;

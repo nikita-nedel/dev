@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Controller\Seller;
 
-use App\Entity\Seller;
+use App\Identity\Domain\Model\Seller;
 use App\Form\SellerActivationFormType;
-use App\Repository\SellerRepository;
+use App\Identity\Domain\Repository\SellerRepositoryInterface;
 use App\Service\SellerRequestService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -43,7 +43,7 @@ class SellerSecurityController extends AbstractController
     public function activate(
         string $token,
         Request $request,
-        SellerRepository $sellerRepository,
+        SellerRepositoryInterface $sellerRepository,
         SellerRequestService $sellerRequestService,
         UserPasswordHasherInterface $passwordHasher,
         UserAuthenticatorInterface $userAuthenticator,

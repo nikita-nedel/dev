@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Controller\Admin\Clients;
 
-use App\Export\Application\Criteria\ClientListCriteria;
-use App\Repository\CustomerRepository;
+use App\Identity\Domain\Query\ClientListCriteria;
+use App\Identity\Domain\Repository\CustomerRepositoryInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -25,7 +25,7 @@ class ClientController extends AbstractController
     #[Route('/client', name: 'client_index', methods: ['GET'])]
     public function index(
         Request $request,
-        CustomerRepository $customerRepository,
+        CustomerRepositoryInterface $customerRepository,
         PaginatorInterface $paginator,
         #[MapQueryParameter] int $page = 1,
         #[MapQueryParameter] int $perPage = 10,

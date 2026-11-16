@@ -4,20 +4,20 @@ declare(strict_types=1);
 
 namespace App\Service;
 
-use App\Entity\Admin;
-use App\Entity\Customer;
-use App\Entity\Seller;
-use App\Entity\SellerProfile;
+use App\Identity\Domain\Model\Admin;
+use App\Identity\Domain\Model\Customer;
+use App\Identity\Domain\Model\Seller;
+use App\Identity\Domain\Model\SellerProfile;
 use App\Entity\SellerRequest;
 use App\Enum\SellerRequestStatus;
-use App\Repository\SellerRepository;
+use App\Identity\Domain\Repository\SellerRepositoryInterface;
 use Doctrine\ORM\EntityManagerInterface;
 
 final class SellerRequestService
 {
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
-        private readonly SellerRepository $sellerRepository,
+        private readonly SellerRepositoryInterface $sellerRepository,
     ) {
     }
 

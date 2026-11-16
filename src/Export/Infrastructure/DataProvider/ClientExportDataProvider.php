@@ -4,17 +4,17 @@ declare(strict_types=1);
 
 namespace App\Export\Infrastructure\DataProvider;
 
-use App\Entity\Customer;
-use App\Export\Application\Criteria\ClientListCriteria;
+use App\Identity\Domain\Model\Customer;
+use App\Identity\Domain\Query\ClientListCriteria;
 use App\Export\Application\Dto\ExportContext;
 use App\Export\Application\Port\ExportDataProviderInterface;
 use App\Export\Domain\Model\ExportResource;
-use App\Repository\CustomerRepository;
+use App\Identity\Domain\Repository\CustomerRepositoryInterface;
 
 final class ClientExportDataProvider implements ExportDataProviderInterface
 {
     public function __construct(
-        private readonly CustomerRepository $customerRepository,
+        private readonly CustomerRepositoryInterface $customerRepository,
     ) {
     }
 

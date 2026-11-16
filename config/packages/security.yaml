@@ -5,15 +5,15 @@ security:
     providers:
         customer_provider:
             entity:
-                class: App\Entity\Customer
+                class: App\Identity\Domain\Model\Customer
                 property: email
         seller_provider:
             entity:
-                class: App\Entity\Seller
+                class: App\Identity\Domain\Model\Seller
                 property: email
         admin_provider:
             entity:
-                class: App\Entity\Admin
+                class: App\Identity\Domain\Model\Admin
                 property: email
 
     firewalls:
@@ -25,7 +25,7 @@ security:
             pattern: ^/admin
             context: admin_context
             provider: admin_provider
-            user_checker: App\Security\AdminUserChecker
+            user_checker: App\Identity\Infrastructure\Security\AdminUserChecker
             lazy: true
             form_login:
                 login_path: admin_login
@@ -40,7 +40,7 @@ security:
             pattern: ^/seller
             context: seller_context
             provider: seller_provider
-            user_checker: App\Security\SellerUserChecker
+            user_checker: App\Identity\Infrastructure\Security\SellerUserChecker
             lazy: true
             form_login:
                 login_path: seller_login

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller\Admin;
 
-use App\Entity\Admin;
+use App\Identity\Domain\Model\Admin;
 use App\Entity\SellerRequest;
 use App\Enum\SellerRequestStatus;
 use App\Repository\SellerRequestRepository;

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Controller\Seller;
 
-use App\Entity\Customer;
-use App\Entity\Seller;
+use App\Identity\Domain\Model\Customer;
+use App\Identity\Domain\Model\Seller;
 use App\Entity\SellerRequest;
 use App\Form\SellerRequestFormType;
 use App\Service\SellerRequestService;

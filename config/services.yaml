@@ -26,8 +26,23 @@ services:
     App\Shared\Domain\Port\TransactionManagerInterface:
         alias: App\Shared\Infrastructure\Doctrine\DoctrineTransactionManager
 
+    App\Shared\Domain\Port\PasswordHasherInterface:
+        alias: App\Shared\Infrastructure\Security\SymfonyPasswordHasher
+
     App\Process\Domain\Repository\JobRepositoryInterface:
         alias: App\Process\Infrastructure\Doctrine\Repository\DoctrineJobRepository
+
+    App\Identity\Domain\Repository\CustomerRepositoryInterface:
+        alias: App\Identity\Infrastructure\Doctrine\Repository\DoctrineCustomerRepository
+
+    App\Identity\Domain\Repository\SellerRepositoryInterface:
+        alias: App\Identity\Infrastructure\Doctrine\Repository\DoctrineSellerRepository
+
+    App\Identity\Domain\Repository\AdminRepositoryInterface:
+        alias: App\Identity\Infrastructure\Doctrine\Repository\DoctrineAdminRepository
+
+    App\Identity\Domain\Repository\AdminInviteRepositoryInterface:
+        alias: App\Identity\Infrastructure\Doctrine\Repository\DoctrineAdminInviteRepository
 
     App\Export\Domain\Repository\ExportFileRepositoryInterface:
         alias: App\Export\Infrastructure\Doctrine\Repository\DoctrineExportFileRepository

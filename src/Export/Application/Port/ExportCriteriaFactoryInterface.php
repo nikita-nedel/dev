@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Export\Application\Port;
 
 use App\Export\Domain\Model\ExportResource;
+use App\Shared\Domain\Port\QueryCriteriaInterface;
 use Symfony\Component\HttpFoundation\Request;
 
 interface ExportCriteriaFactoryInterface
@@ -14,7 +15,7 @@ interface ExportCriteriaFactoryInterface
     /**
      * @param array<string, mixed> $query
      */
-    public function createFromQuery(array $query): ExportCriteriaInterface;
+    public function createFromQuery(array $query): QueryCriteriaInterface;
 
-    public function createFromRequest(Request $request): ExportCriteriaInterface;
+    public function createFromRequest(Request $request): QueryCriteriaInterface;
 }
