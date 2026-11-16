@@ -2,18 +2,16 @@
 
 declare(strict_types=1);
 
-namespace App\Entity;
+namespace App\Seller\Domain\Model;
 
-use App\Enum\SellerRequestStatus;
 use App\Identity\Domain\Model\Admin;
 use App\Identity\Domain\Model\Customer;
 use App\Identity\Domain\Model\Seller;
-use App\Repository\SellerRequestRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
-#[ORM\Entity(repositoryClass: SellerRequestRepository::class)]
+#[ORM\Entity]
 #[ORM\Table(name: 'seller_request')]
 class SellerRequest
 {
@@ -22,7 +20,7 @@ class SellerRequest
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\OneToOne(inversedBy: 'request', targetEntity: Seller::class)]
+    #[ORM\OneToOne(targetEntity: Seller::class)]
     #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?Seller $seller = null;
 

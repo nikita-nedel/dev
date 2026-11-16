@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Identity\Domain\Model;
 
-use App\Entity\SellerRequest;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -53,9 +52,6 @@ class Seller implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\OneToOne(mappedBy: 'seller', targetEntity: SellerProfile::class, cascade: ['persist', 'remove'])]
     private ?SellerProfile $profile = null;
-
-    #[ORM\OneToOne(mappedBy: 'seller', targetEntity: SellerRequest::class, cascade: ['persist', 'remove'])]
-    private ?SellerRequest $request = null;
 
     #[ORM\Column]
     #[Gedmo\Timestampable(on: 'create')]
@@ -202,21 +198,7 @@ class Seller implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getRequest(): ?SellerRequest
-    {
-        return $this->request;
-    }
 
-    public function setRequest(SellerRequest $request): static
-    {
-        if ($request->getSeller() !== $this) {
-            $request->setSeller($this);
-        }
-
-        $this->request = $request;
-
-        return $this;
-    }
 
     public function getCreatedAt(): ?\DateTimeImmutable
     {

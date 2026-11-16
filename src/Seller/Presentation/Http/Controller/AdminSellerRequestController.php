@@ -2,13 +2,16 @@
 
 declare(strict_types=1);
 
-namespace App\Controller\Admin;
+namespace App\Seller\Presentation\Http\Controller;
 
 use App\Identity\Domain\Model\Admin;
-use App\Entity\SellerRequest;
-use App\Enum\SellerRequestStatus;
-use App\Repository\SellerRequestRepository;
-use App\Service\SellerRequestService;
+use App\Seller\Application\Command\ApproveSellerRequest\ApproveSellerRequest;
+use App\Seller\Application\Command\ApproveSellerRequest\ApproveSellerRequestHandler;
+use App\Seller\Application\Command\RejectSellerRequest\RejectSellerRequest;
+use App\Seller\Application\Command\RejectSellerRequest\RejectSellerRequestHandler;
+use App\Seller\Domain\Model\SellerRequest;
+use App\Seller\Domain\Model\SellerRequestStatus;
+use App\Seller\Domain\Repository\SellerRequestRepositoryInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -17,13 +20,20 @@ use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
+/**
+ * Админский список заявок на продажу и решения по ним.
+ *
+ * CSRF проверяется вручную (isCsrfTokenValid), потому что approve/reject — это не
+ * Symfony-формы, а две кнопки в таблице.
+ */
 #[Route('/admin', 'app_admin_')]
 #[IsGranted('ROLE_ADMIN')]
-class SellerRequestController extends AbstractController
+final class AdminSellerRequestController extends AbstractController
 {
     public function __construct(
-        private readonly SellerRequestService $sellerRequestService,
-        private readonly SellerRequestRepository $sellerRequestRepository,
+        private readonly SellerRequestRepositoryInterface $requests,
+        private readonly ApproveSellerRequestHandler $approveRequest,
+        private readonly RejectSellerRequestHandler $rejectRequest,
     ) {
     }
 
@@ -37,7 +47,7 @@ class SellerRequestController extends AbstractController
         $statusEnum = null !== $status ? SellerRequestStatus::tryFrom($status) : null;
 
         $pagination = $paginator->paginate(
-            $this->sellerRequestRepository->createListQueryBuilder($statusEnum),
+            $this->requests->createListQueryBuilder($statusEnum),
             $page,
             $perPage,
         );
@@ -52,21 +62,14 @@ class SellerRequestController extends AbstractController
     #[Route('/seller-requests/{id}/approve', name: 'seller_request_approve', methods: ['POST'])]
     public function approve(SellerRequest $sellerRequest, Request $request): Response
     {
-        if (!$this->isCsrfTokenValid('seller_request_' . $sellerRequest->getId(), (string) $request->request->get('_token'))) {
-            throw $this->createAccessDeniedException();
-        }
-
-        $admin = $this->getUser();
-        if (!$admin instanceof Admin) {
-            throw $this->createAccessDeniedException();
-        }
+        $admin = $this->requireAdmin($request, $sellerRequest);
 
         try {
-            $seller = $this->sellerRequestService->approve($sellerRequest, $admin);
+            $seller = ($this->approveRequest)(new ApproveSellerRequest($sellerRequest, $admin));
             $activationUrl = $this->generateUrl('seller_activate', ['token' => $seller->getActivationToken()], 0);
             $this->addFlash('success', 'Заявка одобрена. Ссылка активации: ' . $activationUrl);
-        } catch (\RuntimeException $e) {
-            $this->addFlash('error', $e->getMessage());
+        } catch (\RuntimeException $exception) {
+            $this->addFlash('error', $exception->getMessage());
         }
 
         return $this->redirectToRoute('app_admin_seller_request_index');
@@ -75,26 +78,34 @@ class SellerRequestController extends AbstractController
     #[Route('/seller-requests/{id}/reject', name: 'seller_request_reject', methods: ['POST'])]
     public function reject(SellerRequest $sellerRequest, Request $request): Response
     {
+        $admin = $this->requireAdmin($request, $sellerRequest);
+
+        try {
+            ($this->rejectRequest)(new RejectSellerRequest(
+                request: $sellerRequest,
+                reviewedBy: $admin,
+                reason: $request->request->getString('reason') ?: null,
+            ));
+            $this->addFlash('success', 'Заявка отклонена.');
+        } catch (\RuntimeException $exception) {
+            $this->addFlash('error', $exception->getMessage());
+        }
+
+        return $this->redirectToRoute('app_admin_seller_request_index');
+    }
+
+    private function requireAdmin(Request $request, SellerRequest $sellerRequest): Admin
+    {
         if (!$this->isCsrfTokenValid('seller_request_' . $sellerRequest->getId(), (string) $request->request->get('_token'))) {
             throw $this->createAccessDeniedException();
         }
 
         $admin = $this->getUser();
+
         if (!$admin instanceof Admin) {
             throw $this->createAccessDeniedException();
         }
 
-        try {
-            $this->sellerRequestService->reject(
-                $sellerRequest,
-                $admin,
-                $request->request->getString('reason') ?: null,
-            );
-            $this->addFlash('success', 'Заявка отклонена.');
-        } catch (\RuntimeException $e) {
-            $this->addFlash('error', $e->getMessage());
-        }
-
-        return $this->redirectToRoute('app_admin_seller_request_index');
+        return $admin;
     }
 }

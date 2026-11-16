@@ -2,22 +2,36 @@
 
 declare(strict_types=1);
 
-namespace App\Repository;
+namespace App\Seller\Infrastructure\Doctrine\Repository;
 
-use App\Entity\SellerRequest;
-use App\Enum\SellerRequestStatus;
+use App\Identity\Domain\Model\Seller;
+use App\Seller\Domain\Model\SellerRequest;
+use App\Seller\Domain\Model\SellerRequestStatus;
+use App\Seller\Domain\Repository\SellerRequestRepositoryInterface;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
+ * Doctrine-реализация порта заявок на продажу.
+ *
  * @extends ServiceEntityRepository<SellerRequest>
  */
-class SellerRequestRepository extends ServiceEntityRepository
+final class DoctrineSellerRequestRepository extends ServiceEntityRepository implements SellerRequestRepositoryInterface
 {
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, SellerRequest::class);
+    }
+
+    public function add(SellerRequest $request): void
+    {
+        $this->getEntityManager()->persist($request);
+    }
+
+    public function findBySeller(Seller $seller): ?SellerRequest
+    {
+        return $this->findOneBy(['seller' => $seller]);
     }
 
     public function createListQueryBuilder(?SellerRequestStatus $status = null): QueryBuilder

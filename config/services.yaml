@@ -44,6 +44,9 @@ services:
     App\Identity\Domain\Repository\AdminInviteRepositoryInterface:
         alias: App\Identity\Infrastructure\Doctrine\Repository\DoctrineAdminInviteRepository
 
+    App\Seller\Domain\Repository\SellerRequestRepositoryInterface:
+        alias: App\Seller\Infrastructure\Doctrine\Repository\DoctrineSellerRequestRepository
+
     App\Export\Domain\Repository\ExportFileRepositoryInterface:
         alias: App\Export\Infrastructure\Doctrine\Repository\DoctrineExportFileRepository
 

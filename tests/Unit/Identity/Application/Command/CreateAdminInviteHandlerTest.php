@@ -8,8 +8,8 @@ use App\Identity\Application\Command\CreateAdminInvite\CreateAdminInvite;
 use App\Identity\Application\Command\CreateAdminInvite\CreateAdminInviteHandler;
 use App\Identity\Domain\Model\AdminInvite;
 use App\Identity\Domain\Repository\AdminInviteRepositoryInterface;
-use App\Shared\Domain\Port\TransactionManagerInterface;
 use App\Tests\Support\FixedClock;
+use App\Tests\Support\PassthroughTransactionManager;
 use PHPUnit\Framework\TestCase;
 
 final class CreateAdminInviteHandlerTest extends TestCase
@@ -42,14 +42,6 @@ final class CreateAdminInviteHandlerTest extends TestCase
         $invite = $handler(new CreateAdminInvite(email: 'a@example.com', ttlDays: 7));
 
         self::assertSame('2026-01-08 12:00:00', $invite->getExpiresAt()->format('Y-m-d H:i:s'));
-    }
-}
-
-final class PassthroughTransactionManager implements TransactionManagerInterface
-{
-    public function transactional(callable $operation): mixed
-    {
-        return $operation();
     }
 }
 

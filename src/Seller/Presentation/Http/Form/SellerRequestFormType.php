@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Form;
+namespace App\Seller\Presentation\Http\Form;
 
-use App\Entity\SellerRequest;
+use App\Seller\Domain\Model\SellerRequest;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TelType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;

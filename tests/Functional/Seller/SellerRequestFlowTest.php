@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Tests\Functional\Seller;
 
 use App\Identity\Domain\Model\Admin;
-use App\Entity\SellerRequest;
-use App\Enum\SellerRequestStatus;
+use App\Seller\Domain\Model\SellerRequest;
+use App\Seller\Domain\Model\SellerRequestStatus;
 use App\Tests\Functional\FunctionalTestCase;
 
 final class SellerRequestFlowTest extends FunctionalTestCase
