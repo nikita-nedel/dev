@@ -1,548 +1,210 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Профиль пользователя - WB Style{% endblock %}
-
-{% block stylesheets %}
-    {{ parent() }}
-    <style>
-        .profile-page {
-            background: #f8f9fa;
-            min-height: calc(100vh - 120px);
-            padding: 2rem 0;
-        }
-
-        .profile-hero {
-            position: relative;
-            overflow: hidden;
-            background: white;
-            border-radius: 24px;
-            padding: 2.5rem;
-            margin-bottom: 2rem;
-            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
-        }
-
-        .profile-hero::before {
-            content: '';
-            position: absolute;
-            inset: 0 0 auto 0;
-            height: 140px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        }
-
-        .profile-hero-content {
-            position: relative;
-            display: flex;
-            justify-content: space-between;
-            gap: 2rem;
-            align-items: flex-end;
-            padding-top: 4rem;
-        }
-
-        .profile-user {
-            display: flex;
-            align-items: flex-end;
-            gap: 1.5rem;
-        }
-
-        .profile-avatar {
-            width: 128px;
-            height: 128px;
-            border-radius: 32px;
-            border: 6px solid white;
-            background: linear-gradient(135deg, #f97316 0%, #ec4899 100%);
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 3rem;
-            font-weight: 800;
-            box-shadow: 0 16px 30px rgba(15, 23, 42, 0.18);
-        }
-
-        .profile-name {
-            font-size: 2rem;
-            font-weight: 800;
-            color: #111827;
-            margin-bottom: 0.35rem;
-        }
-
-        .profile-meta {
-            display: flex;
-            gap: 1rem;
-            flex-wrap: wrap;
-            color: #64748b;
-        }
-
-        .profile-meta span {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.4rem;
-        }
-
-        .profile-actions {
-            display: flex;
-            gap: 0.75rem;
-            flex-wrap: wrap;
-        }
-
-        .profile-primary-btn,
-        .profile-secondary-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.8rem 1.25rem;
-            border-radius: 12px;
-            font-weight: 700;
-            text-decoration: none;
-            transition: all 0.25s ease;
-        }
-
-        .profile-primary-btn {
-            color: white;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            box-shadow: 0 10px 22px rgba(102, 126, 234, 0.25);
-        }
-
-        .profile-secondary-btn {
-            color: #4f46e5;
-            background: #eef2ff;
-        }
-
-        .profile-primary-btn:hover,
-        .profile-secondary-btn:hover {
-            transform: translateY(-2px);
-            color: white;
-        }
-
-        .profile-secondary-btn:hover {
-            background: #667eea;
-        }
-
-        .profile-grid {
-            display: grid;
-            grid-template-columns: minmax(0, 1.5fr) minmax(320px, 0.75fr);
-            gap: 2rem;
-        }
-
-        .profile-card {
-            background: white;
-            border-radius: 20px;
-            padding: 1.5rem;
-            box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
-        }
-
-        .profile-section-title {
-            font-size: 1.25rem;
-            font-weight: 800;
-            color: #111827;
-            margin-bottom: 1.25rem;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 1rem;
-        }
-
-        .profile-stats {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 1rem;
-            margin-bottom: 2rem;
-        }
-
-        .profile-stat {
-            background: white;
-            border-radius: 18px;
-            padding: 1.25rem;
-            box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
-        }
-
-        .profile-stat-icon {
-            width: 44px;
-            height: 44px;
-            border-radius: 14px;
-            background: linear-gradient(135deg, #667eea20 0%, #764ba220 100%);
-            color: #667eea;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.25rem;
-            margin-bottom: 1rem;
-        }
-
-        .profile-stat-value {
-            font-size: 1.7rem;
-            font-weight: 800;
-            color: #111827;
-            line-height: 1;
-        }
-
-        .profile-stat-label {
-            color: #64748b;
-            margin-top: 0.35rem;
-        }
-
-        .quick-actions {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 1rem;
-        }
-
-        .quick-action {
-            display: flex;
-            gap: 1rem;
-            padding: 1rem;
-            border: 1px solid #e5e7eb;
-            border-radius: 16px;
-            text-decoration: none;
-            color: inherit;
-            transition: all 0.25s ease;
-        }
-
-        .quick-action:hover {
-            transform: translateY(-2px);
-            border-color: #c7d2fe;
-            box-shadow: 0 12px 24px rgba(102, 126, 234, 0.12);
-            color: inherit;
-        }
-
-        .quick-action-icon {
-            width: 42px;
-            height: 42px;
-            border-radius: 12px;
-            background: #f1f5f9;
-            color: #667eea;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-        }
-
-        .quick-action-title {
-            font-weight: 700;
-            color: #111827;
-            margin-bottom: 0.25rem;
-        }
-
-        .quick-action-description {
-            color: #64748b;
-            font-size: 0.92rem;
-            margin: 0;
-        }
-
-        .order-list,
-        .activity-list {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-        }
-
-        .order-item {
-            border: 1px solid #e5e7eb;
-            border-radius: 16px;
-            padding: 1rem;
-        }
-
-        .order-head {
-            display: flex;
-            justify-content: space-between;
-            gap: 1rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .order-number {
-            font-weight: 800;
-            color: #111827;
-        }
-
-        .order-status {
-            color: #16a34a;
-            font-weight: 700;
-        }
-
-        .order-title {
-            color: #475569;
-            margin-bottom: 0.75rem;
-        }
-
-        .order-footer {
-            display: flex;
-            justify-content: space-between;
-            gap: 1rem;
-            color: #64748b;
-            font-size: 0.92rem;
-        }
-
-        .order-progress {
-            height: 8px;
-            background: #e5e7eb;
-            border-radius: 999px;
-            overflow: hidden;
-            margin-bottom: 0.75rem;
-        }
-
-        .order-progress span {
-            display: block;
-            height: 100%;
-            background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
-            border-radius: inherit;
-        }
-
-        .loyalty-card {
-            background: linear-gradient(135deg, #111827 0%, #312e81 100%);
-            color: white;
-            border-radius: 20px;
-            padding: 1.5rem;
-            margin-bottom: 2rem;
-            overflow: hidden;
-            position: relative;
-        }
-
-        .loyalty-card::after {
-            content: '';
-            position: absolute;
-            right: -45px;
-            top: -45px;
-            width: 150px;
-            height: 150px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.12);
-        }
-
-        .loyalty-level {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.4rem;
-            background: rgba(255, 255, 255, 0.16);
-            border-radius: 999px;
-            padding: 0.4rem 0.75rem;
-            margin-bottom: 1.25rem;
-            font-weight: 700;
-        }
-
-        .loyalty-points {
-            font-size: 2rem;
-            font-weight: 800;
-            margin-bottom: 0.35rem;
-        }
-
-        .loyalty-caption {
-            color: rgba(255, 255, 255, 0.75);
-            margin: 0;
-        }
-
-        .activity-item {
-            display: flex;
-            gap: 1rem;
-        }
-
-        .activity-icon {
-            width: 38px;
-            height: 38px;
-            border-radius: 50%;
-            background: #eef2ff;
-            color: #667eea;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-        }
-
-        .activity-text {
-            margin: 0 0 0.2rem;
-            color: #111827;
-            font-weight: 600;
-        }
-
-        .activity-time {
-            color: #94a3b8;
-            font-size: 0.9rem;
-        }
-
-        @media (max-width: 992px) {
-            .profile-hero-content,
-            .profile-user {
-                align-items: flex-start;
-                flex-direction: column;
-            }
-
-            .profile-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .profile-stats {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-
-        @media (max-width: 576px) {
-            .profile-page {
-                padding: 1rem 0;
-            }
-
-            .profile-hero,
-            .profile-card {
-                border-radius: 16px;
-                padding: 1.25rem;
-            }
-
-            .profile-hero-content {
-                padding-top: 3rem;
-            }
-
-            .profile-avatar {
-                width: 96px;
-                height: 96px;
-                border-radius: 24px;
-                font-size: 2.25rem;
-            }
-
-            .profile-name {
-                font-size: 1.6rem;
-            }
-
-            .profile-stats,
-            .quick-actions {
-                grid-template-columns: 1fr;
-            }
-        }
-    </style>
-{% endblock %}
+{% block title %}Личный кабинет — WB Style{% endblock %}
 
 {% block body %}
-    <div class="profile-page">
+    <div class="wb-page-head">
         <div class="container">
-            <section class="profile-hero">
-                <div class="profile-hero-content">
-                    <div class="profile-user">
-                        <div class="profile-avatar">
-                            {{ app.user.firstName|default(app.user.userIdentifier)|first|upper }}
-                        </div>
-                        <div>
-                            <h1 class="profile-name">{{ app.user.fullName|default('Любимый покупатель') }}</h1>
-                            <div class="profile-meta">
-                                <span><i class="bi bi-envelope"></i>{{ app.user.email }}</span>
-                                <span><i class="bi bi-phone"></i>{{ app.user.phone|default('+7 900 000-00-00') }}</span>
-                                <span><i class="bi bi-calendar-heart"></i>С нами с {{ app.user.createdAt ? app.user.createdAt|date('d.m.Y') : '2024' }}</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="profile-actions">
-                        <a href="{{ path('app_profile') }}" class="profile-primary-btn">
-                            <i class="bi bi-pencil-square"></i>
-                            Редактировать
-                        </a>
-                        <a href="{{ path('app_profile') }}" class="profile-secondary-btn">
-                            <i class="bi bi-shield-check"></i>
-                            Безопасность
-                        </a>
-                    </div>
-                </div>
-            </section>
-
-            {% set sellerAccount = customer_seller(app.user) %}
-            {% if sellerAccount %}
-                <section class="profile-hero mb-4" style="padding: 1.5rem;">
-                    <h2 class="h5 mb-2"><i class="bi bi-shop me-2"></i>Аккаунт продавца</h2>
-                    {% set sellerRequest = sellerAccount.request %}
-                    {% if sellerRequest %}
-                        <p class="mb-1">Статус заявки: <strong>{{ sellerRequest.status.label }}</strong></p>
-                        {% if sellerRequest.status.value == 'rejected' %}
-                            <p class="text-secondary">{{ sellerRequest.rejectionReason|default('Заявка отклонена.') }}</p>
-                        {% elseif sellerAccount.isActive %}
-                            <a href="{{ path('app_seller_dashboard') }}" class="btn btn-primary btn-sm">Открыть кабинет продавца</a>
-                        {% else %}
-                            <p class="text-secondary mb-2">Ожидается активация аккаунта продавца.</p>
-                            <a href="{{ path('seller_login') }}" class="btn btn-outline-primary btn-sm">Вход для продавца</a>
-                        {% endif %}
-                    {% endif %}
-                </section>
-            {% else %}
-                <section class="profile-hero mb-4" style="padding: 1.5rem;">
-                    <h2 class="h5 mb-2"><i class="bi bi-shop me-2"></i>Хотите продавать на WB Style?</h2>
-                    <p class="text-secondary mb-3">Подайте заявку и получите доступ к кабинету продавца после проверки.</p>
-                    <a href="{{ path('seller_apply') }}" class="btn btn-primary btn-sm">Стать продавцом</a>
-                </section>
-            {% endif %}
-
-            <div class="profile-stats">
-                {% for stat in profileStats %}
-                    <div class="profile-stat">
-                        <div class="profile-stat-icon"><i class="bi {{ stat.icon }}"></i></div>
-                        <div class="profile-stat-value">{{ stat.value }}</div>
-                        <div class="profile-stat-label">{{ stat.label }}</div>
-                    </div>
-                {% endfor %}
-            </div>
-
-            <div class="profile-grid">
+            <nav class="wb-breadcrumbs" aria-label="Хлебные крошки">
+                <a href="{{ path('app_home') }}">Главная</a>
+                <span class="sep">/</span>
+                <span aria-current="page">Личный кабинет</span>
+            </nav>
+            <div class="wb-page-title-row">
                 <div>
-                    <section class="profile-card mb-4">
-                        <h2 class="profile-section-title">Быстрые действия</h2>
-                        <div class="quick-actions">
-                            {% for action in quickActions %}
-                                <a href="{{ action.url }}" class="quick-action">
-                                    <span class="quick-action-icon"><i class="bi {{ action.icon }}"></i></span>
-                                    <span>
-                                        <span class="quick-action-title">{{ action.title }}</span>
-                                        <p class="quick-action-description">{{ action.description }}</p>
-                                    </span>
-                                </a>
-                            {% endfor %}
-                        </div>
-                    </section>
+                    <h1>Личный кабинет</h1>
+                    <p>Заказы, избранное, бонусы и настройки — всё в одном месте.</p>
+                </div>
+                <button class="btn btn-outline-primary" type="button" data-wb-demo="Редактирование профиля">
+                    <i class="bi bi-pencil-square"></i> Редактировать профиль
+                </button>
+            </div>
+        </div>
+    </div>
 
-                    <section class="profile-card">
-                        <h2 class="profile-section-title">
-                            Последние заказы
-                            <a href="{{ path('app_orders') }}" class="profile-secondary-btn py-2">Все заказы</a>
-                        </h2>
-                        <div class="order-list">
-                            {% for order in recentOrders %}
-                                <article class="order-item">
-                                    <div class="order-head">
-                                        <span class="order-number">{{ order.number }}</span>
-                                        <span class="order-status">{{ order.status }}</span>
-                                    </div>
-                                    <div class="order-title">{{ order.title }}</div>
-                                    <div class="order-progress">
-                                        <span style="width: {{ order.progress }}%"></span>
-                                    </div>
-                                    <div class="order-footer">
-                                        <span>{{ order.date }}</span>
-                                        <strong>{{ order.total|number_format(0, ',', ' ') }} ₽</strong>
-                                    </div>
-                                </article>
-                            {% endfor %}
+    <div class="container profile-layout">
+        <section class="profile-hero" aria-labelledby="profile-name">
+            <div class="profile-identity">
+                <span class="profile-avatar" aria-hidden="true">{% set profileName = app.user.fullName|default(app.user.userIdentifier) %}{{ profileName|split(' ')|first|first|upper }}{{ profileName|split(' ')|length > 1 ? profileName|split(' ')|last|first|upper : '' }}</span>
+                <div>
+                    <div style="display:flex; align-items:center; flex-wrap:wrap; gap:8px;">
+                        <h1 id="profile-name">{{ app.user.fullName|default(app.user.firstName|default('Покупатель')) }}</h1>
+                        <span class="profile-level"><i class="bi bi-gem"></i> Gold</span>
+                    </div>
+                    <div class="profile-meta">
+                        <span><i class="bi bi-envelope"></i>{{ app.user.email }}</span>
+                        <span><i class="bi bi-telephone"></i>{{ app.user.phone|default('+7 900 000-00-00') }}</span>
+                        {% set monthNames = {'01': 'января', '02': 'февраля', '03': 'марта', '04': 'апреля', '05': 'мая', '06': 'июня', '07': 'июля', '08': 'августа', '09': 'сентября', '10': 'октября', '11': 'ноября', '12': 'декабря'} %}
+                        {% set createdMonth = app.user.createdAt ? app.user.createdAt|date('m') : '01' %}
+                        <span><i class="bi bi-calendar-heart"></i>С нами с {{ monthNames[createdMonth] }} {{ app.user.createdAt ? app.user.createdAt|date('Y') : '2024' }}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="profile-hero__side">
+                <div class="profile-bonus">
+                    <div class="profile-bonus__label">Бонусный баланс</div>
+                    <div class="profile-bonus__value">4 820 <span>бонусов</span></div>
+                    <div class="profile-bonus__bar"><span></span></div>
+                    <p class="profile-bonus__note">До Platinum — 1 180 бонусов</p>
+                </div>
+                <button class="btn btn-outline-light" type="button" data-wb-demo="Списание бонусов">Потратить</button>
+            </div>
+        </section>
+
+        <div class="profile-grid">
+            <aside class="profile-side" aria-label="Разделы профиля">
+                <div class="profile-nav-card">
+                    <nav class="profile-nav">
+                        <a class="is-active" href="{{ path('app_profile') }}"><i class="bi bi-person"></i>Профиль</a>
+                        <a href="{{ path('app_orders') }}"><i class="bi bi-box-seam"></i>Мои заказы<span class="profile-nav__count profile-nav__count--alert">1</span></a>
+                        <a href="#" data-wb-demo="Избранное"><i class="bi bi-heart"></i>Избранное<span class="profile-nav__count">34</span></a>
+                        <a href="#profile-address"><i class="bi bi-geo-alt"></i>Адреса доставки</a>
+                        <button type="button" data-wb-demo="Платежи"><i class="bi bi-credit-card"></i>Платежи</button>
+                        <button type="button" data-wb-demo="Уведомления"><i class="bi bi-bell"></i>Уведомления<span class="profile-nav__count profile-nav__count--alert">2</span></button>
+                        <button type="button" data-wb-demo="Безопасность"><i class="bi bi-lock"></i>Безопасность</button>
+                        <div class="profile-nav__sep"></div>
+                        <a class="is-danger" href="{{ path('app_logout') }}"><i class="bi bi-box-arrow-right"></i>Выйти</a>
+                    </nav>
+                </div>
+                <a class="profile-side__help" href="#" data-wb-demo="Чат поддержки">
+                    <i class="bi bi-question-circle"></i>
+                    <span><strong>Нужна помощь?</strong><span>Поддержка 24/7</span></span>
+                </a>
+            </aside>
+
+            <div class="profile-main">
+                <div class="profile-stats" role="group" aria-label="Статистика профиля">
+                    {% for stat in profileStats %}
+                        <div class="profile-stat">
+                            <span class="profile-stat__icon"><i class="bi {{ stat.icon }}"></i></span>
+                            <div><div class="profile-stat__value">{{ stat.value }}</div><div class="profile-stat__label">{{ stat.label|lower }}</div></div>
                         </div>
-                    </section>
+                    {% endfor %}
                 </div>
 
-                <aside>
-                    <div class="loyalty-card">
-                        <div class="loyalty-level">
-                            <i class="bi bi-gem"></i>
-                            Gold покупатель
-                        </div>
-                        <div class="loyalty-points">4 820 бонусов</div>
-                        <p class="loyalty-caption">До Platinum осталось 1 180 бонусов. Тратьте их на скидки до 30%.</p>
+                <div class="profile-content">
+                    <div class="profile-column">
+                        <section class="profile-panel" id="profile-orders" aria-labelledby="profile-orders-title">
+                            <div class="profile-panel__head">
+                                <h2 id="profile-orders-title">Последние заказы</h2>
+                                <a class="wb-link" href="{{ path('app_orders') }}">Все заказы <i class="bi bi-arrow-right"></i></a>
+                            </div>
+                            <div class="profile-tabs" role="group" aria-label="Фильтр заказов">
+                                <button class="profile-tab is-active" type="button" data-order-filter="all" aria-pressed="true">Все</button>
+                                <button class="profile-tab" type="button" data-order-filter="transit" aria-pressed="false">В пути</button>
+                                <button class="profile-tab" type="button" data-order-filter="done" aria-pressed="false">Получены</button>
+                            </div>
+                            <div class="order-list">
+                                {% for order in recentOrders %}
+                                    <article class="order-card" data-order-status="{{ order.status == 'В пути' ? 'transit' : 'done' }}">
+                                        <div class="order-card__head">
+                                            <span class="order-card__number">{{ order.number }}</span>
+                                            <span class="order-card__date">{{ order.date }}</span>
+                                            <span class="order-card__status {{ order.status == 'В пути' ? 'order-status--transit' : 'order-status--done' }}">{{ order.status }}</span>
+                                        </div>
+                                        <div class="order-card__body">
+                                            <div class="order-thumbs" aria-hidden="true">
+                                                {% if order.images is defined and order.images %}
+                                                    {% for image in order.images|slice(0, 2) %}
+                                                        <span class="order-thumb"><img src="{{ image }}" alt=""></span>
+                                                    {% endfor %}
+                                                {% else %}
+                                                    <span class="order-thumb"><i class="bi bi-box-seam" style="display:grid; place-items:center; height:100%; color:var(--wb-muted);"></i></span>
+                                                {% endif %}
+                                            </div>
+                                            <div class="order-card__info">
+                                                <p class="order-card__title">{{ order.title }}</p>
+                                                <p class="order-card__meta">{{ order.meta|default('') }}</p>
+                                                <div class="order-progress"><span style="width: {{ order.progress }}%"></span></div>
+                                                <div class="order-steps"><span>Собран</span><span class="{{ order.progress < 100 ? 'is-current' : '' }}">В пути</span><span class="{{ order.progress == 100 ? 'is-current' : '' }}">Доставлен</span></div>
+                                            </div>
+                                        </div>
+                                        <div class="order-card__foot">
+                                            <span class="order-card__total">{{ order.total|number_format(0, ',', ' ') }} ₽ {% set orderCount = order.itemCount|default(1) %}<span>{{ orderCount }} {{ orderCount == 1 ? 'товар' : (orderCount < 5 ? 'товара' : 'товаров') }}</span></span>
+                                            <div class="order-card__actions">
+                                                <button type="button" data-wb-demo="Детали заказа">Детали</button>
+                                                <button type="button" data-wb-demo="Повторить заказ">Повторить</button>
+                                            </div>
+                                        </div>
+                                    </article>
+                                {% endfor %}
+                            </div>
+                        </section>
+
+                        <section class="profile-panel" aria-labelledby="quick-actions-title">
+                            <div class="profile-panel__head"><h2 id="quick-actions-title">Быстрые действия</h2></div>
+                            <div class="quick-grid">
+                                {% for action in quickActions %}
+                                    <a class="quick-action" href="{{ action.url }}">
+                                        <span class="quick-action__icon"><i class="bi {{ action.icon }}"></i></span>
+                                        <span><strong>{{ action.title }}</strong><span>{{ action.description }}</span></span>
+                                    </a>
+                                {% endfor %}
+                            </div>
+                        </section>
                     </div>
 
-                    <section class="profile-card">
-                        <h2 class="profile-section-title">Активность</h2>
-                        <div class="activity-list">
-                            {% for item in activity %}
-                                <div class="activity-item">
-                                    <span class="activity-icon"><i class="bi {{ item.icon }}"></i></span>
-                                    <div>
-                                        <p class="activity-text">{{ item.text }}</p>
-                                        <span class="activity-time">{{ item.time }}</span>
-                                    </div>
+                    <aside class="profile-column">
+                        <section class="loyalty-card" aria-labelledby="loyalty-title">
+                            <div class="loyalty-card__top">
+                                <span class="loyalty-card__label">WB Club</span>
+                                <span class="loyalty-card__level"><i class="bi bi-gem"></i> Gold</span>
+                            </div>
+                            <h2 class="loyalty-card__points" id="loyalty-title">4 820 <span>бонусов</span></h2>
+                            <div class="loyalty-card__bar"><span></span></div>
+                            <p class="loyalty-card__note">До Platinum осталось 1 180. Бонусами можно оплатить до 30% заказа.</p>
+                            <button class="btn btn-light" type="button" data-wb-demo="Списание бонусов">Потратить бонусы</button>
+                        </section>
+
+                        <section class="profile-address" id="profile-address" aria-labelledby="profile-address-title">
+                            <span class="profile-address__icon"><i class="bi bi-geo-alt"></i></span>
+                            <div style="flex:1; min-width:0;">
+                                <div class="profile-address__head">
+                                    <strong id="profile-address-title">Основной адрес</strong>
+                                    <button type="button" data-wb-demo="Изменение адреса">Изменить</button>
                                 </div>
-                            {% endfor %}
-                        </div>
-                    </section>
-                </aside>
+                                <p>Санкт-Петербург, ул. Лесная, 7, кв. 12</p>
+                                <span class="profile-address__tag">ПВЗ WB Style · ул. Лесная, 7</span>
+                            </div>
+                        </section>
+
+                        {% set sellerAccount = customer_seller(app.user) %}
+                        {% if sellerAccount is null %}
+                            <section class="profile-seller-card">
+                                <i class="bi bi-shop"></i>
+                                <h2>Продавайте на WB Style</h2>
+                                <p>Откройте магазин за 10 минут и получайте выплаты каждую неделю.</p>
+                                <a class="btn btn-primary" href="{{ path('seller_apply') }}">Стать продавцом <i class="bi bi-arrow-right"></i></a>
+                            </section>
+                        {% elseif sellerAccount.isActive %}
+                            <section class="profile-seller-card">
+                                <i class="bi bi-shop"></i>
+                                <h2>Ваш магазин</h2>
+                                <p>Управляйте товарами, заказами и витриной в кабинете продавца.</p>
+                                <a class="btn btn-primary" href="{{ path('app_seller_dashboard') }}">В кабинет <i class="bi bi-arrow-right"></i></a>
+                            </section>
+                        {% else %}
+                            <section class="profile-seller-card">
+                                <i class="bi bi-hourglass-split"></i>
+                                <h2>Заявка на проверке</h2>
+                                <p>Мы проверяем данные магазина. Обычно это занимает до одного рабочего дня.</p>
+                                <a class="btn btn-primary" href="{{ path('seller_apply') }}">Статус заявки</a>
+                            </section>
+                        {% endif %}
+
+                        <section class="profile-panel" aria-labelledby="activity-title">
+                            <div class="profile-panel__head"><h2 id="activity-title">Активность</h2></div>
+                            <div class="activity-list">
+                                {% for item in activity %}
+                                    <div class="activity-item">
+                                        <span class="activity-item__icon"><i class="bi {{ item.icon }}"></i></span>
+                                        <div><p>{{ item.text }}</p><span>{{ item.time }}</span></div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </section>
+                    </aside>
+                </div>
             </div>
         </div>
     </div>

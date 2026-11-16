@@ -1,30 +1,42 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Статус заявки продавца{% endblock %}
+{% block title %}Статус заявки продавца — WB Style{% endblock %}
 
 {% block body %}
-    <div class="container py-5" style="max-width: 640px;">
-        <h1 class="h3 mb-4">Статус заявки</h1>
+    <main class="simple-page">
+        <div class="container">
+            <div class="simple-card">
+                <span class="wb-eyebrow">WB Style · продавцам</span>
+                <h1 style="margin-top: 10px;">Статус заявки</h1>
 
-        <div class="card p-4 shadow-sm">
-            <p><strong>Магазин:</strong> {{ sellerRequest.shopName }}</p>
-            <p><strong>Статус:</strong> {{ sellerRequest.status.label }}</p>
-            <p><strong>Дата подачи:</strong> {{ sellerRequest.createdAt|date('d.m.Y H:i') }}</p>
+                <div class="status-panel">
+                    <i class="bi bi-shop"></i>
+                    <div>
+                        <strong>{{ sellerRequest.shopName }}</strong>
+                        <p>Статус: {{ sellerRequest.status.label }} · подана {{ sellerRequest.createdAt|date('d.m.Y H:i') }}</p>
+                    </div>
+                </div>
 
-            {% if sellerRequest.status.value == 'approved' and not seller.isActive %}
-                <div class="alert alert-info mt-3">
-                    Заявка одобрена. Установите пароль продавца по ссылке из уведомления или обратитесь к администратору.
-                </div>
-                <a href="{{ path('seller_login') }}" class="btn btn-primary">Перейти ко входу продавца</a>
-            {% elseif sellerRequest.status.value == 'approved' and seller.isActive %}
-                <a href="{{ path('app_seller_dashboard') }}" class="btn btn-primary mt-3">Открыть кабинет продавца</a>
-            {% elseif sellerRequest.status.value == 'rejected' %}
-                <div class="alert alert-warning mt-3">
-                    {{ sellerRequest.rejectionReason|default('Заявка отклонена администратором.') }}
-                </div>
-            {% else %}
-                <div class="alert alert-secondary mt-3">Заявка ожидает рассмотрения администратором.</div>
-            {% endif %}
+                {% if sellerRequest.status.value == 'approved' and not seller.isActive %}
+                    <div class="status-panel" style="margin-top: 12px;">
+                        <i class="bi bi-envelope-check"></i>
+                        <div>
+                            <strong>Заявка одобрена</strong>
+                            <p>Установите пароль продавца по ссылке из уведомления или обратитесь к администратору.</p>
+                        </div>
+                    </div>
+                    <div class="form-actions"><a class="btn btn-primary" href="{{ path('seller_login') }}">Перейти ко входу продавца</a></div>
+                {% elseif sellerRequest.status.value == 'approved' and seller.isActive %}
+                    <div class="form-actions"><a class="btn btn-primary" href="{{ path('app_seller_dashboard') }}">Открыть кабинет продавца <i class="bi bi-arrow-right"></i></a></div>
+                {% elseif sellerRequest.status.value == 'rejected' %}
+                    <div class="auth-alert" style="margin-top: 12px;">{{ sellerRequest.rejectionReason|default('Заявка отклонена администратором.') }}</div>
+                {% else %}
+                    <div class="status-panel" style="margin-top: 12px;">
+                        <i class="bi bi-hourglass-split"></i>
+                        <div><strong>Заявка на рассмотрении</strong><p>Обычно проверка занимает до одного рабочего дня.</p></div>
+                    </div>
+                {% endif %}
+            </div>
         </div>
-    </div>
+    </main>
 {% endblock %}

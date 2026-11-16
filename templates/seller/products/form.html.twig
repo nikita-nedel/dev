@@ -1,61 +1,62 @@
 {% extends 'seller/layout.html.twig' %}
 
 {% block title %}{{ product ? 'Редактирование товара' : 'Новый товар' }}{% endblock %}
-{% block page_title %}{{ product ? 'Редактирование товара' : 'Добавление товара' }}{% endblock %}
+{% block page_title %}{{ product ? 'Редактирование товара' : 'Новый товар' }}{% endblock %}
 
 {% block seller_body %}
     <div class="admin-panel">
         <div class="admin-panel-header">
-            <h2>{{ product ? 'Редактировать' : 'Создать' }} товар</h2>
+            <h2>{{ product ? 'Карточка товара' : 'Добавление товара' }}</h2>
             <a href="{{ path('app_seller_products') }}" class="btn-admin-outline btn-sm"><i class="bi bi-arrow-left"></i> Назад</a>
         </div>
 
-        <form method="post" enctype="multipart/form-data" action="{{ product ? path('app_seller_products_edit', {id: product.id}) : path('app_seller_products_new') }}" class="admin-auth-form" style="padding: 1.5rem;">
-{#            {{ form_start(form) }}#}
-            <div class="row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem;">
-                <div class="form-group">
-                    <label>Название</label>
-{#                    {{ form_widget(form.name, {'attr': {'class': 'admin-input', 'placeholder': 'Введите название'}}) }}#}
+        <form method="post" enctype="multipart/form-data" action="{{ product ? path('app_seller_products_edit', {id: product.id}) : path('app_seller_products_new') }}" class="admin-form">
+            <div class="admin-form-grid">
+                <div class="form-group" style="grid-column: 1 / -1;">
+                    <label class="form-label" for="product-name">Название</label>
+                    <input class="admin-input" id="product-name" name="name" value="{{ product.name|default('') }}" placeholder="Например, хлопковая футболка oversize" required>
                 </div>
                 <div class="form-group">
-                    <label>Артикул (SKU)</label>
-{#                    {{ form_widget(form.sku, {'attr': {'class': 'admin-input', 'placeholder': 'Уникальный артикул'}}) }}#}
+                    <label class="form-label" for="product-sku">Артикул (SKU)</label>
+                    <input class="admin-input" id="product-sku" name="sku" value="{{ product.sku|default('') }}" placeholder="CL-001" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="product-category">Категория</label>
+                    <select class="admin-select" id="product-category" name="category">
+                        {% for category in categories %}
+                            <option value="{{ category.id }}" {{ product and product.category and product.category.id == category.id ? 'selected' : '' }}>{{ category.name }}</option>
+                        {% endfor %}
+                    </select>
                 </div>
                 <div class="form-group" style="grid-column: 1 / -1;">
-                    <label>Описание</label>
-{#                    {{ form_widget(form.description, {'attr': {'class': 'admin-input', 'rows': 4, 'style': 'resize: vertical;'}}) }}#}
+                    <label class="form-label" for="product-description">Описание</label>
+                    <textarea class="admin-input" id="product-description" name="description" rows="4">{{ product.description|default('') }}</textarea>
                 </div>
                 <div class="form-group">
-                    <label>Категория</label>
-{#                    {{ form_widget(form.category, {'attr': {'class': 'admin-select'}}) }}#}
+                    <label class="form-label" for="product-price">Цена, ₽</label>
+                    <input class="admin-input" id="product-price" name="price" type="number" step="0.01" value="{{ product.price|default('') }}" placeholder="0">
                 </div>
                 <div class="form-group">
-                    <label>Цена (₽)</label>
-{#                    {{ form_widget(form.price, {'attr': {'class': 'admin-input', 'type': 'number', 'step': '0.01'}}) }}#}
+                    <label class="form-label" for="product-stock">Остаток</label>
+                    <input class="admin-input" id="product-stock" name="stock" type="number" value="{{ product.stock|default('') }}" placeholder="0">
                 </div>
                 <div class="form-group">
-                    <label>Остаток</label>
-{#                    {{ form_widget(form.stock, {'attr': {'class': 'admin-input', 'type': 'number'}}) }}#}
+                    <label class="form-label" for="product-active">Статус</label>
+                    <select class="admin-select" id="product-active" name="active">
+                        <option value="1" {{ product is null or product.active ? 'selected' : '' }}>Активен</option>
+                        <option value="0" {{ product and not product.active ? 'selected' : '' }}>Неактивен</option>
+                    </select>
                 </div>
                 <div class="form-group">
-                    <label>Статус</label>
-{#                    {{ form_widget(form.active, {'attr': {'class': 'admin-select'}}) }}#}
-                </div>
-                <div class="form-group">
-                    <label>Изображение</label>
-{#                    {{ form_widget(form.image, {'attr': {'class': 'admin-input', 'type': 'file'}}) }}#}
-{#                    {% if product.image %}#}
-{#                        <div style="margin-top: 0.5rem;">#}
-{#                            <img src="{{ asset('uploads/products/' ~ product.image) }}" alt="" style="max-width: 100px; max-height: 100px; border-radius: 8px;">#}
-{#                        </div>#}
-{#                    {% endif %}#}
-                </div>
-                <div class="form-group" style="grid-column: 1 / -1; display: flex; gap: 0.75rem; margin-top: 0.5rem;">
-                    <button type="submit" class="btn-admin-primary">Сохранить</button>
-                    <a href="{{ path('app_seller_products') }}" class="btn-admin-outline">Отмена</a>
+                    <label class="form-label" for="product-image">Изображение</label>
+                    <input class="admin-input" id="product-image" name="image" type="file" accept="image/*">
                 </div>
             </div>
-{#            {{ form_end(form) }}#}
+
+            <div class="admin-form-actions">
+                <button class="btn-admin-primary" type="submit">Сохранить</button>
+                <a class="btn-admin-outline" href="{{ path('app_seller_products') }}">Отмена</a>
+            </div>
         </form>
     </div>
 {% endblock %}

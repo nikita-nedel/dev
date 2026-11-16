@@ -1,377 +1,322 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Корзина - WB Style{% endblock %}
-
-{% block stylesheets %}
-    {{ parent() }}
-    <style>
-        .cart-page {
-            background: #f8f9fa;
-            min-height: calc(100vh - 120px);
-            padding: 2rem 0;
-        }
-
-        .cart-header {
-            display: flex;
-            align-items: flex-end;
-            justify-content: space-between;
-            gap: 1rem;
-            margin-bottom: 2rem;
-        }
-
-        .cart-title {
-            font-size: 2.3rem;
-            font-weight: 900;
-            color: #111827;
-            margin: 0;
-        }
-
-        .cart-subtitle {
-            color: #64748b;
-            margin: 0.35rem 0 0;
-        }
-
-        .cart-layout {
-            display: grid;
-            grid-template-columns: minmax(0, 1fr) 360px;
-            gap: 2rem;
-            align-items: start;
-        }
-
-        .cart-card,
-        .cart-summary,
-        .delivery-card {
-            background: white;
-            border-radius: 22px;
-            box-shadow: 0 10px 28px rgba(15, 23, 42, 0.07);
-        }
-
-        .cart-card {
-            padding: 1.25rem;
-        }
-
-        .cart-item {
-            display: grid;
-            grid-template-columns: 128px minmax(0, 1fr) auto;
-            gap: 1.25rem;
-            padding: 1.25rem 0;
-            border-bottom: 1px solid #e5e7eb;
-        }
-
-        .cart-item:first-child {
-            padding-top: 0;
-        }
-
-        .cart-item:last-child {
-            border-bottom: none;
-            padding-bottom: 0;
-        }
-
-        .cart-item-image {
-            width: 128px;
-            height: 128px;
-            border-radius: 18px;
-            background: #f8fafc;
-            object-fit: contain;
-        }
-
-        .cart-item-title {
-            font-size: 1.15rem;
-            font-weight: 800;
-            color: #111827;
-            text-decoration: none;
-            display: inline-block;
-            margin-bottom: 0.5rem;
-        }
-
-        .cart-item-title:hover {
-            color: #667eea;
-        }
-
-        .cart-item-meta {
-            color: #64748b;
-            display: flex;
-            gap: 0.75rem;
-            flex-wrap: wrap;
-            margin-bottom: 0.8rem;
-        }
-
-        .cart-item-actions {
-            display: flex;
-            gap: 0.75rem;
-            flex-wrap: wrap;
-        }
-
-        .cart-link-btn {
-            border: none;
-            background: none;
-            color: #667eea;
-            padding: 0;
-            font-weight: 700;
-        }
-
-        .cart-item-side {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-end;
-            justify-content: space-between;
-            gap: 1rem;
-        }
-
-        .quantity-control {
-            display: inline-flex;
-            align-items: center;
-            border: 1px solid #e5e7eb;
-            border-radius: 14px;
-            overflow: hidden;
-            background: #f8fafc;
-        }
-
-        .quantity-control button {
-            width: 38px;
-            height: 38px;
-            border: none;
-            background: transparent;
-            font-weight: 900;
-            color: #667eea;
-        }
-
-        .quantity-control span {
-            min-width: 36px;
-            text-align: center;
-            font-weight: 800;
-        }
-
-        .cart-item-price {
-            font-size: 1.35rem;
-            font-weight: 900;
-            color: #111827;
-            white-space: nowrap;
-        }
-
-        .cart-summary {
-            padding: 1.5rem;
-            position: sticky;
-            top: 90px;
-        }
-
-        .summary-title {
-            font-size: 1.3rem;
-            font-weight: 900;
-            color: #111827;
-            margin-bottom: 1.25rem;
-        }
-
-        .summary-row {
-            display: flex;
-            justify-content: space-between;
-            gap: 1rem;
-            color: #475569;
-            margin-bottom: 0.9rem;
-        }
-
-        .summary-row.discount {
-            color: #16a34a;
-        }
-
-        .summary-total {
-            display: flex;
-            justify-content: space-between;
-            gap: 1rem;
-            font-size: 1.45rem;
-            font-weight: 900;
-            color: #111827;
-            border-top: 1px solid #e5e7eb;
-            padding-top: 1rem;
-            margin-top: 1rem;
-        }
-
-        .checkout-btn {
-            width: 100%;
-            min-height: 54px;
-            border: none;
-            border-radius: 16px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            font-weight: 900;
-            margin-top: 1.25rem;
-            transition: all 0.25s ease;
-        }
-
-        .checkout-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 14px 28px rgba(102, 126, 234, 0.25);
-        }
-
-        .promo-box {
-            display: flex;
-            gap: 0.5rem;
-            margin-top: 1rem;
-        }
-
-        .promo-box input {
-            flex: 1;
-            border: 1px solid #e5e7eb;
-            border-radius: 12px;
-            padding: 0.75rem;
-        }
-
-        .promo-box button {
-            border: none;
-            border-radius: 12px;
-            background: #eef2ff;
-            color: #4f46e5;
-            font-weight: 800;
-            padding: 0 1rem;
-        }
-
-        .delivery-card {
-            padding: 1.25rem;
-            margin-top: 1.5rem;
-        }
-
-        .delivery-title {
-            font-weight: 900;
-            color: #111827;
-            margin-bottom: 0.75rem;
-        }
-
-        .delivery-line {
-            display: flex;
-            gap: 0.75rem;
-            color: #475569;
-            margin-bottom: 0.7rem;
-        }
-
-        .delivery-line i {
-            color: #667eea;
-        }
-
-        @media (max-width: 992px) {
-            .cart-layout {
-                grid-template-columns: 1fr;
-            }
-
-            .cart-summary {
-                position: static;
-            }
-        }
-
-        @media (max-width: 576px) {
-            .cart-page {
-                padding: 1rem 0;
-            }
-
-            .cart-header {
-                align-items: flex-start;
-                flex-direction: column;
-            }
-
-            .cart-title {
-                font-size: 1.8rem;
-            }
-
-            .cart-item {
-                grid-template-columns: 96px 1fr;
-            }
-
-            .cart-item-image {
-                width: 96px;
-                height: 96px;
-            }
-
-            .cart-item-side {
-                grid-column: 1 / -1;
-                flex-direction: row;
-                align-items: center;
-            }
-        }
-    </style>
-{% endblock %}
+{% block title %}Корзина — WB Style{% endblock %}
+{% block body_class %}wb-storefront has-mobile-cart{% endblock %}
 
 {% block body %}
-    <div class="cart-page">
+    {% set cartUnits = 0 %}
+    {% for item in cartItems %}{% set cartUnits = cartUnits + item.quantity %}{% endfor %}
+    <div class="wb-page-head">
         <div class="container">
-            <div class="cart-header">
+            <nav class="wb-breadcrumbs" aria-label="Хлебные крошки">
+                <a href="{{ path('app_home') }}">Главная</a>
+                <span class="sep">/</span>
+                <span aria-current="page">Корзина</span>
+            </nav>
+            <div class="wb-page-title-row">
                 <div>
-                    <h1 class="cart-title">Корзина</h1>
-                    <p class="cart-subtitle">{{ cartItems|length }} товара готовы к оформлению</p>
+                    <h1>Корзина <span class="wb-count-chip" data-cart-title>{{ cartUnits }} {{ cartUnits == 1 ? 'товар' : (cartUnits < 5 ? 'товара' : 'товаров') }}</span></h1>
+                    <p>Проверьте размеры и количество — всё можно изменить перед оформлением.</p>
                 </div>
-                <a href="{{ path('cat') }}" class="btn btn-outline-primary rounded-pill px-4">
-                    <i class="bi bi-arrow-left me-2"></i>Продолжить покупки
-                </a>
-            </div>
-
-            <div class="cart-layout">
-                <main class="cart-card">
-                    {% for item in cartItems %}
-                        {% set product = item.product %}
-                        <article class="cart-item">
-                            <a href="{{ path('app_product_show', {id: product.id}) }}">
-                                <img class="cart-item-image" src="{{ product.image }}" alt="{{ product.name }}">
-                            </a>
-
-                            <div>
-                                <a href="{{ path('app_product_show', {id: product.id}) }}" class="cart-item-title">{{ product.name }}</a>
-                                <div class="cart-item-meta">
-                                    <span>Размер: {{ item.size }}</span>
-                                    <span>Цвет: {{ item.color }}</span>
-                                    <span>{{ product.sellerName }}</span>
-                                </div>
-                                <div class="cart-item-actions">
-                                    <button class="cart-link-btn" type="button"><i class="bi bi-heart me-1"></i>В избранное</button>
-                                    <button class="cart-link-btn text-danger" type="button"><i class="bi bi-trash me-1"></i>Удалить</button>
-                                </div>
-                            </div>
-
-                            <div class="cart-item-side">
-                                <div class="quantity-control">
-                                    <button type="button">−</button>
-                                    <span>{{ item.quantity }}</span>
-                                    <button type="button">+</button>
-                                </div>
-                                <div class="cart-item-price">{{ (product.price * item.quantity)|number_format(0, ',', ' ') }} ₽</div>
-                            </div>
-                        </article>
-                    {% endfor %}
-                </main>
-
-                <aside>
-                    <section class="cart-summary">
-                        <div class="summary-title">Итого</div>
-                        <div class="summary-row">
-                            <span>Товары</span>
-                            <strong>{{ subtotal|number_format(0, ',', ' ') }} ₽</strong>
-                        </div>
-                        <div class="summary-row discount">
-                            <span>Скидка WB Style</span>
-                            <strong>−{{ discount|number_format(0, ',', ' ') }} ₽</strong>
-                        </div>
-                        <div class="summary-row">
-                            <span>Доставка</span>
-                            <strong>{{ delivery == 0 ? 'Бесплатно' : delivery|number_format(0, ',', ' ') ~ ' ₽' }}</strong>
-                        </div>
-                        <div class="summary-total">
-                            <span>К оплате</span>
-                            <span>{{ total|number_format(0, ',', ' ') }} ₽</span>
-                        </div>
-
-                        <button class="checkout-btn" type="button">Оформить заказ</button>
-
-                        <div class="promo-box">
-                            <input type="text" placeholder="Промокод">
-                            <button type="button">OK</button>
-                        </div>
-                    </section>
-
-                    <section class="delivery-card">
-                        <div class="delivery-title">Доставка</div>
-                        <div class="delivery-line"><i class="bi bi-geo-alt"></i><span>ПВЗ WB Style, ул. Лесная, 7</span></div>
-                        <div class="delivery-line"><i class="bi bi-calendar-check"></i><span>Можно забрать завтра после 14:00</span></div>
-                        <div class="delivery-line"><i class="bi bi-shield-check"></i><span>Оплата безопасно через WB Pay</span></div>
-                    </section>
-                </aside>
+                <a class="wb-link" href="{{ path('cat') }}">Продолжить покупки <i class="bi bi-arrow-right"></i></a>
             </div>
         </div>
     </div>
+
+    <div class="container cart-layout">
+        <section class="cart-main" aria-labelledby="cart-title">
+            <h2 class="visually-hidden" id="cart-title">Товары в корзине</h2>
+            <div class="cart-toolbar">
+                <label class="cart-check">
+                    <input type="checkbox" checked data-select-all>
+                    Выбрать все
+                </label>
+                <span class="cart-toolbar__label" data-selected-label>Выбрано {{ cartItems|length }} из {{ cartItems|length }}</span>
+                <button class="cart-toolbar__remove" type="button" data-remove-selected>Удалить выбранное</button>
+            </div>
+
+            <div class="cart-card" data-cart-list>
+                {% for item in cartItems %}
+                    {% set product = item.product %}
+                    <article class="cart-item" data-price="{{ product.price }}" data-qty="{{ item.quantity }}">
+                        <input class="cart-item__check" type="checkbox" checked aria-label="Выбрать «{{ product.name }}»" data-item-check style="width: 15px; height: 15px; margin-top: 3px; accent-color: var(--wb-petrol);">
+                        <a class="cart-item__image" href="{{ path('app_product_show', {id: product.id}) }}">
+                            <img src="{{ product.image }}" alt="{{ product.name }}">
+                        </a>
+                        <div class="cart-item__body">
+                            <div class="cart-item__head">
+                                <div>
+                                    <a class="cart-item__seller" href="{{ path('cat') }}">
+                                        <span class="cart-item__mark">{{ product.sellerName|first|upper }}</span>
+                                        {{ product.sellerName }}
+                                        <i class="bi bi-patch-check" style="color: var(--wb-green);"></i>
+                                    </a>
+                                    <h3 class="cart-item__name"><a href="{{ path('app_product_show', {id: product.id}) }}">{{ product.name }}</a></h3>
+                                    <p class="cart-item__meta">
+                                        <span>Размер {{ item.size }}</span><span>·</span>
+                                        <span>{{ item.color }}</span><span>·</span>
+                                        <span style="color: var(--wb-green);">В наличии</span>
+                                    </p>
+                                </div>
+                                <button class="cart-item__remove" type="button" aria-label="Удалить товар" data-remove>
+                                    <i class="bi bi-trash3"></i>
+                                </button>
+                            </div>
+                            <div class="cart-item__bottom">
+                                <div class="cart-item__extra">
+                                    <button class="cart-fav" type="button" aria-pressed="false" data-wb-favorite>
+                                        <i class="bi bi-heart"></i><span>В избранное</span>
+                                    </button>
+                                    <span class="cart-item__delivery"><i class="bi bi-truck"></i>Завтра, 19 ноября</span>
+                                </div>
+                                <div class="cart-item__side">
+                                    <div class="qty" role="group" aria-label="Количество">
+                                        <button type="button" data-minus aria-label="Уменьшить количество"><i class="bi bi-dash"></i></button>
+                                        <span data-qty>{{ item.quantity }}</span>
+                                        <button type="button" data-plus aria-label="Увеличить количество"><i class="bi bi-plus"></i></button>
+                                    </div>
+                                    <div class="cart-item__price">
+                                        <strong data-line-total>{{ (product.price * item.quantity)|number_format(0, ',', ' ') }} ₽</strong>
+                                        {% if product.oldPrice %}
+                                            <s>{{ product.oldPrice|number_format(0, ',', ' ') }} ₽</s>
+                                            <small>−{{ product.discount }}%</small>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </article>
+                {% endfor %}
+            </div>
+
+            <div class="wb-empty" hidden data-cart-empty>
+                <span class="wb-empty__icon"><i class="bi bi-bag"></i></span>
+                <h2>В корзине пока пусто</h2>
+                <p>Добавьте что-нибудь из новой коллекции — мы сохраним выбор.</p>
+                <a class="btn btn-primary" href="{{ path('cat') }}">Перейти в каталог <i class="bi bi-arrow-right"></i></a>
+            </div>
+
+            <div class="cart-assurance">
+                <div><i class="bi bi-truck"></i><span><strong>Бесплатно</strong> от 3 000 ₽</span></div>
+                <div><i class="bi bi-arrow-counterclockwise"></i><span><strong>14 дней</strong> на возврат</span></div>
+                <div><i class="bi bi-shield-check"></i><span><strong>Безопасная</strong> оплата</span></div>
+            </div>
+        </section>
+
+        <aside class="cart-aside" aria-label="Итог заказа">
+            <section class="cart-summary">
+                <div class="cart-summary__head">
+                    <h2>Ваш заказ</h2>
+                    <span data-summary-count>{{ cartUnits }} {{ cartUnits == 1 ? 'товар' : (cartUnits < 5 ? 'товара' : 'товаров') }}</span>
+                </div>
+                <div class="cart-summary__rows">
+                    <div class="cart-summary__row"><span>Товары</span><strong data-subtotal>{{ subtotal|number_format(0, ',', ' ') }} ₽</strong></div>
+                    <div class="cart-summary__row cart-summary__row--green" data-discount-row><span>Скидка WB Style</span><strong data-discount>−{{ discount|number_format(0, ',', ' ') }} ₽</strong></div>
+                    <div class="cart-summary__row cart-summary__row--promo" hidden data-promo-row>
+                        <span>Промокод WELCOME</span><strong data-promo-value>−1 000 ₽</strong>
+                        <button type="button" aria-label="Убрать промокод" data-promo-remove>×</button>
+                    </div>
+                    <div class="cart-summary__row"><span>Доставка</span><strong data-delivery-value>{{ delivery == 0 ? 'Бесплатно' : delivery|number_format(0, ',', ' ') ~ ' ₽' }}</strong></div>
+                </div>
+                <div class="cart-summary__total"><span>К оплате</span><strong data-total aria-live="polite">{{ total|number_format(0, ',', ' ') }} ₽</strong></div>
+                <p class="cart-summary__bonus"><i class="bi bi-stars"></i> Начислим <strong data-bonus>{{ (total * 0.05)|round|number_format(0, ',', ' ') }} бонусов</strong></p>
+                <button class="btn btn-primary checkout" type="button" data-checkout>Оформить заказ <i class="bi bi-arrow-right"></i></button>
+                <p class="cart-summary__secure"><i class="bi bi-lock"></i> Безопасная оплата</p>
+
+                <div class="cart-promo">
+                    <label for="promo-code">Промокод</label>
+                    <div class="cart-promo__row">
+                        <input id="promo-code" type="text" placeholder="Введите код" autocomplete="off">
+                        <button type="button" data-promo-apply>Применить</button>
+                    </div>
+                    <p class="cart-promo__hint">Попробуйте <strong>WELCOME</strong> — минус 1 000 ₽</p>
+                </div>
+            </section>
+
+            <section class="cart-delivery">
+                <div class="cart-delivery__head">
+                    <h2>Доставка</h2>
+                    <button type="button" data-wb-demo="Выбор пункта выдачи">Изменить</button>
+                </div>
+                <div class="cart-delivery__row">
+                    <i class="bi bi-geo-alt"></i>
+                    <div><strong>Санкт-Петербург, ул. Лесная, 7</strong><span>ПВЗ WB Style · 5 минут пешком</span></div>
+                </div>
+                <div class="cart-delivery__row">
+                    <i class="bi bi-calendar-check"></i>
+                    <div><strong>Завтра, 19 ноября</strong><span>Можно забрать после 14:00</span></div>
+                </div>
+                <div class="cart-delivery__row">
+                    <i class="bi bi-credit-card"></i>
+                    <div><strong>Оплата картой онлайн</strong><span>Или при получении — на ваш выбор</span></div>
+                </div>
+            </section>
+
+            <div class="cart-help">
+                <span class="cart-help__icon"><i class="bi bi-question-circle"></i></span>
+                <div>
+                    <strong>Нужна помощь с заказом?</strong>
+                    <p>Подскажем по размерам и доставке — отвечаем в течение 15 минут.</p>
+                    <a href="#" data-wb-demo="Чат поддержки">Написать в чат</a>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <div class="cart-mobile-bar">
+        <div><span data-mobile-label>Выбрано {{ cartItems|length }} товара</span><strong data-total>{{ total|number_format(0, ',', ' ') }} ₽</strong></div>
+        <button class="btn btn-primary" type="button" data-checkout>Оформить заказ</button>
+    </div>
+{% endblock %}
+
+{% block extra_javascripts %}
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const list = document.querySelector('[data-cart-list]');
+            if (!list) return;
+            const empty = document.querySelector('[data-cart-empty]');
+            const toolbar = document.querySelector('.cart-toolbar');
+            const selectAll = document.querySelector('[data-select-all]');
+            const promoInput = document.querySelector('#promo-code');
+            const promoRow = document.querySelector('[data-promo-row]');
+            const state = { promo: 0 };
+            const discountRate = {{ subtotal > 0 ? (discount / subtotal) : 0 }};
+
+            const money = (value) => `${new Intl.NumberFormat('ru-RU').format(Math.round(value))} ₽`;
+            const plural = (n, one, few, many) => {
+                const m10 = n % 10;
+                const m100 = n % 100;
+                if (m10 === 1 && m100 !== 11) return one;
+                if (m10 >= 2 && m10 <= 4 && (m100 < 10 || m100 >= 20)) return few;
+                return many;
+            };
+
+            const items = () => [...list.querySelectorAll('.cart-item')];
+
+            function recalc() {
+                const all = items();
+                let units = 0;
+                let selected = 0;
+                let subtotal = 0;
+
+                all.forEach((item) => {
+                    const qty = Number(item.dataset.qty);
+                    const line = Number(item.dataset.price) * qty;
+                    const checked = item.querySelector('[data-item-check]').checked;
+                    item.querySelector('[data-qty]').textContent = qty;
+                    item.querySelector('[data-line-total]').textContent = money(line);
+                    item.classList.toggle('is-unselected', !checked);
+                    item.querySelector('[data-minus]').disabled = qty <= 1;
+                    units += qty;
+                    if (checked) {
+                        selected += 1;
+                        subtotal += line;
+                    }
+                });
+
+                const discount = Math.round(subtotal * discountRate);
+                const delivery = subtotal === 0 || subtotal >= 3000 ? 0 : 490;
+                const total = Math.max(0, subtotal - discount - state.promo + delivery);
+
+                if (all.length === 0) {
+                    state.promo = 0;
+                    if (promoRow) promoRow.hidden = true;
+                }
+
+                document.querySelector('[data-subtotal]').textContent = money(subtotal);
+                document.querySelector('[data-discount]').textContent = `−${money(discount)}`;
+                document.querySelector('[data-discount-row]').hidden = subtotal === 0;
+                document.querySelector('[data-delivery-value]').textContent = delivery === 0 ? 'Бесплатно' : money(delivery);
+                document.querySelectorAll('[data-total]').forEach((element) => { element.textContent = money(total); });
+                document.querySelector('[data-bonus]').textContent = `${new Intl.NumberFormat('ru-RU').format(Math.round(total * 0.05))} бонусов`;
+                document.querySelector('[data-cart-title]').textContent = `${units} ${plural(units, 'товар', 'товара', 'товаров')}`;
+                document.querySelector('[data-summary-count]').textContent = `${units} ${plural(units, 'товар', 'товара', 'товаров')}`;
+                document.querySelector('[data-selected-label]').textContent = `Выбрано ${selected} из ${all.length}`;
+                document.querySelector('[data-mobile-label]').textContent = `Выбрано ${selected} ${plural(selected, 'товар', 'товара', 'товаров')}`;
+                document.querySelectorAll('[data-checkout]').forEach((button) => { button.disabled = selected === 0; });
+
+                if (selectAll) {
+                    selectAll.checked = all.length > 0 && selected === all.length;
+                    selectAll.indeterminate = selected > 0 && selected < all.length;
+                }
+
+                const isEmpty = all.length === 0;
+                empty.hidden = !isEmpty;
+                list.hidden = isEmpty;
+                toolbar.hidden = isEmpty;
+            }
+
+            list.addEventListener('click', (event) => {
+                const plus = event.target.closest('[data-plus]');
+                const minus = event.target.closest('[data-minus]');
+                if (!plus && !minus) return;
+                const item = event.target.closest('.cart-item');
+                const qty = Number(item.dataset.qty);
+                item.dataset.qty = String(Math.max(1, Math.min(9, qty + (plus ? 1 : -1))));
+                recalc();
+            });
+
+            list.addEventListener('change', (event) => {
+                if (event.target.matches('[data-item-check]')) recalc();
+            });
+
+            selectAll?.addEventListener('change', () => {
+                list.querySelectorAll('[data-item-check]').forEach((box) => { box.checked = selectAll.checked; });
+                recalc();
+            });
+
+            list.addEventListener('click', (event) => {
+                const button = event.target.closest('[data-remove]');
+                if (!button) return;
+                button.closest('.cart-item').remove();
+                recalc();
+                window.showToast?.('Товар удалён из корзины', 'success');
+            });
+
+            document.querySelector('[data-remove-selected]')?.addEventListener('click', () => {
+                const selected = items().filter((item) => item.querySelector('[data-item-check]').checked);
+                if (!selected.length) {
+                    window.showToast?.('Выберите товары для удаления', 'error');
+                    return;
+                }
+                selected.forEach((item) => item.remove());
+                recalc();
+                window.showToast?.('Выбранные товары удалены', 'success');
+            });
+
+            document.querySelector('[data-promo-apply]')?.addEventListener('click', () => {
+                const code = (promoInput?.value || '').trim().toUpperCase();
+                if (code === 'WELCOME') {
+                    state.promo = 1000;
+                    promoRow.hidden = false;
+                    document.querySelector('[data-promo-value]').textContent = '−1 000 ₽';
+                    recalc();
+                    window.showToast?.('Промокод WELCOME применён', 'success');
+                } else {
+                    window.showToast?.(code ? 'Промокод не найден' : 'Введите промокод', 'error');
+                }
+            });
+
+            document.querySelector('[data-promo-remove]')?.addEventListener('click', () => {
+                state.promo = 0;
+                promoRow.hidden = true;
+                promoInput.value = '';
+                recalc();
+                window.showToast?.('Промокод убран');
+            });
+
+            document.querySelectorAll('[data-checkout]').forEach((button) => {
+                button.addEventListener('click', () => {
+                    const selected = items().filter((item) => item.querySelector('[data-item-check]').checked).length;
+                    if (!selected) {
+                        window.showToast?.('Выберите хотя бы один товар', 'error');
+                        return;
+                    }
+                    window.showToast?.('Заказ оформлен — это демо-версия', 'success');
+                });
+            });
+
+            recalc();
+        });
+    </script>
 {% endblock %}

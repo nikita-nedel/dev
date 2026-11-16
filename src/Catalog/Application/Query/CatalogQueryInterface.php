@@ -7,7 +7,7 @@ namespace App\Catalog\Application\Query;
 interface CatalogQueryInterface
 {
     /**
-     * @return array{slides: list<array<string, mixed>>, categories: list<array<string, mixed>>, products: list<array<string, mixed>>}
+     * @return array{slides: list<array<string, mixed>>, categories: list<array<string, mixed>>, products: list<array<string, mixed>>, sellers: list<array<string, mixed>>}
      */
     public function homePage(): array;
 

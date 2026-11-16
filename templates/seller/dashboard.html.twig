@@ -1,20 +1,69 @@
 {% extends 'seller/layout.html.twig' %}
 
-{% block title %}Кабинет продавца{% endblock %}
-{% block page_title %}Кабинет продавца{% endblock %}
+{% block title %}Обзор магазина{% endblock %}
+{% block page_title %}Обзор магазина{% endblock %}
 
 {% block seller_body %}
-    <div class="card p-4 shadow-sm">
-        <h2 class="h5">{{ seller.profile.shopName }}</h2>
-        <p class="text-secondary mb-1">Email: {{ seller.email }}</p>
-        <p class="text-secondary">Статус: {{ seller.isActive ? 'Активен' : 'Неактивен' }}</p>
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-card-header">
+                <div>
+                    <div class="stat-card-label">Статус магазина</div>
+                    <div class="stat-card-value">{{ seller.isActive ? 'Активен' : 'На проверке' }}</div>
+                </div>
+                <div class="stat-card-icon revenue"><i class="bi bi-shop"></i></div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-card-header">
+                <div>
+                    <div class="stat-card-label">Заявка</div>
+                    <div class="stat-card-value" style="font-size: 1.15rem;">{{ sellerRequest ? sellerRequest.status.label : 'Не подана' }}</div>
+                </div>
+                <div class="stat-card-icon visitors"><i class="bi bi-clipboard-check"></i></div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-card-header">
+                <div>
+                    <div class="stat-card-label">E-mail магазина</div>
+                    <div class="stat-card-value" style="font-size: 0.84rem; word-break: normal; overflow-wrap: anywhere;">{{ seller.email }}</div>
+                </div>
+                <div class="stat-card-icon orders"><i class="bi bi-envelope"></i></div>
+            </div>
+        </div>
+    </div>
 
-        {% if sellerRequest %}
-            <hr>
-            <p><strong>Заявка:</strong> {{ sellerRequest.status.label }}</p>
-            {% if sellerRequest.reviewedAt %}
-                <p class="text-secondary small">Рассмотрена: {{ sellerRequest.reviewedAt|date('d.m.Y H:i') }}</p>
+    <div class="admin-panel" style="margin-bottom: 1.25rem;">
+        <div class="admin-panel-header">
+            <h2>{{ seller.profile.shopName }}</h2>
+            <a href="{{ path('app_seller_products_new') }}"><i class="bi bi-plus-lg"></i> Добавить товар</a>
+        </div>
+        <div style="padding: 1.25rem 1.5rem;">
+            <p class="text-secondary mb-2">Это демонстрационный кабинет продавца. Управляйте витриной, товарами и заявками в разделах слева.</p>
+            {% if sellerRequest and sellerRequest.reviewedAt %}
+                <p class="text-secondary mb-0" style="font-size: 0.78rem;">Заявка рассмотрена: {{ sellerRequest.reviewedAt|date('d.m.Y H:i') }}</p>
             {% endif %}
-        {% endif %}
+        </div>
+    </div>
+
+    <div class="admin-panel">
+        <div class="admin-panel-header">
+            <h2>Быстрые действия</h2>
+        </div>
+        <div class="admin-quick-grid">
+            <a class="admin-quick" href="{{ path('app_seller_products') }}">
+                <span class="admin-quick-icon"><i class="bi bi-box-seam"></i></span>
+                <span><strong>Товары</strong><span>Редактировать ассортимент</span></span>
+            </a>
+            <a class="admin-quick" href="{{ path('app_seller_products_new') }}">
+                <span class="admin-quick-icon"><i class="bi bi-plus-lg"></i></span>
+                <span><strong>Новый товар</strong><span>Добавить позицию в витрину</span></span>
+            </a>
+            <a class="admin-quick" href="{{ path('app_home') }}">
+                <span class="admin-quick-icon"><i class="bi bi-arrow-up-right"></i></span>
+                <span><strong>Открыть витрину</strong><span>Посмотреть магазин глазами покупателя</span></span>
+            </a>
+        </div>
     </div>
 {% endblock %}

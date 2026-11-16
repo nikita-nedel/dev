@@ -4,17 +4,27 @@
 {% block page_title %}Пригласить администратора{% endblock %}
 
 {% block admin_body %}
-    <div class="admin-panel" style="max-width: 520px;">
-        {{ form_start(form) }}
-            {{ form_row(form.email) }}
-            <button type="submit" class="btn-admin-primary mt-3">Создать инвайт</button>
-        {{ form_end(form) }}
+    <div class="admin-panel" style="max-width: 560px;">
+        <div class="admin-panel-header">
+            <h2>Новый администратор</h2>
+        </div>
+        <div style="padding: 1.25rem;">
+            <p class="text-secondary" style="font-size: 0.78rem; line-height: 1.6; margin-bottom: 1rem;">Укажите e-mail — мы создадим персональную ссылку для регистрации администратора.</p>
+            {{ form_start(form) }}
+                <div class="form-group">
+                    {{ form_label(form.email, 'E-mail администратора', {label_attr: {class: 'form-label'}}) }}
+                    {{ form_widget(form.email, {attr: {class: 'admin-input', placeholder: 'admin@example.com'}}) }}
+                    {{ form_errors(form.email) }}
+                </div>
+                <button type="submit" class="btn-admin-primary" style="margin-top: 0.35rem;">Создать инвайт</button>
+            {{ form_end(form) }}
 
-        {% if inviteUrl %}
-            <div class="mt-4 p-3 bg-light rounded">
-                <div class="small text-secondary mb-2">Ссылка для регистрации:</div>
-                <code style="word-break: break-all;">{{ inviteUrl }}</code>
-            </div>
-        {% endif %}
+            {% if inviteUrl %}
+                <div style="margin-top: 1.25rem; padding: 0.9rem; border-radius: 7px; background: #f7f9f8; border: 1px solid #dce2df;">
+                    <div class="form-label" style="margin-bottom: 0.4rem;">Ссылка для регистрации</div>
+                    <code style="word-break: break-all; font-size: 0.74rem; color: #3a4f59;">{{ inviteUrl }}</code>
+                </div>
+            {% endif %}
+        </div>
     </div>
 {% endblock %}

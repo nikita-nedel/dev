@@ -3,43 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#27373e">
     <title>{% block title %}WB Style{% endblock %}</title>
+    <link rel="icon" href="{{ asset('favicon.svg') }}" type="image/svg+xml">
 
     {% block stylesheets %}
         {{ encore_entry_link_tags('app') }}
     {% endblock %}
 </head>
 
-<body>
-<!-- Хедер -->
+<body class="{% block body_class %}wb-storefront{% endblock %}">
+<a class="skip-link" href="#main-content">Перейти к содержанию</a>
+
 {% block header %}
     {{ include('components/header.html.twig') }}
 {% endblock %}
 
-<!-- Flash сообщения -->
-<div class="flash-messages">
-    {% for message in app.flashes('success') %}
-        <div class="alert alert-success alert-dismissible fade show flash-alert" role="alert">
-            <i class="bi bi-check-circle me-2"></i>
-            {{ message }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
-    {% endfor %}
-    {% for message in app.flashes('error') %}
-        <div class="alert alert-danger alert-dismissible fade show flash-alert" role="alert">
-            <i class="bi bi-exclamation-triangle me-2"></i>
-            {{ message }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
-    {% endfor %}
-</div>
+{% if app.flashes|length %}
+    <div class="wb-flashes">
+        {% for type, messages in app.flashes %}
+            {% for message in messages %}
+                <div class="wb-flash wb-flash--{{ type == 'error' ? 'error' : (type == 'success' ? 'success' : 'info') }}" role="status">
+                    <i class="bi {{ type == 'error' ? 'bi-exclamation-circle' : (type == 'success' ? 'bi-check-circle' : 'bi-info-circle') }}"></i>
+                    <span>{{ message }}</span>
+                    <button class="wb-flash__close" type="button" aria-label="Закрыть" data-wb-flash-close>&times;</button>
+                </div>
+            {% endfor %}
+        {% endfor %}
+    </div>
+{% endif %}
 
-<!-- Основной контент -->
-<main>
+<main id="main-content">
     {% block body %}{% endblock %}
 </main>
 
-<!-- Футер -->
 {% block footer %}
     {{ include('components/footer.html.twig') }}
 {% endblock %}

@@ -7,7 +7,7 @@
     <div class="admin-panel clients-panel">
         <div class="admin-panel-header">
             <h2>Список товаров</h2>
-            <a href="{{ path('app_seller_products_new') }}" class="btn-admin-primary">+ Добавить товар</a>
+            <a href="{{ path('app_seller_products_new') }}" class="btn-admin-primary" style="color:#fff;"><i class="bi bi-plus-lg"></i> Добавить товар</a>
         </div>
 
         {# Фильтры #}
@@ -98,7 +98,7 @@
 
         {# Пагинация (пример) #}
         <div class="clients-pagination">
-            <span>Показано 1–10 из {{ products|length }}</span>
+            <span>Показано {{ products|length }} из {{ products|length }}</span>
             <div class="pagination-btns">
                 <button class="btn-admin-outline btn-sm" disabled><i class="bi bi-chevron-left"></i></button>
                 <a href="#" class="btn-admin-outline btn-sm active">1</a>

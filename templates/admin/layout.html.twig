@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="{{ asset('favicon.svg') }}" type="image/svg+xml">
     <title>{% block title %}Админ-панель{% endblock %} — WB Style</title>
     {% block stylesheets %}
         {{ encore_entry_link_tags('app') }}    {# Bootstrap + иконки + общие стили #}
@@ -14,7 +15,7 @@
     <aside class="admin-sidebar">
         <div class="admin-sidebar-brand">
             <a href="{{ path('app_admin_dashboard') }}">
-                <span class="brand-icon"><i class="bi bi-grid-1x2-fill"></i></span>
+                <span class="brand-icon">W</span>
                 <span>WB <span class="accent">Admin</span></span>
             </a>
         </div>
@@ -73,15 +74,17 @@
             </span>
         </nav>
         <div class="admin-sidebar-footer">
-            <a href="{{ path('app_home') }}">
-                <i class="bi bi-arrow-left-circle"></i> На сайт
-            </a>
+            <a href="{{ path('app_home') }}"><i class="bi bi-arrow-left-circle"></i> На сайт</a>
+            <span class="admin-sidebar-note">WB Style · Admin</span>
         </div>
     </aside>
 
     <div class="admin-main">
         <header class="admin-topbar">
-            <h1>{% block page_title %}Панель управления{% endblock %}</h1>
+            <div>
+                <span class="admin-topbar-kicker">Управление магазином</span>
+                <h1>{% block page_title %}Панель управления{% endblock %}</h1>
+            </div>
             <div class="admin-topbar-actions">
                 {% if app.user %}
                     <div class="admin-user-badge">

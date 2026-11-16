@@ -1,15 +1,20 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Активация аккаунта продавца{% endblock %}
+{% block title %}Активация аккаунта продавца — WB Style{% endblock %}
 
 {% block body %}
-    <div class="container py-5" style="max-width: 480px;">
-        <h1 class="h3 mb-2">Активация продавца</h1>
-        <p class="text-secondary mb-4">Email: <strong>{{ sellerEmail }}</strong></p>
+    <main class="simple-page">
+        <div class="container">
+            <div class="simple-card">
+                <span class="wb-eyebrow">WB Style · продавцам</span>
+                <h1 style="margin-top: 10px;">Активация кабинета</h1>
+                <p>E-mail: <strong>{{ sellerEmail }}</strong>. Придумайте пароль для входа в кабинет.</p>
 
-        {{ form_start(form, { attr: { class: 'card p-4 shadow-sm' } }) }}
-            {{ form_row(form.plainPassword) }}
-            <button type="submit" class="btn btn-primary w-100 mt-2">Установить пароль и войти</button>
-        {{ form_end(form) }}
-    </div>
+                {{ form_start(form, {attr: {style: 'margin-top: 18px;'}}) }}
+                    {{ form_row(form.plainPassword) }}
+                    <button class="btn btn-primary w-100" type="submit" style="margin-top: 8px;">Установить пароль и войти</button>
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </main>
 {% endblock %}
