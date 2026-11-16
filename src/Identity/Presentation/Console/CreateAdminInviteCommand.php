@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Command;
+namespace App\Identity\Presentation\Console;
 
 use App\Identity\Application\Command\CreateAdminInvite\CreateAdminInvite;
 use App\Identity\Application\Command\CreateAdminInvite\CreateAdminInviteHandler;

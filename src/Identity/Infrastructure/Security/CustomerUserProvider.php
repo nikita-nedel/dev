@@ -11,16 +11,6 @@ use Symfony\Bridge\Doctrine\Security\User\EntityUserProvider;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 
-/**
- * Провайдер пользователей для покупателей.
- *
- * Зачем свой класс: Symfony сам обновляет устаревший хэш пароля при логине
- * (PasswordMigratingListener), но только если провайдер умеет это делать.
- * Штатный EntityUserProvider делегирует обновление репозиторию, который достаёт
- * через $em->getRepository(); у наших сущностей repositoryClass убран, поэтому
- * репозиторий был бы стандартный и обновление молча пропускалось.
- * Здесь upgradePassword() явно уходит в наш Doctrine-репозиторий.
- */
 final class CustomerUserProvider extends EntityUserProvider
 {
     public function __construct(

@@ -187,7 +187,6 @@ final class FakeExportDataProvider implements ExportDataProviderInterface
 
     public function iterateRows(ExportContext $context): iterable
     {
-        // Проверяем, что критерии доехали до провайдера в виде нужного класса
         $context->criteriaAs(ClientListCriteria::class);
 
         yield [1, 'a@example.com'];

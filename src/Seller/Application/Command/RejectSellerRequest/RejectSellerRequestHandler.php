@@ -8,9 +8,6 @@ use App\Seller\Domain\Model\SellerRequestStatus;
 use App\Shared\Domain\Port\ClockInterface;
 use App\Shared\Domain\Port\TransactionManagerInterface;
 
-/**
- * Use case: администратор отклоняет заявку с необязательной причиной.
- */
 final readonly class RejectSellerRequestHandler
 {
     public function __construct(

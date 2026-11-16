@@ -7,12 +7,6 @@ namespace App\Seller\Application\Command\ActivateSeller;
 use App\Shared\Domain\Port\PasswordHasherInterface;
 use App\Shared\Domain\Port\TransactionManagerInterface;
 
-/**
- * Use case: продавец активирует аккаунт по ссылке из письма.
- *
- * Хэширование — через порт (Application не знает про компонент Security),
- * сброс одноразового токена и установка пароля — в одной транзакции.
- */
 final readonly class ActivateSellerHandler
 {
     public function __construct(

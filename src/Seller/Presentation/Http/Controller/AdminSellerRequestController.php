@@ -20,12 +20,6 @@ use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-/**
- * Админский список заявок на продажу и решения по ним.
- *
- * CSRF проверяется вручную (isCsrfTokenValid), потому что approve/reject — это не
- * Symfony-формы, а две кнопки в таблице.
- */
 #[Route('/admin', 'app_admin_')]
 #[IsGranted('ROLE_ADMIN')]
 final class AdminSellerRequestController extends AbstractController

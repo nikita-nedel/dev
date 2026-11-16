@@ -45,11 +45,6 @@ final class DoctrineJobRepository extends ServiceEntityRepository implements Job
     public function createFilteredQueryBuilder(array $filters = []): QueryBuilder
     {
         $qb = $this->createQueryBuilder('j')
-            // Join по классу ExportFile: Process не держит обратную сторону связи,
-            // поэтому связь объявляется здесь, в инфраструктуре, а не в домене.
-            // Join нужен только для фильтров (resource/format/requestedBy).
-            // addSelect здесь добавлять нельзя: fetch-join подмешивает ExportFile
-            // в результат KnpPaginator-а, и в шаблоне в цикле по job приходит не Job.
             ->leftJoin(ExportFile::class, 'e', Join::WITH, 'e.job = j')
             ->leftJoin('e.requestedBy', 'u')
             ->orderBy('j.createdAt', 'DESC');

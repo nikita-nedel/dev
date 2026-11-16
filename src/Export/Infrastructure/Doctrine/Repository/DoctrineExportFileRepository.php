@@ -10,8 +10,6 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * Doctrine-реализация порта ExportFileRepositoryInterface.
- *
  * @extends ServiceEntityRepository<ExportFile>
  */
 final class DoctrineExportFileRepository extends ServiceEntityRepository implements ExportFileRepositoryInterface

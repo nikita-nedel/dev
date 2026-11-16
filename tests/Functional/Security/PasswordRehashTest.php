@@ -7,13 +7,6 @@ namespace App\Tests\Functional\Security;
 use App\Identity\Domain\Model\Customer;
 use App\Tests\Functional\FunctionalTestCase;
 
-/**
- * Проверяет, что при логине устаревший хэш пароля автоматически перезаписывается
- * более сильным (Symfony PasswordMigratingListener + наши кастомные user-провайдеры).
- *
- * В тестовой конфигурации хэшер для Customer — bcrypt cost 5, поэтому хэш cost 4
- * считается устаревшим.
- */
 final class PasswordRehashTest extends FunctionalTestCase
 {
     public function testOutdatedPasswordHashIsUpgradedOnLogin(): void

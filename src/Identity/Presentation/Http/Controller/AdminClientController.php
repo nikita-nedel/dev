@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Controller\Admin\Clients;
+namespace App\Identity\Presentation\Http\Controller;
 
 use App\Identity\Domain\Query\ClientListCriteria;
 use App\Identity\Domain\Repository\CustomerRepositoryInterface;
@@ -13,19 +13,13 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
 use Symfony\Component\Routing\Attribute\Route;
 
-/**
- * Список клиентов в админке.
- *
- * Здесь осталась только страница списка: постановка выгрузки переехала в
- * App\Export\Presentation\Http\ClientsExportController (тот же URL).
- */
 #[Route('/admin', 'app_admin_')]
-class ClientController extends AbstractController
+final class AdminClientController extends AbstractController
 {
     #[Route('/client', name: 'client_index', methods: ['GET'])]
     public function index(
         Request $request,
-        CustomerRepositoryInterface $customerRepository,
+        CustomerRepositoryInterface $customers,
         PaginatorInterface $paginator,
         #[MapQueryParameter] int $page = 1,
         #[MapQueryParameter] int $perPage = 10,
@@ -33,7 +27,7 @@ class ClientController extends AbstractController
         $criteria = ClientListCriteria::fromQuery($request->query->all());
 
         $pagination = $paginator->paginate(
-            $customerRepository->createClientsQueryBuilder($criteria),
+            $customers->createClientsQueryBuilder($criteria),
             $page,
             $perPage,
         );

@@ -11,9 +11,6 @@ use Symfony\Bridge\Doctrine\Security\User\EntityUserProvider;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 
-/**
- * Провайдер пользователей для продавцов (см. CustomerUserProvider — та же причина).
- */
 final class SellerUserProvider extends EntityUserProvider
 {
     public function __construct(

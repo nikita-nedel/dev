@@ -2,38 +2,40 @@
 
 declare(strict_types=1);
 
-namespace App\Controller;
+namespace App\Catalog\Infrastructure\Demo;
 
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Catalog\Application\Query\CatalogQueryInterface;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
-class HomeController extends AbstractController
+final class DemoCatalogQuery implements CatalogQueryInterface
 {
-    #[Route('/', name: 'app_home')]
-    public function testAction(): Response
+    public function __construct(
+        private readonly UrlGeneratorInterface $urlGenerator,
+    ) {
+    }
+
+    public function homePage(): array
     {
         $slides = [
             [
                 'title' => 'Осенняя коллекция',
                 'description' => 'Новые поступления модной одежды и обуви',
                 'image' => 'https://images.unsplash.com/photo-1445205170230-053b83016050?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80',
-                'link' => $this->generateUrl('cat', ['slug' => 'odezhda']),
+                'link' => $this->urlGenerator->generate('cat', ['slug' => 'odezhda']),
                 'buttonText' => 'Смотреть коллекцию'
             ],
             [
                 'title' => 'Скидки до 50%',
                 'description' => 'Только до конца месяца на зимнюю одежду',
                 'image' => 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80',
-                'link' => $this->generateUrl('cat', ['slug' => 'obuv']),
+                'link' => $this->urlGenerator->generate('cat', ['slug' => 'obuv']),
                 'buttonText' => 'Смотреть скидки'
             ],
             [
                 'title' => 'Бесплатная доставка',
                 'description' => 'При заказе от 3000 ₽ по всей России',
                 'image' => 'https://images.unsplash.com/photo-1576566588028-4147f3842f27?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80',
-                'link' => $this->generateUrl('cart'),
+                'link' => $this->urlGenerator->generate('cart'),
                 'buttonText' => 'Условия доставки'
             ],
         ];
@@ -162,17 +164,12 @@ class HomeController extends AbstractController
             ],
         ];
 
-        return $this->render('home/index.html.twig', [
-            'slides' => $slides,
-            'categories' => $categories,
-            'products' => $products,
-        ]);
+        return ['slides' => $slides, 'categories' => $categories, 'products' => $products];
     }
 
-    #[Route('/catalog/{slug}', name: 'cat', defaults: ['slug' => 'odezhda'])]
-    public function catalogAction(string $slug): Response
+    public function catalogPage(string $slug): array
     {
-        $categories = $this->getCatalogCategories();
+        $categories = $this->catalogCategories();
         $category = $categories[$slug] ?? $categories['odezhda'];
         $brands = [
             ['id' => 1, 'name' => 'Nike', 'count' => 124],
@@ -256,185 +253,34 @@ class HomeController extends AbstractController
                 'freeShipping' => true,
             ],
         ];
-        return $this->render('catalog/index.html.twig', [
+
+        return [
             'category' => $category,
             'categories' => $categories,
             'brands' => $brands,
             'sizes' => $sizes,
             'colors' => $colors,
             'products' => $products,
-        ]);
-    }
-
-    #[Route('/cart', name: 'cart')]
-    public function cartAction(): Response
-    {
-        $cartItems = [
-            [
-                'product' => $this->getProduct(1),
-                'size' => '42',
-                'color' => 'Белый / красный',
-                'quantity' => 1,
-            ],
-            [
-                'product' => $this->getProduct(6),
-                'size' => 'One size',
-                'color' => 'Чёрный',
-                'quantity' => 2,
-            ],
-            [
-                'product' => $this->getProduct(8),
-                'size' => 'Набор',
-                'color' => 'Rose',
-                'quantity' => 1,
-            ],
         ];
-
-        $subtotal = array_reduce($cartItems, static function (int $sum, array $item): int {
-            return $sum + $item['product']['price'] * $item['quantity'];
-        }, 0);
-        $discount = 1850;
-        $delivery = 0;
-
-        return $this->render('cart/index.html.twig', [
-            'cartItems' => $cartItems,
-            'subtotal' => $subtotal,
-            'discount' => $discount,
-            'delivery' => $delivery,
-            'total' => $subtotal - $discount + $delivery,
-        ]);
     }
 
-    #[Route('/product/{id}', name: 'app_product_show', requirements: ['id' => '\d+'])]
-    public function productAction(int $id): Response
+    public function productPage(int $id): array
     {
-        $product = $this->getProduct($id);
+        $product = $this->product($id);
         $relatedProducts = [
-            $this->getProduct(2),
-            $this->getProduct(4),
-            $this->getProduct(6),
-            $this->getProduct(7),
+            $this->product(2),
+            $this->product(4),
+            $this->product(6),
+            $this->product(7),
         ];
 
-        return $this->render('product/show.html.twig', [
-            'product' => $product,
-            'relatedProducts' => $relatedProducts,
-        ]);
+        return ['product' => $product, 'relatedProducts' => $relatedProducts];
     }
 
-    #[Route('/orders', name: 'app_orders')]
-    #[IsGranted('ROLE_CUSTOMER')]
-    public function ordersAction(): Response
-    {
-        $orders = [
-            [
-                'number' => 'WB-20481',
-                'date' => new \DateTimeImmutable('-1 day'),
-                'status' => 'В пути',
-                'statusType' => 'shipping',
-                'total' => 12980,
-                'address' => 'ПВЗ WB Style, Москва, ул. Лесная, 7',
-                'products' => [
-                    $this->getProduct(1),
-                    $this->getProduct(6),
-                ],
-                'steps' => ['Оформлен', 'Оплачен', 'Собран', 'В пути'],
-                'activeStep' => 3,
-            ],
-            [
-                'number' => 'WB-20396',
-                'date' => new \DateTimeImmutable('-8 days'),
-                'status' => 'Получен',
-                'statusType' => 'done',
-                'total' => 7980,
-                'address' => 'Курьером до двери',
-                'products' => [
-                    $this->getProduct(4),
-                    $this->getProduct(8),
-                ],
-                'steps' => ['Оформлен', 'Оплачен', 'Доставлен', 'Получен'],
-                'activeStep' => 4,
-            ],
-            [
-                'number' => 'WB-20142',
-                'date' => new \DateTimeImmutable('-21 days'),
-                'status' => 'Получен',
-                'statusType' => 'done',
-                'total' => 29990,
-                'address' => 'ПВЗ WB Style, Санкт-Петербург, Невский пр., 45',
-                'products' => [
-                    $this->getProduct(5),
-                ],
-                'steps' => ['Оформлен', 'Оплачен', 'Доставлен', 'Получен'],
-                'activeStep' => 4,
-            ],
-        ];
-
-        return $this->render('orders/index.html.twig', [
-            'orders' => $orders,
-        ]);
-    }
-
-    #[Route('/profile', name: 'app_profile')]
-    #[IsGranted('ROLE_CUSTOMER')]
-    public function profileAction(): Response
-    {
-        $profileStats = [
-            ['label' => 'Заказов', 'value' => 18, 'icon' => 'bi-bag-check'],
-            ['label' => 'В избранном', 'value' => 34, 'icon' => 'bi-heart'],
-            ['label' => 'Бонусов', 'value' => '4 820', 'icon' => 'bi-stars'],
-            ['label' => 'Отзывы', 'value' => 12, 'icon' => 'bi-chat-heart'],
-        ];
-
-        $quickActions = [
-            ['title' => 'Мои заказы', 'description' => 'Отследить доставку и повторить покупку', 'icon' => 'bi-box-seam', 'url' => $this->generateUrl('app_orders')],
-            ['title' => 'Адреса доставки', 'description' => 'Дом, офис и пункты выдачи', 'icon' => 'bi-geo-alt', 'url' => $this->generateUrl('app_profile')],
-            ['title' => 'Платежи', 'description' => 'Карты, бонусы и сертификаты', 'icon' => 'bi-credit-card', 'url' => $this->generateUrl('cart')],
-            ['title' => 'Уведомления', 'description' => 'Скидки, статусы заказов и рекомендации', 'icon' => 'bi-bell', 'url' => $this->generateUrl('app_profile')],
-        ];
-
-        $recentOrders = [
-            [
-                'number' => 'WB-20481',
-                'title' => 'Nike Air Max 270, рюкзак Nike',
-                'status' => 'В пути',
-                'date' => '25 июня',
-                'total' => 12980,
-                'progress' => 70,
-            ],
-            [
-                'number' => 'WB-20396',
-                'title' => 'Платье вечернее, косметический набор',
-                'status' => 'Получен',
-                'date' => '18 июня',
-                'total' => 7980,
-                'progress' => 100,
-            ],
-            [
-                'number' => 'WB-20142',
-                'title' => 'Sony WH-1000XM5',
-                'status' => 'Получен',
-                'date' => '4 июня',
-                'total' => 29990,
-                'progress' => 100,
-            ],
-        ];
-
-        $activity = [
-            ['text' => 'Добавлены в избранное часы Casio G-Shock', 'time' => 'Сегодня, 14:20', 'icon' => 'bi-heart-fill'],
-            ['text' => 'Оставлен отзыв на кроссовки Nike Air Max', 'time' => 'Вчера, 19:05', 'icon' => 'bi-star-fill'],
-            ['text' => 'Начислены бонусы за заказ WB-20396', 'time' => '18 июня', 'icon' => 'bi-gift-fill'],
-        ];
-
-        return $this->render('profile/index.html.twig', [
-            'profileStats' => $profileStats,
-            'quickActions' => $quickActions,
-            'recentOrders' => $recentOrders,
-            'activity' => $activity,
-        ]);
-    }
-
-    private function getCatalogCategories(): array
+    /**
+     * @return array<string, array<string, mixed>>
+     */
+    public function catalogCategories(): array
     {
         return [
             'odezhda' => [
@@ -494,7 +340,10 @@ class HomeController extends AbstractController
         ];
     }
 
-    private function getProduct(int $id): array
+    /**
+     * @return array<string, mixed>
+     */
+    public function product(int $id): array
     {
         $products = [
             1 => [

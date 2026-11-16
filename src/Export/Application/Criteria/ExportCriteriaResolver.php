@@ -12,12 +12,6 @@ use App\Export\Domain\Model\ExportResource;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-/**
- * Выбирает фабрику критериев по ресурсу и собирает контекст выгрузки.
- *
- * Фабрики подключаются тегом (см. services.yaml) — добавление нового ресурса не
- * требует правок ни здесь, ни в сервисе выгрузки.
- */
 final class ExportCriteriaResolver
 {
     /**

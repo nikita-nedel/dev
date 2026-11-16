@@ -9,12 +9,6 @@ use App\Seller\Domain\Model\SellerRequestStatus;
 use App\Shared\Domain\Port\ClockInterface;
 use App\Shared\Domain\Port\TransactionManagerInterface;
 
-/**
- * Use case: администратор одобряет заявку.
- *
- * Срок жизни токена активации (7 дней) считается от часов из порта: так правило
- * можно проверить юнит-тестом без ожидания реального времени.
- */
 final readonly class ApproveSellerRequestHandler
 {
     private const ACTIVATION_TOKEN_TTL = '+7 days';

@@ -17,9 +17,6 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Symfony\Component\Security\Http\Authentication\UserAuthenticatorInterface;
 use Symfony\Component\Security\Http\Authenticator\FormLoginAuthenticator;
 
-/**
- * Вход, выход и активация аккаунта продавца по одноразовой ссылке.
- */
 final class SellerSecurityController extends AbstractController
 {
     #[Route('/seller/login', name: 'seller_login')]

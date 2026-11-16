@@ -11,9 +11,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-/**
- * Кабинет продавца: данные продавца и статус его заявки.
- */
 #[IsGranted('ROLE_SELLER')]
 final class SellerDashboardController extends AbstractController
 {

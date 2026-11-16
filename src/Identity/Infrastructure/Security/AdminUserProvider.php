@@ -11,9 +11,6 @@ use Symfony\Bridge\Doctrine\Security\User\EntityUserProvider;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 
-/**
- * Провайдер пользователей для администраторов (см. CustomerUserProvider — та же причина).
- */
 final class AdminUserProvider extends EntityUserProvider
 {
     public function __construct(

@@ -2,19 +2,16 @@
 
 declare(strict_types=1);
 
-namespace App\Controller\Admin;
+namespace App\Dashboard\Infrastructure\Demo;
 
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Attribute\Route;
-
-#[Route('/admin', 'app_admin_')]
-class DashboardController extends AbstractController
+final class DemoDashboardData
 {
-    #[Route('/dashboard', 'dashboard')]
-    public function index(): Response
+    /**
+     * @return array<string, int>
+     */
+    public function stats(): array
     {
-        $stats = [
+        return [
             'salesCount' => 1847,
             'salesSum' => 12_458_900,
             'visitorsCount' => 24_531,
@@ -23,7 +20,14 @@ class DashboardController extends AbstractController
             'salesCountTrend' => 12,
             'salesSumTrend' => 8,
         ];
-        $recentOrders = [
+    }
+
+    /**
+     * @return list<array<string, mixed>>
+     */
+    public function recentOrders(): array
+    {
+        return [
             [
                 'number' => 'WB-10847',
                 'customerName' => 'Иван Петров',
@@ -65,11 +69,5 @@ class DashboardController extends AbstractController
                 'statusLabel' => 'Отменён',
             ],
         ];
-
-        return $this->render('admin/index.html.twig', [
-            'admin_menu' => 'dashboard',
-            'stats' => $stats,
-            'recentOrders' => $recentOrders,
-        ]);
     }
 }

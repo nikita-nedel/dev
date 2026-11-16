@@ -13,8 +13,6 @@ use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * Doctrine-реализация порта заявок на продажу.
- *
  * @extends ServiceEntityRepository<SellerRequest>
  */
 final class DoctrineSellerRequestRepository extends ServiceEntityRepository implements SellerRequestRepositoryInterface

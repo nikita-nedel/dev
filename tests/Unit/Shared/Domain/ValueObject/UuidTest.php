@@ -29,7 +29,6 @@ final class UuidTest extends TestCase
 
         $after = new \DateTimeImmutable('+1 minute');
 
-        // UuidV7::getDateTime() читает те самые 48 бит метки времени из значения.
         $embedded = SymfonyUuid::fromString($uuid->value())->getDateTime();
 
         self::assertGreaterThanOrEqual($before, $embedded);

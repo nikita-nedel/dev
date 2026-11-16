@@ -122,10 +122,6 @@ final class SellerRequestFlowTest extends FunctionalTestCase
         return $sellerRequest;
     }
 
-    /**
-     * Токен берём из реальной страницы: CSRF-хранилище привязано к сессии запроса,
-     * поэтому сгенерировать его в обход HTTP-запроса нельзя.
-     */
     private function csrfTokenFromPage(SellerRequest $sellerRequest): string
     {
         $crawler = $this->client->request('GET', '/admin/seller-requests');

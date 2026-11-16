@@ -12,12 +12,6 @@ use App\Seller\Domain\Model\SellerRequestStatus;
 use App\Seller\Domain\Repository\SellerRequestRepositoryInterface;
 use App\Shared\Domain\Port\TransactionManagerInterface;
 
-/**
- * Use case: покупатель подаёт заявку на продавца.
- *
- * Создаются сразу три сущности (продавец, профиль магазина, заявка) — поэтому одна
- * транзакция. SellerProfile сохраняется каскадом от Seller.
- */
 final readonly class ApplyForSellerHandler
 {
     public function __construct(

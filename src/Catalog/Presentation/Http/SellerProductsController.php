@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace App\Controller\Seller\Products;
+namespace App\Catalog\Presentation\Http;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[Route('/seller', 'app_seller_')]
-class ProductIndexController extends AbstractController
+final class SellerProductsController extends AbstractController
 {
     #[Route('/products', 'products')]
     public function index(): Response
