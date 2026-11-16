@@ -120,7 +120,7 @@
                 </thead>
                 <tbody id="processes-table-body">
                 {% for job in pagination %}
-                    {% set export = job.exportFile %}
+                    {% set export = export_files[job.jobId]|default(null) %}
                     <tr data-job-id="{{ job.jobId }}">
                         <td>
                             <div class="process-main">

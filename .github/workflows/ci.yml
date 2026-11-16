@@ -12,8 +12,6 @@ concurrency:
 env:
   APP_ENV: test
   APP_DEBUG: '0'
-  # Совпадает с docker-compose.yml (сервис base-db), но хост — локальный раннер.
-  # В test-окружении doctrine сам добавит суффикс _test (dbname_suffix).
   DATABASE_URL: 'postgresql://db_user:db_password@127.0.0.1:5432/db_name?serverVersion=16&charset=utf8'
   DEFAULT_URI: 'http://localhost'
 
@@ -55,9 +53,6 @@ jobs:
           key: composer-${{ hashFiles('composer.lock') }}
           restore-keys: composer-
 
-      # ext-amqp нужен только прод-транспорту RabbitMQ.
-      # В тестах messenger.async = in-memory://, поэтому расширение не ставим.
-      # --no-scripts: cache:clear запустим сами, после создания тестовой БД.
       - name: Install dependencies
         run: >-
           composer install --prefer-dist --no-interaction --no-progress --no-scripts

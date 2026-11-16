@@ -3,18 +3,15 @@ security:
         Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
 
     providers:
+        # Провайдеры — свои сервисы, чтобы работало авто-обновление хэша пароля
+        # при логине (штатный entity-провайдер ищет репозиторий через
+        # $em->getRepository(), а у сущностей убран repositoryClass).
         customer_provider:
-            entity:
-                class: App\Entity\Customer
-                property: email
+            id: App\Identity\Infrastructure\Security\CustomerUserProvider
         seller_provider:
-            entity:
-                class: App\Entity\Seller
-                property: email
+            id: App\Identity\Infrastructure\Security\SellerUserProvider
         admin_provider:
-            entity:
-                class: App\Entity\Admin
-                property: email
+            id: App\Identity\Infrastructure\Security\AdminUserProvider
 
     firewalls:
         dev:
@@ -25,7 +22,7 @@ security:
             pattern: ^/admin
             context: admin_context
             provider: admin_provider
-            user_checker: App\Security\AdminUserChecker
+            user_checker: App\Identity\Infrastructure\Security\AdminUserChecker
             lazy: true
             form_login:
                 login_path: admin_login
@@ -40,7 +37,7 @@ security:
             pattern: ^/seller
             context: seller_context
             provider: seller_provider
-            user_checker: App\Security\SellerUserChecker
+            user_checker: App\Identity\Infrastructure\Security\SellerUserChecker
             lazy: true
             form_login:
                 login_path: seller_login
@@ -76,8 +73,12 @@ security:
 when@test:
     security:
         password_hashers:
+            # cost 5 (вместо дефолтного 4): тест PasswordRehashTest создаёт хэш
+            # с cost 4 и проверяет, что при логине он обновляется до 5.
+            # Менять именно интерфейсный ключ важно: PasswordHasherFactory берёт
+            # первый подходящий по порядку, а им оказывается интерфейс.
             Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface:
                 algorithm: auto
-                cost: 4
+                cost: 5
                 time_cost: 3
                 memory_cost: 10

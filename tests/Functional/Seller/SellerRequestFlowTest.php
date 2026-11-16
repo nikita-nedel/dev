@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Tests\Functional\Seller;
 
-use App\Entity\Admin;
-use App\Entity\SellerRequest;
-use App\Enum\SellerRequestStatus;
+use App\Identity\Domain\Model\Admin;
+use App\Seller\Domain\Model\SellerRequest;
+use App\Seller\Domain\Model\SellerRequestStatus;
 use App\Tests\Functional\FunctionalTestCase;
 
 final class SellerRequestFlowTest extends FunctionalTestCase
@@ -122,10 +122,6 @@ final class SellerRequestFlowTest extends FunctionalTestCase
         return $sellerRequest;
     }
 
-    /**
-     * Токен берём из реальной страницы: CSRF-хранилище привязано к сессии запроса,
-     * поэтому сгенерировать его в обход HTTP-запроса нельзя.
-     */
     private function csrfTokenFromPage(SellerRequest $sellerRequest): string
     {
         $crawler = $this->client->request('GET', '/admin/seller-requests');

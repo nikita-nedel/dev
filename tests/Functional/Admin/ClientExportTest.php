@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace App\Tests\Functional\Admin;
 
-use App\Entity\ExportFile;
-use App\Entity\Job;
-use App\Enum\Export\ExportFormat;
-use App\Enum\Export\ExportResource;
-use App\Enum\JobStatus;
-use App\Enum\JobType;
-use App\Message\ExportMessage;
+use App\Export\Application\Command\RunExport\RunExportMessage;
+use App\Export\Domain\Model\ExportFile;
+use App\Export\Domain\Model\ExportFormat;
+use App\Export\Domain\Model\ExportResource;
+use App\Process\Domain\Model\Job;
+use App\Process\Domain\Model\JobStatus;
+use App\Process\Domain\Model\JobType;
 use App\Tests\Functional\FunctionalTestCase;
 
 final class ClientExportTest extends FunctionalTestCase
@@ -42,7 +42,8 @@ final class ClientExportTest extends FunctionalTestCase
         $transport = static::getContainer()->get('messenger.transport.async');
         $sent = $transport->getSent();
         self::assertCount(1, $sent);
-        self::assertInstanceOf(ExportMessage::class, $sent[0]->getMessage());
+        self::assertInstanceOf(RunExportMessage::class, $sent[0]->getMessage());
+        self::assertSame($payload['exportId'], $sent[0]->getMessage()->exportId);
     }
 
     public function testUnknownFormatIsRejected(): void
@@ -53,6 +54,30 @@ final class ClientExportTest extends FunctionalTestCase
         $this->client->request('GET', '/admin/client/export?format=csv');
 
         self::assertResponseStatusCodeSame(404);
+    }
+
+    public function testProcessFeedListsExportJob(): void
+    {
+        $admin = $this->createAdmin();
+        $this->client->loginUser($admin, 'admin_context');
+
+        $this->client->request('GET', '/admin/client/export?format=xlsx');
+        self::assertResponseStatusCodeSame(202);
+
+        $this->client->request('GET', '/admin/processes/feed');
+        self::assertResponseIsSuccessful();
+
+        $payload = json_decode((string) $this->client->getResponse()->getContent(), true, 512, JSON_THROW_ON_ERROR);
+
+        self::assertSame(1, $payload['total']);
+        self::assertSame(1, $payload['stats']['pending']);
+
+        $item = $payload['items'][0];
+        self::assertSame('export', $item['type']);
+        self::assertSame('pending', $item['status']);
+        self::assertSame('clients', $item['resource']);
+        self::assertSame('XLSX', $item['formatLabel']);
+        self::assertNull($item['downloadUrl']);
     }
 
     public function testDownloadOfNotReadyExportReturns404(): void
@@ -79,13 +104,27 @@ final class ClientExportTest extends FunctionalTestCase
         self::assertResponseStatusCodeSame(404);
     }
 
-    public function testProcessPageRenders(): void
+    public function testDownloadOfUnknownExportReturns404(): void
     {
         $admin = $this->createAdmin();
         $this->client->loginUser($admin, 'admin_context');
 
+        $this->client->request('GET', '/admin/processes/exports/unknown-export-id/download');
+
+        self::assertResponseStatusCodeSame(404);
+    }
+
+    public function testProcessPageRendersWithExportJob(): void
+    {
+        $admin = $this->createAdmin();
+        $this->client->loginUser($admin, 'admin_context');
+
+        $this->client->request('GET', '/admin/client/export?format=xlsx');
+        self::assertResponseStatusCodeSame(202);
+
         $this->client->request('GET', '/admin/processes');
 
         self::assertResponseIsSuccessful();
+        self::assertSelectorTextContains('body', 'XLSX');
     }
 }
