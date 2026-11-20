@@ -11,6 +11,12 @@
 
 /docker/php/config
 
+###> static analysis ###
+/.php-cs-fixer.cache
+/.deptrac.cache
+/.phpcs-cache
+###< static analysis ###
+
 ###> symfony/webpack-encore-bundle ###
 /node_modules/
 /public/build/

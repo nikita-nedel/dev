@@ -17,19 +17,6 @@ class AdminInvite
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 64)]
-    private string $token;
-
-    #[ORM\Column(length: 180)]
-    private string $email;
-
-    #[ORM\Column]
-    private \DateTimeImmutable $expiresAt;
-
-    #[ORM\ManyToOne(targetEntity: Admin::class)]
-    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
-    private ?Admin $createdBy = null;
-
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $usedAt = null;
 
@@ -37,12 +24,17 @@ class AdminInvite
     #[Gedmo\Timestampable(on: 'create')]
     private ?\DateTimeImmutable $createdAt = null;
 
-    public function __construct(string $token, string $email, \DateTimeImmutable $expiresAt, ?Admin $createdBy = null)
-    {
-        $this->token = $token;
-        $this->email = $email;
-        $this->expiresAt = $expiresAt;
-        $this->createdBy = $createdBy;
+    public function __construct(
+        #[ORM\Column(length: 64)]
+        private string $token,
+        #[ORM\Column(length: 180)]
+        private string $email,
+        #[ORM\Column]
+        private \DateTimeImmutable $expiresAt,
+        #[ORM\ManyToOne(targetEntity: Admin::class)]
+        #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
+        private ?Admin $createdBy = null,
+    ) {
     }
 
     public function getId(): ?int

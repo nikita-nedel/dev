@@ -13,7 +13,7 @@ final class PasswordRehashTest extends FunctionalTestCase
     {
         $legacyHash = password_hash('password123', PASSWORD_BCRYPT, ['cost' => 4]);
 
-        $customer = (new Customer())
+        $customer = new Customer()
             ->setEmail('legacy@example.com')
             ->setRoles(['ROLE_CUSTOMER']);
         $customer->setPassword($legacyHash);

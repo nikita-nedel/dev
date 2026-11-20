@@ -17,19 +17,19 @@ use App\Shared\Domain\Port\TransactionManagerInterface;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
 #[AsMessageHandler]
-final class RunExportHandler
+final readonly class RunExportHandler
 {
     /**
      * @param iterable<ExportDataProviderInterface> $dataProviders
      * @param iterable<ExportWriterInterface>       $writers
      */
     public function __construct(
-        private readonly ExportFileRepositoryInterface $exportFiles,
-        private readonly ExportCriteriaResolver $criteriaResolver,
-        private readonly TransactionManagerInterface $transactions,
-        private readonly iterable $dataProviders,
-        private readonly iterable $writers,
-        private readonly string $projectDir,
+        private ExportFileRepositoryInterface $exportFiles,
+        private ExportCriteriaResolver $criteriaResolver,
+        private TransactionManagerInterface $transactions,
+        private iterable $dataProviders,
+        private iterable $writers,
+        private string $projectDir,
     ) {
     }
 

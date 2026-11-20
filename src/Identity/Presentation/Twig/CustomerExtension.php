@@ -20,7 +20,7 @@ final class CustomerExtension extends AbstractExtension
     public function getFunctions(): array
     {
         return [
-            new TwigFunction('customer_seller', [$this, 'getSellerForCustomer']),
+            new TwigFunction('customer_seller', $this->getSellerForCustomer(...)),
         ];
     }
 

@@ -6,19 +6,19 @@ namespace App\Export\Application\Criteria;
 
 use App\Export\Application\Dto\ExportContext;
 use App\Export\Application\Port\ExportCriteriaFactoryInterface;
-use App\Shared\Domain\Port\QueryCriteriaInterface;
 use App\Export\Domain\Model\ExportFormat;
 use App\Export\Domain\Model\ExportResource;
+use App\Shared\Domain\Port\QueryCriteriaInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-final class ExportCriteriaResolver
+final readonly class ExportCriteriaResolver
 {
     /**
      * @param iterable<ExportCriteriaFactoryInterface> $factories
      */
     public function __construct(
-        private readonly iterable $factories,
+        private iterable $factories,
     ) {
     }
 
@@ -38,10 +38,7 @@ final class ExportCriteriaResolver
             }
         }
 
-        throw new NotFoundHttpException(sprintf(
-            'Export criteria factory for "%s" is not configured.',
-            $resource->value,
-        ));
+        throw new NotFoundHttpException(sprintf('Export criteria factory for "%s" is not configured.', $resource->value));
     }
 
     public function createContext(

@@ -6,10 +6,10 @@ namespace App\Identity\Infrastructure\Demo;
 
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
-final class DemoProfileData
+final readonly class DemoProfileData
 {
     public function __construct(
-        private readonly UrlGeneratorInterface $urlGenerator,
+        private UrlGeneratorInterface $urlGenerator,
     ) {
     }
 

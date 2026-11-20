@@ -19,32 +19,6 @@ class ExportFile
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 32)]
-    private string $exportId;
-
-    #[ORM\OneToOne(targetEntity: Job::class)]
-    #[ORM\JoinColumn(name: 'job_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
-    private ?Job $job = null;
-
-    #[ORM\Column(length: 64, enumType: ExportResource::class)]
-    private ExportResource $resource;
-
-    #[ORM\Column(length: 16, enumType: ExportFormat::class)]
-    private ExportFormat $format;
-
-    /**
-     * @var array<string, mixed>
-     */
-    #[ORM\Column(type: Types::JSON)]
-    private array $filters = [];
-
-    #[ORM\ManyToOne(targetEntity: Admin::class)]
-    #[ORM\JoinColumn(name: 'requested_by_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
-    private ?Admin $requestedBy = null;
-
-    #[ORM\Column(length: 32, nullable: true, enumType: ExportStorage::class)]
-    private ?ExportStorage $storage = null;
-
     #[ORM\Column(length: 512, nullable: true)]
     private ?string $filePath = null;
 
@@ -61,23 +35,24 @@ class ExportFile
      * @param array<string, mixed> $filters
      */
     public function __construct(
-        string $exportId,
-        ExportResource $resource,
-        ExportFormat $format,
-        array $filters = [],
-        ?Admin $requestedBy = null,
-        ?Job $job = null,
-        ExportStorage $storage = ExportStorage::Local,
+        #[ORM\Column(length: 32)]
+        private string $exportId,
+        #[ORM\Column(length: 64, enumType: ExportResource::class)]
+        private ExportResource $resource,
+        #[ORM\Column(length: 16, enumType: ExportFormat::class)]
+        private ExportFormat $format,
+        #[ORM\Column(type: Types::JSON)]
+        private array $filters = [],
+        #[ORM\ManyToOne(targetEntity: Admin::class)]
+        #[ORM\JoinColumn(name: 'requested_by_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
+        private ?Admin $requestedBy = null,
+        #[ORM\OneToOne(targetEntity: Job::class)]
+        #[ORM\JoinColumn(name: 'job_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
+        private ?Job $job = null,
+        #[ORM\Column(length: 32, nullable: true, enumType: ExportStorage::class)]
+        private ?ExportStorage $storage = ExportStorage::Local,
     ) {
         $now = new \DateTimeImmutable();
-
-        $this->exportId = $exportId;
-        $this->resource = $resource;
-        $this->format = $format;
-        $this->filters = $filters;
-        $this->requestedBy = $requestedBy;
-        $this->job = $job;
-        $this->storage = $storage;
         $this->createdAt = $now;
         $this->updatedAt = $now;
     }

@@ -52,10 +52,21 @@ services:
       - "${RABBITMQ_MANAGEMENT_PORT:-15672}:15672"
     volumes:
       - rabbitmq_data:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
 
   export-worker:
     <<: *worker-base
-    command: php bin/console messenger:consume async --time-limit=3600 --memory-limit=256M --sleep=1 -vv
+    command: php bin/console messenger:consume async --time-limit=0 --memory-limit=256M --sleep=1 -vv
+    depends_on:
+      base-db:
+        condition: service_started
+      rabbitmq:
+        condition: service_healthy
 #  localstack:
 #    image: localstack/localstack:3.7
 #    container_name: ons-localstack

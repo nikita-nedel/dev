@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace App\Export\Presentation\Http;
 
-use App\Identity\Domain\Model\Admin;
 use App\Export\Application\Command\RequestExport\RequestExport;
 use App\Export\Application\Command\RequestExport\RequestExportHandler;
-use App\Identity\Domain\Query\ClientListCriteria;
 use App\Export\Domain\Model\ExportFormat;
 use App\Export\Domain\Model\ExportResource;
+use App\Identity\Domain\Model\Admin;
+use App\Identity\Domain\Query\ClientListCriteria;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;

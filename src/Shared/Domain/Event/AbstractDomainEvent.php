@@ -6,7 +6,7 @@ namespace App\Shared\Domain\Event;
 
 abstract class AbstractDomainEvent implements DomainEventInterface
 {
-    private \DateTimeImmutable $occurredOn;
+    private readonly \DateTimeImmutable $occurredOn;
 
     public function __construct(?\DateTimeImmutable $occurredOn = null)
     {

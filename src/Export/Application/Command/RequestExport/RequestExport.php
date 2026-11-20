@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Export\Application\Command\RequestExport;
 
-use App\Identity\Domain\Model\Admin;
 use App\Export\Domain\Model\ExportFormat;
 use App\Export\Domain\Model\ExportResource;
+use App\Identity\Domain\Model\Admin;
 
 final readonly class RequestExport
 {

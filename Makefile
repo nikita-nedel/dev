@@ -10,7 +10,7 @@ COMPOSER = $(PHP_CONT) composer
 SYMFONY  = $(PHP) bin/console
 NPM      = $(PHP_CONT) npm
 
-.PHONY: help build up start down logs sh bash composer vendor sf test npm-install npm-build npm-watch npm-dev migrate migration test test-db
+.PHONY: help build up start down logs sh bash composer vendor sf test npm-install npm-build npm-watch npm-dev migrate migration test test-db check check-schema
 
 ## —— 🎵 🐳 The Symfony Docker Makefile 🐳 🎵 ——————————————————————————————————
 help: ## Outputs this help screen
@@ -67,6 +67,14 @@ test-db: ## Recreates the test database from scratch and runs migrations
 	@$(DOCKER_COMP) exec -T php php bin/console doctrine:database:drop --env=test --force --if-exists
 	@$(DOCKER_COMP) exec -T php php bin/console doctrine:database:create --env=test
 	@$(DOCKER_COMP) exec -T php php bin/console doctrine:migrations:migrate --env=test --no-interaction
+
+## —— Static analysis 🔍 ————————————————————————————————————————————————————————
+
+check: ## Run static analysis (lint, CS Fixer, PHPStan, Deptrac, Rector, require-checker)
+	@$(DOCKER_COMP) exec -T php composer check
+
+check-schema: ## Validate Doctrine mapping and pending migrations (needs a database)
+	@$(DOCKER_COMP) exec -T php composer check:schema
 
 ## —— Npm 🎵 ———————————————————————————————————————————————————————————————
 npm-install: ## Install node modules

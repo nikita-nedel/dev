@@ -41,7 +41,7 @@ final class JobFeedRow
 
     private static function formatDateTime(?\DateTimeImmutable $dateTime): string
     {
-        return null === $dateTime ? '—' : $dateTime->format('d.m.Y H:i');
+        return $dateTime?->format('d.m.Y H:i') ?? '—';
     }
 
     private static function resourceLabel(ExportResource $resource): string

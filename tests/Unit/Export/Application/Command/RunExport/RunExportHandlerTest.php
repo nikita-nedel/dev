@@ -6,10 +6,8 @@ namespace App\Tests\Unit\Export\Application\Command\RunExport;
 
 use App\Export\Application\Command\RunExport\RunExportHandler;
 use App\Export\Application\Command\RunExport\RunExportMessage;
-use App\Identity\Domain\Query\ClientListCriteria;
-use App\Export\Application\Criteria\ExportCriteriaResolver;
 use App\Export\Application\Criteria\ClientExportCriteriaFactory;
-use App\Export\Application\Dto\ExportContext;
+use App\Export\Application\Criteria\ExportCriteriaResolver;
 use App\Export\Application\Port\ExportDataProviderInterface;
 use App\Export\Application\Port\ExportWriterInterface;
 use App\Export\Domain\Model\ExportFile;
@@ -20,7 +18,6 @@ use App\Export\Domain\Repository\ExportFileRepositoryInterface;
 use App\Process\Domain\Model\Job;
 use App\Process\Domain\Model\JobStatus;
 use App\Process\Domain\Model\JobType;
-use App\Shared\Domain\Port\TransactionManagerInterface;
 use PHPUnit\Framework\TestCase;
 
 final class RunExportHandlerTest extends TestCase
@@ -128,102 +125,5 @@ final class RunExportHandlerTest extends TestCase
             filters: ['sort' => 'date-desc'],
             job: $job,
         );
-    }
-}
-
-final class FakeTransactionManager implements TransactionManagerInterface
-{
-    public function transactional(callable $operation): mixed
-    {
-        return $operation();
-    }
-}
-
-final class InMemoryExportFileRepository implements ExportFileRepositoryInterface
-{
-    /**
-     * @param list<ExportFile> $exportFiles
-     */
-    public function __construct(private array $exportFiles)
-    {
-    }
-
-    public function add(ExportFile $exportFile): void
-    {
-        $this->exportFiles[] = $exportFile;
-    }
-
-    public function findByExportId(string $exportId): ?ExportFile
-    {
-        foreach ($this->exportFiles as $exportFile) {
-            if ($exportFile->getExportId() === $exportId) {
-                return $exportFile;
-            }
-        }
-
-        return null;
-    }
-
-    public function findByJobIds(array $jobIds): array
-    {
-        return array_values(array_filter(
-            $this->exportFiles,
-            static fn (ExportFile $file): bool => \in_array($file->getJob()?->getJobId(), $jobIds, true),
-        ));
-    }
-}
-
-final class FakeExportDataProvider implements ExportDataProviderInterface
-{
-    public function supports(ExportResource $resource): bool
-    {
-        return true;
-    }
-
-    public function getHeaders(ExportContext $context): array
-    {
-        return ['ID', 'Email'];
-    }
-
-    public function iterateRows(ExportContext $context): iterable
-    {
-        $context->criteriaAs(ClientListCriteria::class);
-
-        yield [1, 'a@example.com'];
-        yield [2, 'b@example.com'];
-    }
-}
-
-final class RecordingWriter implements ExportWriterInterface
-{
-    public ?array $headers = null;
-    public ?array $rows = null;
-    public ?string $targetPath = null;
-
-    public function supports(ExportFormat $format): bool
-    {
-        return true;
-    }
-
-    public function writeToFile(iterable $rows, array $headers, ExportContext $context, string $targetPath): void
-    {
-        $this->headers = $headers;
-        $this->rows = iterator_to_array($rows);
-        $this->targetPath = $targetPath;
-
-        file_put_contents($targetPath, 'fake-xlsx');
-    }
-}
-
-final class ThrowingWriter implements ExportWriterInterface
-{
-    public function supports(ExportFormat $format): bool
-    {
-        return true;
-    }
-
-    public function writeToFile(iterable $rows, array $headers, ExportContext $context, string $targetPath): void
-    {
-        throw new \RuntimeException('writer exploded');
     }
 }
