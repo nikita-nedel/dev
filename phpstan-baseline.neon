@@ -1,0 +1,217 @@
+parameters:
+	ignoreErrors:
+		-
+			message: '#^Strict comparison using \=\=\= between App\\Export\\Domain\\Model\\ExportResource\:\:Clients and App\\Export\\Domain\\Model\\ExportResource will always evaluate to true\.$#'
+			identifier: identical.alwaysTrue
+			count: 1
+			path: src/Export/Application/Criteria/ClientExportCriteriaFactory.php
+
+		-
+			message: '#^Call to function assert\(\) with true will always evaluate to true\.$#'
+			identifier: function.alreadyNarrowedType
+			count: 1
+			path: src/Export/Infrastructure/DataProvider/ClientExportDataProvider.php
+
+		-
+			message: '#^Instanceof between App\\Identity\\Domain\\Model\\Customer and App\\Identity\\Domain\\Model\\Customer will always evaluate to true\.$#'
+			identifier: instanceof.alwaysTrue
+			count: 1
+			path: src/Export/Infrastructure/DataProvider/ClientExportDataProvider.php
+
+		-
+			message: '#^Parameter \#1 \$criteria of method App\\Identity\\Domain\\Repository\\CustomerRepositoryInterface\:\:iterateClients\(\) expects App\\Identity\\Domain\\Query\\ClientListCriteria, App\\Shared\\Domain\\Port\\QueryCriteriaInterface given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Export/Infrastructure/DataProvider/ClientExportDataProvider.php
+
+		-
+			message: '#^Strict comparison using \=\=\= between App\\Export\\Domain\\Model\\ExportResource\:\:Clients and App\\Export\\Domain\\Model\\ExportResource will always evaluate to true\.$#'
+			identifier: identical.alwaysTrue
+			count: 1
+			path: src/Export/Infrastructure/DataProvider/ClientExportDataProvider.php
+
+		-
+			message: '#^Strict comparison using \=\=\= between App\\Export\\Domain\\Model\\ExportFormat\:\:Xlsx and App\\Export\\Domain\\Model\\ExportFormat will always evaluate to true\.$#'
+			identifier: identical.alwaysTrue
+			count: 1
+			path: src/Export/Infrastructure/Writer/XlsxExportWriter.php
+
+		-
+			message: '#^Property App\\Identity\\Domain\\Model\\Admin\:\:\$createdAt type mapping mismatch\: property can contain DateTimeImmutable\|null but database expects DateTimeImmutable\.$#'
+			identifier: doctrine.columnType
+			count: 1
+			path: src/Identity/Domain/Model/Admin.php
+
+		-
+			message: '#^Property App\\Identity\\Domain\\Model\\Admin\:\:\$email type mapping mismatch\: property can contain string\|null but database expects string\.$#'
+			identifier: doctrine.columnType
+			count: 1
+			path: src/Identity/Domain/Model/Admin.php
+
+		-
+			message: '#^Property App\\Identity\\Domain\\Model\\Admin\:\:\$password type mapping mismatch\: property can contain string\|null but database expects string\.$#'
+			identifier: doctrine.columnType
+			count: 1
+			path: src/Identity/Domain/Model/Admin.php
+
+		-
+			message: '#^Property App\\Identity\\Domain\\Model\\AdminInvite\:\:\$createdAt type mapping mismatch\: property can contain DateTimeImmutable\|null but database expects DateTimeImmutable\.$#'
+			identifier: doctrine.columnType
+			count: 1
+			path: src/Identity/Domain/Model/AdminInvite.php
+
+		-
+			message: '#^Property App\\Identity\\Domain\\Model\\AdminProfile\:\:\$admin type mapping mismatch\: property can contain App\\Identity\\Domain\\Model\\Admin\|null but database expects App\\Identity\\Domain\\Model\\Admin\.$#'
+			identifier: doctrine.associationType
+			count: 1
+			path: src/Identity/Domain/Model/AdminProfile.php
+
+		-
+			message: '#^Property App\\Identity\\Domain\\Model\\AdminProfile\:\:\$firstName type mapping mismatch\: property can contain string\|null but database expects string\.$#'
+			identifier: doctrine.columnType
+			count: 1
+			path: src/Identity/Domain/Model/AdminProfile.php
+
+		-
+			message: '#^Property App\\Identity\\Domain\\Model\\AdminProfile\:\:\$lastName type mapping mismatch\: property can contain string\|null but database expects string\.$#'
+			identifier: doctrine.columnType
+			count: 1
+			path: src/Identity/Domain/Model/AdminProfile.php
+
+		-
+			message: '#^Property App\\Identity\\Domain\\Model\\Customer\:\:\$createdAt type mapping mismatch\: property can contain DateTimeImmutable\|null but database expects DateTimeImmutable\.$#'
+			identifier: doctrine.columnType
+			count: 1
+			path: src/Identity/Domain/Model/Customer.php
+
+		-
+			message: '#^Property App\\Identity\\Domain\\Model\\Customer\:\:\$email type mapping mismatch\: property can contain string\|null but database expects string\.$#'
+			identifier: doctrine.columnType
+			count: 1
+			path: src/Identity/Domain/Model/Customer.php
+
+		-
+			message: '#^Property App\\Identity\\Domain\\Model\\Customer\:\:\$password type mapping mismatch\: property can contain string\|null but database expects string\.$#'
+			identifier: doctrine.columnType
+			count: 1
+			path: src/Identity/Domain/Model/Customer.php
+
+		-
+			message: '#^Property App\\Identity\\Domain\\Model\\CustomerProfile\:\:\$customer type mapping mismatch\: property can contain App\\Identity\\Domain\\Model\\Customer\|null but database expects App\\Identity\\Domain\\Model\\Customer\.$#'
+			identifier: doctrine.associationType
+			count: 1
+			path: src/Identity/Domain/Model/CustomerProfile.php
+
+		-
+			message: '#^Property App\\Identity\\Domain\\Model\\CustomerProfile\:\:\$firstName type mapping mismatch\: property can contain string\|null but database expects string\.$#'
+			identifier: doctrine.columnType
+			count: 1
+			path: src/Identity/Domain/Model/CustomerProfile.php
+
+		-
+			message: '#^Property App\\Identity\\Domain\\Model\\CustomerProfile\:\:\$lastName type mapping mismatch\: property can contain string\|null but database expects string\.$#'
+			identifier: doctrine.columnType
+			count: 1
+			path: src/Identity/Domain/Model/CustomerProfile.php
+
+		-
+			message: '#^Property App\\Identity\\Domain\\Model\\CustomerProfile\:\:\$phone type mapping mismatch\: property can contain string\|null but database expects string\.$#'
+			identifier: doctrine.columnType
+			count: 1
+			path: src/Identity/Domain/Model/CustomerProfile.php
+
+		-
+			message: '#^Property App\\Identity\\Domain\\Model\\Seller\:\:\$createdAt type mapping mismatch\: property can contain DateTimeImmutable\|null but database expects DateTimeImmutable\.$#'
+			identifier: doctrine.columnType
+			count: 1
+			path: src/Identity/Domain/Model/Seller.php
+
+		-
+			message: '#^Property App\\Identity\\Domain\\Model\\Seller\:\:\$customer type mapping mismatch\: property can contain App\\Identity\\Domain\\Model\\Customer\|null but database expects App\\Identity\\Domain\\Model\\Customer\.$#'
+			identifier: doctrine.associationType
+			count: 1
+			path: src/Identity/Domain/Model/Seller.php
+
+		-
+			message: '#^Property App\\Identity\\Domain\\Model\\Seller\:\:\$email type mapping mismatch\: property can contain string\|null but database expects string\.$#'
+			identifier: doctrine.columnType
+			count: 1
+			path: src/Identity/Domain/Model/Seller.php
+
+		-
+			message: '#^Property App\\Identity\\Domain\\Model\\SellerProfile\:\:\$seller type mapping mismatch\: property can contain App\\Identity\\Domain\\Model\\Seller\|null but database expects App\\Identity\\Domain\\Model\\Seller\.$#'
+			identifier: doctrine.associationType
+			count: 1
+			path: src/Identity/Domain/Model/SellerProfile.php
+
+		-
+			message: '#^Property App\\Identity\\Domain\\Model\\SellerProfile\:\:\$shopName type mapping mismatch\: property can contain string\|null but database expects string\.$#'
+			identifier: doctrine.columnType
+			count: 1
+			path: src/Identity/Domain/Model/SellerProfile.php
+
+		-
+			message: '#^Method App\\Identity\\Infrastructure\\Security\\AdminUserProvider\:\:upgradePassword\(\) overrides @final method Symfony\\Bridge\\Doctrine\\Security\\User\\EntityUserProvider\<Symfony\\Component\\Security\\Core\\User\\UserInterface\>\:\:upgradePassword\(\)\.$#'
+			identifier: method.parentMethodFinalByPhpDoc
+			count: 1
+			path: src/Identity/Infrastructure/Security/AdminUserProvider.php
+
+		-
+			message: '#^Method App\\Identity\\Infrastructure\\Security\\CustomerUserProvider\:\:upgradePassword\(\) overrides @final method Symfony\\Bridge\\Doctrine\\Security\\User\\EntityUserProvider\<Symfony\\Component\\Security\\Core\\User\\UserInterface\>\:\:upgradePassword\(\)\.$#'
+			identifier: method.parentMethodFinalByPhpDoc
+			count: 1
+			path: src/Identity/Infrastructure/Security/CustomerUserProvider.php
+
+		-
+			message: '#^Method App\\Identity\\Infrastructure\\Security\\SellerUserProvider\:\:upgradePassword\(\) overrides @final method Symfony\\Bridge\\Doctrine\\Security\\User\\EntityUserProvider\<Symfony\\Component\\Security\\Core\\User\\UserInterface\>\:\:upgradePassword\(\)\.$#'
+			identifier: method.parentMethodFinalByPhpDoc
+			count: 1
+			path: src/Identity/Infrastructure/Security/SellerUserProvider.php
+
+		-
+			message: '#^Property App\\Seller\\Domain\\Model\\SellerRequest\:\:\$createdAt type mapping mismatch\: property can contain DateTimeImmutable\|null but database expects DateTimeImmutable\.$#'
+			identifier: doctrine.columnType
+			count: 1
+			path: src/Seller/Domain/Model/SellerRequest.php
+
+		-
+			message: '#^Property App\\Seller\\Domain\\Model\\SellerRequest\:\:\$seller type mapping mismatch\: property can contain App\\Identity\\Domain\\Model\\Seller\|null but database expects App\\Identity\\Domain\\Model\\Seller\.$#'
+			identifier: doctrine.associationType
+			count: 1
+			path: src/Seller/Domain/Model/SellerRequest.php
+
+		-
+			message: '#^Property App\\Seller\\Domain\\Model\\SellerRequest\:\:\$shopName type mapping mismatch\: property can contain string\|null but database expects string\.$#'
+			identifier: doctrine.columnType
+			count: 1
+			path: src/Seller/Domain/Model/SellerRequest.php
+
+		-
+			message: '#^Call to an undefined method Symfony\\Component\\Messenger\\Transport\\TransportInterface\:\:getSent\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: tests/Functional/Admin/ClientExportTest.php
+
+		-
+			message: '#^Using nullsafe method call on non\-nullable type App\\Seller\\Domain\\Model\\SellerRequest\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 4
+			path: tests/Functional/Seller/SellerRequestFlowTest.php
+
+		-
+			message: '#^Call to static method PHPUnit\\Framework\\Assert\:\:assertTrue\(\) with true and ''Сообщение на…'' will always evaluate to true\.$#'
+			identifier: staticMethod.alreadyNarrowedType
+			count: 1
+			path: tests/Unit/Export/Application/Command/RunExport/RunExportHandlerTest.php
+
+		-
+			message: '#^Call to an undefined method Symfony\\Component\\Uid\\Uuid\:\:getDateTime\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: tests/Unit/Shared/Domain/ValueObject/UuidTest.php
+
+		-
+			message: '#^Call to function method_exists\(\) with ''Symfony\\\\Component\\\\Dotenv\\\\Dotenv'' and ''bootEnv'' will always evaluate to true\.$#'
+			identifier: function.alreadyNarrowedType
+			count: 1
+			path: tests/bootstrap.php

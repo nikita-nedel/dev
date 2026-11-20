@@ -7,10 +7,10 @@ namespace App\Shared\Infrastructure\Doctrine;
 use App\Shared\Domain\Port\TransactionManagerInterface;
 use Doctrine\ORM\EntityManagerInterface;
 
-final class DoctrineTransactionManager implements TransactionManagerInterface
+final readonly class DoctrineTransactionManager implements TransactionManagerInterface
 {
     public function __construct(
-        private readonly EntityManagerInterface $entityManager,
+        private EntityManagerInterface $entityManager,
     ) {
     }
 

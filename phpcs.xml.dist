@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ruleset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="vendor/squizlabs/php_codesniffer/phpcs.xsd">
+    <arg name="basepath" value="."/>
+    <arg name="cache" value=".phpcs-cache"/>
+    <arg name="colors"/>
+    <arg name="extensions" value="php"/>
+
+    <rule ref="PSR12"/>
+
+    <!-- PSR-12 allows boolean operators at the start or the end of a line; we only allow the start. -->
+    <rule ref="PSR12.ControlStructures.BooleanOperatorPlacement">
+        <properties>
+            <property name="allowOnly" value="first"/>
+        </properties>
+    </rule>
+
+    <rule ref="Generic.PHP.RequireStrictTypes"/>
+    <rule ref="Generic.Formatting.SpaceAfterCast"/>
+
+    <!-- PSR-12 sets 120/0; keep it explicit and skip tests for this rule only.
+         absoluteLineLimit=0 means long lines are warnings and never fail the gate:
+         check:phpcs runs phpcs with ignore_warnings_on_exit, errors still fail. -->
+    <rule ref="Generic.Files.LineLength">
+        <properties>
+            <property name="lineLimit" value="120"/>
+            <property name="absoluteLineLimit" value="0"/>
+        </properties>
+        <exclude-pattern>tests/</exclude-pattern>
+    </rule>
+
+    <rule ref="Generic.Strings.UnnecessaryStringConcat">
+        <properties>
+            <property name="allowMultiline" value="true"/>
+        </properties>
+    </rule>
+
+    <rule ref="Generic.CodeAnalysis.UselessOverridingMethod"/>
+
+    <rule ref="Generic.Formatting.MultipleStatementAlignment">
+        <properties>
+            <property name="maxPadding" value="1"/>
+        </properties>
+    </rule>
+
+    <rule ref="Generic.Arrays.DisallowLongArraySyntax"/>
+
+    <rule ref="PEAR.WhiteSpace.ObjectOperatorIndent">
+        <properties>
+            <property name="multilevel" value="true"/>
+        </properties>
+    </rule>
+
+    <rule ref="Squiz.WhiteSpace.OperatorSpacing">
+        <properties>
+            <property name="ignoreNewlines" value="true"/>
+        </properties>
+    </rule>
+
+    <rule ref="Squiz.WhiteSpace.FunctionSpacing">
+        <properties>
+            <property name="spacing" value="1"/>
+            <property name="spacingBeforeFirst" value="0"/>
+            <property name="spacingAfterLast" value="0"/>
+        </properties>
+    </rule>
+
+    <rule ref="Squiz.Strings.ConcatenationSpacing">
+        <properties>
+            <property name="ignoreNewlines" value="true"/>
+            <property name="spacing" value="1"/>
+        </properties>
+    </rule>
+
+    <rule ref="Squiz.Strings.DoubleQuoteUsage">
+        <exclude name="Squiz.Strings.DoubleQuoteUsage.ContainsVar"/>
+    </rule>
+
+    <rule ref="Squiz.Classes.SelfMemberReference"/>
+
+    <!--
+        The original ruleset additionally included a local "phpcs.slevomat.rulset.xml".
+        That file is not part of this repository; install slevomat/coding-standard and add
+        the include back when the file is available:
+
+        <rule ref="phpcs.slevomat.rulset.xml"/>
+    -->
+
+    <file>src/</file>
+    <file>tests/</file>
+</ruleset>

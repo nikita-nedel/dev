@@ -27,7 +27,7 @@ final readonly class ApplyForSellerHandler
             throw new \RuntimeException('У этого покупателя уже есть заявка или аккаунт продавца.');
         }
 
-        $seller = (new Seller())
+        $seller = new Seller()
             ->setEmail((string) $command->customer->getEmail())
             ->setCustomer($command->customer)
             ->setIsActive(false)
@@ -37,7 +37,7 @@ final readonly class ApplyForSellerHandler
         $contactPhone = $request->getContactPhone() ?? $command->customer->getPhone();
 
         $seller->setProfile(
-            (new SellerProfile())
+            new SellerProfile()
                 ->setShopName((string) $request->getShopName())
                 ->setLegalName($request->getLegalName())
                 ->setInn($request->getInn())

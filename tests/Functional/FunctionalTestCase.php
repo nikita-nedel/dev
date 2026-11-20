@@ -35,7 +35,7 @@ abstract class FunctionalTestCase extends WebTestCase
 
     protected function createCustomer(string $email = 'customer@example.com', string $password = 'password123'): Customer
     {
-        $customer = (new Customer())
+        $customer = new Customer()
             ->setEmail($email)
             ->setRoles(['ROLE_CUSTOMER']);
 
@@ -53,14 +53,14 @@ abstract class FunctionalTestCase extends WebTestCase
         string $password = 'password123',
         bool $active = true,
     ): Admin {
-        $admin = (new Admin())
+        $admin = new Admin()
             ->setEmail($email)
             ->setRoles(['ROLE_ADMIN'])
             ->setIsActive($active);
 
         $admin->setPassword($this->passwordHasher()->hashPassword($admin, $password));
         $admin->setProfile(
-            (new AdminProfile())
+            new AdminProfile()
                 ->setFirstName('Админ')
                 ->setLastName('Тестовый'),
         );
@@ -77,7 +77,7 @@ abstract class FunctionalTestCase extends WebTestCase
         bool $active = true,
         string $password = 'password123',
     ): Seller {
-        $seller = (new Seller())
+        $seller = new Seller()
             ->setEmail((string) $customer->getEmail())
             ->setCustomer($customer)
             ->setRoles(['ROLE_SELLER'])

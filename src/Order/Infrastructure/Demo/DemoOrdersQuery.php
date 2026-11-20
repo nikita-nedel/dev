@@ -7,9 +7,9 @@ namespace App\Order\Infrastructure\Demo;
 use App\Catalog\Infrastructure\Demo\DemoCatalogQuery;
 use App\Order\Application\Query\OrdersQueryInterface;
 
-final class DemoOrdersQuery implements OrdersQueryInterface
+final readonly class DemoOrdersQuery implements OrdersQueryInterface
 {
-    public function __construct(private readonly DemoCatalogQuery $catalog)
+    public function __construct(private DemoCatalogQuery $catalog)
     {
     }
 

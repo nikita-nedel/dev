@@ -11,7 +11,7 @@ use App\Shared\Domain\Port\TransactionManagerInterface;
 
 final readonly class ApproveSellerRequestHandler
 {
-    private const ACTIVATION_TOKEN_TTL = '+7 days';
+    private const string ACTIVATION_TOKEN_TTL = '+7 days';
 
     public function __construct(
         private ClockInterface $clock,

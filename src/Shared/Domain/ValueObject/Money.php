@@ -81,7 +81,7 @@ final readonly class Money
     }
 
     /**
-     * "1299 BYN" -> "12.99"
+     * "1299 BYN" -> "12.99".
      */
     public function toDecimalString(): string
     {

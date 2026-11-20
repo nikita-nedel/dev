@@ -78,3 +78,38 @@ jobs:
 
       - name: Run tests
         run: bin/phpunit
+
+  static-analysis:
+    name: Static analysis
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: ctype, iconv, zip, pdo_pgsql, gd, mbstring
+          coverage: none
+          tools: composer:v2
+
+      - name: Composer cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.composer/cache
+          key: composer-${{ hashFiles('composer.lock') }}
+          restore-keys: composer-
+
+      - name: Install dependencies
+        run: >-
+          composer install --prefer-dist --no-interaction --no-progress --no-scripts
+          --ignore-platform-req=ext-amqp
+
+      - name: Warm up dev cache (container XML for phpstan-symfony)
+        run: bin/console cache:warmup --env=dev
+        env:
+          APP_DEBUG: '1'
+
+      - name: Static analysis
+        run: composer check

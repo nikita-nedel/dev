@@ -21,14 +21,14 @@ final readonly class RegisterAdminFromInviteHandler
 
     public function __invoke(RegisterAdminFromInvite $command): Admin
     {
-        $admin = (new Admin())
+        $admin = new Admin()
             ->setEmail($command->invite->getEmail())
             ->setRoles(['ROLE_ADMIN'])
             ->setIsActive(true);
 
         $admin->setPassword($this->passwordHasher->hash($admin, $command->plainPassword));
         $admin->setProfile(
-            (new AdminProfile())
+            new AdminProfile()
                 ->setFirstName($command->firstName)
                 ->setLastName($command->lastName),
         );

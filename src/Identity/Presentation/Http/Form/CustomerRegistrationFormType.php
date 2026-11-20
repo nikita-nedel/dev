@@ -52,7 +52,8 @@ class CustomerRegistrationFormType extends AbstractType
                         min: 2,
                         max: 50,
                         minMessage: 'Фамилия должна содержать минимум {{ limit }} символа',
-                        maxMessage: 'Фамилия не должна превышать {{ limit }} символов'),
+                        maxMessage: 'Фамилия не должна превышать {{ limit }} символов',
+                    ),
                 ],
             ])
             ->add('phone', TelType::class, [
@@ -99,7 +100,7 @@ class CustomerRegistrationFormType extends AbstractType
             }
 
             $form = $event->getForm();
-            $profile = (new CustomerProfile())
+            $profile = new CustomerProfile()
                 ->setFirstName((string) $form->get('firstName')->getData())
                 ->setLastName((string) $form->get('lastName')->getData())
                 ->setPhone((string) $form->get('phone')->getData());

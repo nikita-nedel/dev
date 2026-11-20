@@ -23,7 +23,7 @@ final class ApproveSellerRequestHandlerTest extends TestCase
         $handler = new ApproveSellerRequestHandler($clock, new PassthroughTransactionManager());
 
         [$request, $seller] = $this->pendingRequest();
-        $admin = (new Admin())->setEmail('admin@example.com');
+        $admin = new Admin()->setEmail('admin@example.com');
 
         $approvedSeller = $handler(new ApproveSellerRequest($request, $admin));
 
@@ -51,7 +51,7 @@ final class ApproveSellerRequestHandlerTest extends TestCase
         $this->expectException(\RuntimeException::class);
         $this->expectExceptionMessage('Заявка уже обработана.');
 
-        $handler(new ApproveSellerRequest($request, (new Admin())->setEmail('admin@example.com')));
+        $handler(new ApproveSellerRequest($request, new Admin()->setEmail('admin@example.com')));
     }
 
     public function testRequestWithoutSellerCannotBeApproved(): void
@@ -61,12 +61,12 @@ final class ApproveSellerRequestHandlerTest extends TestCase
             new PassthroughTransactionManager(),
         );
 
-        $request = (new SellerRequest())->setShopName('Магазин');
+        $request = new SellerRequest()->setShopName('Магазин');
 
         $this->expectException(\RuntimeException::class);
         $this->expectExceptionMessage('Продавец не найден для заявки.');
 
-        $handler(new ApproveSellerRequest($request, (new Admin())->setEmail('admin@example.com')));
+        $handler(new ApproveSellerRequest($request, new Admin()->setEmail('admin@example.com')));
     }
 
     /**
@@ -74,15 +74,15 @@ final class ApproveSellerRequestHandlerTest extends TestCase
      */
     private function pendingRequest(): array
     {
-        $customer = (new Customer())->setEmail('seller@example.com');
+        $customer = new Customer()->setEmail('seller@example.com');
 
-        $seller = (new Seller())
+        $seller = new Seller()
             ->setEmail('seller@example.com')
             ->setCustomer($customer)
             ->setRoles(['ROLE_SELLER'])
             ->setIsActive(false);
 
-        $request = (new SellerRequest())
+        $request = new SellerRequest()
             ->setSeller($seller)
             ->setShopName('Магазин')
             ->setStatus(SellerRequestStatus::Pending);

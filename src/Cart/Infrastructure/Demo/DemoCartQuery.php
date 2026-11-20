@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace App\Cart\Infrastructure\Demo;
 
-use App\Catalog\Infrastructure\Demo\DemoCatalogQuery;
 use App\Cart\Application\Query\CartQueryInterface;
+use App\Catalog\Infrastructure\Demo\DemoCatalogQuery;
 
-final class DemoCartQuery implements CartQueryInterface
+final readonly class DemoCartQuery implements CartQueryInterface
 {
-    public function __construct(private readonly DemoCatalogQuery $catalog)
+    public function __construct(private DemoCatalogQuery $catalog)
     {
     }
 
@@ -36,9 +36,7 @@ final class DemoCartQuery implements CartQueryInterface
             ],
         ];
 
-        $subtotal = array_reduce($cartItems, static function (int $sum, array $item): int {
-            return $sum + $item['product']['price'] * $item['quantity'];
-        }, 0);
+        $subtotal = array_reduce($cartItems, static fn (int $sum, array $item): int => $sum + $item['product']['price'] * $item['quantity'], 0);
         $discount = 1850;
         $delivery = 0;
 

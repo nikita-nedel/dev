@@ -7,10 +7,10 @@ namespace App\Catalog\Infrastructure\Demo;
 use App\Catalog\Application\Query\CatalogQueryInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
-final class DemoCatalogQuery implements CatalogQueryInterface
+final readonly class DemoCatalogQuery implements CatalogQueryInterface
 {
     public function __construct(
-        private readonly UrlGeneratorInterface $urlGenerator,
+        private UrlGeneratorInterface $urlGenerator,
     ) {
     }
 
@@ -22,21 +22,21 @@ final class DemoCatalogQuery implements CatalogQueryInterface
                 'description' => 'Новые поступления модной одежды и обуви',
                 'image' => 'https://images.unsplash.com/photo-1445205170230-053b83016050?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80',
                 'link' => $this->urlGenerator->generate('cat', ['slug' => 'odezhda']),
-                'buttonText' => 'Смотреть коллекцию'
+                'buttonText' => 'Смотреть коллекцию',
             ],
             [
                 'title' => 'Скидки до 50%',
                 'description' => 'Только до конца месяца на зимнюю одежду',
                 'image' => 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80',
                 'link' => $this->urlGenerator->generate('cat', ['slug' => 'obuv']),
-                'buttonText' => 'Смотреть скидки'
+                'buttonText' => 'Смотреть скидки',
             ],
             [
                 'title' => 'Бесплатная доставка',
                 'description' => 'При заказе от 3000 ₽ по всей России',
                 'image' => 'https://images.unsplash.com/photo-1576566588028-4147f3842f27?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80',
                 'link' => $this->urlGenerator->generate('cart'),
-                'buttonText' => 'Условия доставки'
+                'buttonText' => 'Условия доставки',
             ],
         ];
 
@@ -62,7 +62,7 @@ final class DemoCatalogQuery implements CatalogQueryInterface
                 'sellerName' => 'Nike Store',
                 'isNew' => true,
                 'isHit' => true,
-                'isFavorite' => false
+                'isFavorite' => false,
             ],
             [
                 'id' => 2,
@@ -76,7 +76,7 @@ final class DemoCatalogQuery implements CatalogQueryInterface
                 'sellerName' => 'Leather Shop',
                 'isNew' => false,
                 'isHit' => true,
-                'isFavorite' => true
+                'isFavorite' => true,
             ],
             [
                 'id' => 3,
@@ -90,7 +90,7 @@ final class DemoCatalogQuery implements CatalogQueryInterface
                 'sellerName' => 'Samsung Official',
                 'isNew' => true,
                 'isHit' => false,
-                'isFavorite' => false
+                'isFavorite' => false,
             ],
             [
                 'id' => 4,
@@ -104,7 +104,7 @@ final class DemoCatalogQuery implements CatalogQueryInterface
                 'sellerName' => 'Fashion Store',
                 'isNew' => true,
                 'isHit' => false,
-                'isFavorite' => false
+                'isFavorite' => false,
             ],
             [
                 'id' => 5,
@@ -118,7 +118,7 @@ final class DemoCatalogQuery implements CatalogQueryInterface
                 'sellerName' => 'Sony Center',
                 'isNew' => false,
                 'isHit' => true,
-                'isFavorite' => true
+                'isFavorite' => true,
             ],
             [
                 'id' => 6,
@@ -132,7 +132,7 @@ final class DemoCatalogQuery implements CatalogQueryInterface
                 'sellerName' => 'Nike Store',
                 'isNew' => true,
                 'isHit' => false,
-                'isFavorite' => false
+                'isFavorite' => false,
             ],
             [
                 'id' => 7,
@@ -146,7 +146,7 @@ final class DemoCatalogQuery implements CatalogQueryInterface
                 'sellerName' => 'Watch Shop',
                 'isNew' => false,
                 'isHit' => true,
-                'isFavorite' => false
+                'isFavorite' => false,
             ],
             [
                 'id' => 8,
@@ -160,7 +160,7 @@ final class DemoCatalogQuery implements CatalogQueryInterface
                 'sellerName' => 'Beauty Shop',
                 'isNew' => true,
                 'isHit' => false,
-                'isFavorite' => false
+                'isFavorite' => false,
             ],
         ];
 

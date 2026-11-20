@@ -19,12 +19,6 @@ class Job
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 32)]
-    private string $jobId;
-
-    #[ORM\Column(length: 64, enumType: JobType::class)]
-    private JobType $type;
-
     #[ORM\Column(length: 32, enumType: JobStatus::class)]
     private JobStatus $status = JobStatus::Pending;
 
@@ -43,12 +37,11 @@ class Job
     #[ORM\Column]
     private \DateTimeImmutable $updatedAt;
 
-    public function __construct(string $jobId, JobType $type)
+    public function __construct(#[ORM\Column(length: 32)]
+        private string $jobId, #[ORM\Column(length: 64, enumType: JobType::class)]
+        private JobType $type)
     {
         $now = new \DateTimeImmutable();
-
-        $this->jobId = $jobId;
-        $this->type = $type;
         $this->createdAt = $now;
         $this->updatedAt = $now;
     }
@@ -100,9 +93,7 @@ class Job
 
     public function markProcessing(): void
     {
-        if (null === $this->startedAt) {
-            $this->startedAt = new \DateTimeImmutable();
-        }
+        $this->startedAt ??= new \DateTimeImmutable();
 
         $this->status = JobStatus::Processing;
         $this->touch();
