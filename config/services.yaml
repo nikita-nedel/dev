@@ -65,6 +65,9 @@ services:
     App\Catalog\Domain\Repository\ProductRepositoryInterface:
         alias: App\Catalog\Infrastructure\Doctrine\Repository\DoctrineProductRepository
 
+    App\Catalog\Domain\Service\SkuGeneratorInterface:
+        alias: App\Catalog\Infrastructure\Service\RandomSkuGenerator
+
     _instanceof:
         App\Export\Application\Port\ExportDataProviderInterface:
             tags: [ 'app.export.data_provider' ]

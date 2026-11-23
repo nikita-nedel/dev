@@ -12,6 +12,7 @@ use App\Catalog\Application\Command\PublishProduct\PublishProduct;
 use App\Catalog\Application\Command\PublishProduct\PublishProductHandler;
 use App\Catalog\Application\Command\UpdateProduct\UpdateProduct;
 use App\Catalog\Application\Command\UpdateProduct\UpdateProductHandler;
+use App\Catalog\Application\Service\GenerateSkuService;
 use App\Catalog\Domain\Model\Product;
 use App\Catalog\Domain\Repository\ProductRepositoryInterface;
 use App\Catalog\Presentation\Http\Form\ProductFormData;
@@ -23,6 +24,7 @@ use App\Shared\Domain\ValueObject\Money;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormError;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
@@ -69,6 +71,26 @@ final class SellerProductsController extends AbstractController
             'pagination' => $pagination,
             'shopNames' => $shopNames,
         ]);
+    }
+
+    #[Route('/products/generate-sku', name: 'products_generate_sku', methods: ['GET'])]
+    public function generateSku(
+        GenerateSkuService $generateSku,
+        #[MapQueryParameter] ?int $shopId = null,
+    ): JsonResponse {
+        $seller = $this->requireSeller();
+
+        if (null === $shopId) {
+            throw $this->createNotFoundException('Магазин не найден.');
+        }
+
+        $shop = $this->shops->findById($shopId);
+
+        if (null === $shop || !$shop->belongsTo($seller)) {
+            throw $this->createNotFoundException('Магазин не найден.');
+        }
+
+        return $this->json(['sku' => $generateSku->generate($shopId)->value()]);
     }
 
     #[Route('/products/new', name: 'products_new', methods: ['GET', 'POST'])]

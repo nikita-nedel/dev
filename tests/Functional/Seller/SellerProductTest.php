@@ -111,6 +111,39 @@ final class SellerProductTest extends FunctionalTestCase
         self::assertStringNotContainsString('OWN-001', (string) $this->client->getResponse()->getContent());
     }
 
+    public function testSellerCanGenerateSkuForOwnShop(): void
+    {
+        [$seller, $shop] = $this->sellerWithShop('sku-seller@example.com');
+        $this->client->loginUser($seller, 'seller_context');
+
+        $this->client->request('GET', '/seller/products/generate-sku?shopId=' . $shop->getId());
+
+        self::assertResponseIsSuccessful();
+
+        $payload = json_decode(
+            (string) $this->client->getResponse()->getContent(),
+            true,
+            512,
+            JSON_THROW_ON_ERROR,
+        );
+
+        self::assertIsArray($payload);
+        self::assertArrayHasKey('sku', $payload);
+        self::assertMatchesRegularExpression('/^PRD-[A-HJ-NP-Z2-9]{8}$/', (string) $payload['sku']);
+    }
+
+    public function testSellerCannotGenerateSkuForAnotherShop(): void
+    {
+        [$seller] = $this->sellerWithShop('other@example.com');
+        [, $shop] = $this->sellerWithShop('owner@example.com');
+
+        $this->client->loginUser($seller, 'seller_context');
+
+        $this->client->request('GET', '/seller/products/generate-sku?shopId=' . $shop->getId());
+
+        self::assertResponseStatusCodeSame(404);
+    }
+
     /**
      * @return array{Seller, Shop}
      */
