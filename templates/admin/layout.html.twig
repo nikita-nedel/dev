@@ -35,23 +35,23 @@
                 <span class="admin-nav-link-label">Заявки продавцов</span>
             </a>
             <div class="admin-nav-section">Каталог</div>
-            <span class="admin-nav-link is-disabled" title="Скоро">
+            <span class="admin-nav-link is-disabled" title="Скоро" aria-disabled="true">
                 <i class="bi bi-folder2-open"></i>
                 <span class="admin-nav-link-label">Категории</span>
                 <span class="export-format-badge">Скоро</span>
             </span>
-            <span class="admin-nav-link is-disabled" title="Скоро">
+            <span class="admin-nav-link is-disabled" title="Скоро" aria-disabled="true">
                 <i class="bi bi-box-seam"></i>
                 <span class="admin-nav-link-label">Товары</span>
                 <span class="export-format-badge">Скоро</span>
             </span>
-            <span class="admin-nav-link is-disabled" title="Скоро">
+            <span class="admin-nav-link is-disabled" title="Скоро" aria-disabled="true">
                 <i class="bi bi-award"></i>
                 <span class="admin-nav-link-label">Зарегистрированные бренды</span>
                 <span class="export-format-badge">Скоро</span>
             </span>
             <div class="admin-nav-section">Продажи</div>
-            <span class="admin-nav-link is-disabled" title="Скоро">
+            <span class="admin-nav-link is-disabled" title="Скоро" aria-disabled="true">
                 <i class="bi bi-receipt"></i>
                 <span class="admin-nav-link-label">Заказы и корзины</span>
                 <span class="export-format-badge">Скоро</span>
@@ -62,12 +62,12 @@
                 <span class="admin-nav-link-label">Фоновые процессы</span>
             </a>
             <div class="admin-nav-section">Доступ</div>
-            <span class="admin-nav-link is-disabled" title="Скоро">
+            <span class="admin-nav-link is-disabled" title="Скоро" aria-disabled="true">
                 <i class="bi bi-key"></i>
                 <span class="admin-nav-link-label">Роли</span>
                 <span class="export-format-badge">Скоро</span>
             </span>
-            <span class="admin-nav-link is-disabled" title="Скоро">
+            <span class="admin-nav-link is-disabled" title="Скоро" aria-disabled="true">
                 <i class="bi bi-diagram-3"></i>
                 <span class="admin-nav-link-label">Группы ролей</span>
                 <span class="export-format-badge">Скоро</span>
@@ -97,6 +97,20 @@
         </header>
 
         <div class="admin-content">
+            {% set flashes = app.flashes %}
+            {% if flashes|length %}
+                <div class="admin-flash-stack">
+                    {% for type, messages in flashes %}
+                        {% for message in messages %}
+                            <div class="wb-flash wb-flash--{{ type == 'error' ? 'error' : (type == 'success' ? 'success' : 'info') }}" role="status">
+                                <i class="bi {{ type == 'error' ? 'bi-exclamation-circle' : (type == 'success' ? 'bi-check-circle' : 'bi-info-circle') }}"></i>
+                                <span>{{ message }}</span>
+                                <button class="wb-flash__close" type="button" aria-label="Закрыть" data-wb-flash-close>&times;</button>
+                            </div>
+                        {% endfor %}
+                    {% endfor %}
+                </div>
+            {% endif %}
             {% block admin_body %}{% endblock %}
         </div>
     </div>
