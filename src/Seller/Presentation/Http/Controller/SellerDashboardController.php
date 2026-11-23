@@ -6,6 +6,7 @@ namespace App\Seller\Presentation\Http\Controller;
 
 use App\Identity\Domain\Model\Seller;
 use App\Seller\Domain\Repository\SellerRequestRepositoryInterface;
+use App\Seller\Domain\Repository\ShopRepositoryInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -16,6 +17,7 @@ final class SellerDashboardController extends AbstractController
 {
     public function __construct(
         private readonly SellerRequestRepositoryInterface $requests,
+        private readonly ShopRepositoryInterface $shops,
     ) {
     }
 
@@ -31,6 +33,7 @@ final class SellerDashboardController extends AbstractController
         return $this->render('seller/dashboard.html.twig', [
             'seller' => $seller,
             'sellerRequest' => $this->requests->findBySeller($seller),
+            'shops' => $this->shops->findBySeller($seller),
         ]);
     }
 }

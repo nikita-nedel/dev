@@ -50,9 +50,6 @@ class Seller implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?Customer $customer = null;
 
-    #[ORM\OneToOne(mappedBy: 'seller', targetEntity: SellerProfile::class, cascade: ['persist', 'remove'])]
-    private ?SellerProfile $profile = null;
-
     #[ORM\Column]
     #[Gedmo\Timestampable(on: 'create')]
     private ?\DateTimeImmutable $createdAt = null;
@@ -178,22 +175,6 @@ class Seller implements UserInterface, PasswordAuthenticatedUserInterface
     public function setCustomer(Customer $customer): static
     {
         $this->customer = $customer;
-
-        return $this;
-    }
-
-    public function getProfile(): ?SellerProfile
-    {
-        return $this->profile;
-    }
-
-    public function setProfile(SellerProfile $profile): static
-    {
-        if ($profile->getSeller() !== $this) {
-            $profile->setSeller($this);
-        }
-
-        $this->profile = $profile;
 
         return $this;
     }

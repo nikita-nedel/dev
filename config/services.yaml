@@ -47,7 +47,9 @@ services:
     App\Seller\Domain\Repository\SellerRequestRepositoryInterface:
         alias: App\Seller\Infrastructure\Doctrine\Repository\DoctrineSellerRequestRepository
 
-    # Read-model витрины: пока демо-данные, потом запросы к каталогу/ES.
+    App\Seller\Domain\Repository\ShopRepositoryInterface:
+        alias: App\Seller\Infrastructure\Doctrine\Repository\DoctrineShopRepository
+
     App\Catalog\Application\Query\CatalogQueryInterface:
         alias: App\Catalog\Infrastructure\Demo\DemoCatalogQuery
 

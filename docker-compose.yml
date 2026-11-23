@@ -4,6 +4,7 @@ x-worker-base: &worker-base
     target: ${APP_ENV:-0}
     args:
       USER_ID: ${USER_ID:-0}
+  restart: unless-stopped
   volumes:
     - ./:/app
   depends_on:
@@ -61,7 +62,7 @@ services:
 
   export-worker:
     <<: *worker-base
-    command: php bin/console messenger:consume async --time-limit=0 --memory-limit=256M --sleep=1 -vv
+    command: php bin/console messenger:consume async --memory-limit=256M --sleep=1 -vv
     depends_on:
       base-db:
         condition: service_started

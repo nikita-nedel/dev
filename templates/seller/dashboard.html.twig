@@ -36,7 +36,12 @@
 
     <div class="admin-panel" style="margin-bottom: 1.25rem;">
         <div class="admin-panel-header">
-            <h2>{{ seller.profile.shopName }}</h2>
+            <h2>
+                {{ shops is empty ? 'Магазин ещё не создан' : shops|first.name }}
+                {% if shops|length > 1 %}
+                    <span class="text-secondary">(+{{ shops|length - 1 }})</span>
+                {% endif %}
+            </h2>
             <a href="{{ path('app_seller_products_new') }}"><i class="bi bi-plus-lg"></i> Добавить товар</a>
         </div>
         <div style="padding: 1.25rem 1.5rem;">

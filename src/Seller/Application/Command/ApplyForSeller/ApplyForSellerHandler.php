@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Seller\Application\Command\ApplyForSeller;
 
 use App\Identity\Domain\Model\Seller;
-use App\Identity\Domain\Model\SellerProfile;
 use App\Identity\Domain\Repository\SellerRepositoryInterface;
 use App\Seller\Domain\Model\SellerRequest;
 use App\Seller\Domain\Model\SellerRequestStatus;
@@ -34,21 +33,10 @@ final readonly class ApplyForSellerHandler
             ->setRoles(['ROLE_SELLER']);
 
         $request = $command->request;
-        $contactPhone = $request->getContactPhone() ?? $command->customer->getPhone();
-
-        $seller->setProfile(
-            new SellerProfile()
-                ->setShopName((string) $request->getShopName())
-                ->setLegalName($request->getLegalName())
-                ->setInn($request->getInn())
-                ->setDescription($request->getDescription())
-                ->setContactPhone($contactPhone),
-        );
-
         $request
             ->setSeller($seller)
             ->setStatus(SellerRequestStatus::Pending)
-            ->setContactPhone($contactPhone);
+            ->setContactPhone($request->getContactPhone() ?? $command->customer->getPhone());
 
         $this->transactions->transactional(function () use ($seller, $request): void {
             $this->sellers->add($seller);
