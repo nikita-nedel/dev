@@ -71,4 +71,18 @@ final class MoneyTest extends TestCase
         self::assertFalse(Money::of(100, 'BYN')->equals(Money::of(100, 'USD')));
         self::assertFalse(Money::of(100, 'BYN')->equals(Money::of(101, 'BYN')));
     }
+
+    public function testCreatesFromDecimalString(): void
+    {
+        self::assertSame('12.99 BYN', Money::fromDecimalString('12.99', 'BYN')->format());
+        self::assertSame('12.00 BYN', Money::fromDecimalString('12', 'BYN')->format());
+        self::assertSame('12.50 BYN', Money::fromDecimalString('12.5', 'BYN')->format());
+    }
+
+    public function testRejectsInvalidDecimalString(): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+
+        Money::fromDecimalString('12.999', 'BYN');
+    }
 }

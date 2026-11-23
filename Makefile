@@ -58,10 +58,8 @@ cc: c=c:c ## Clear the cache
 cc: sf
 
 test: ## Runs the test suite (creates and migrates the test DB if needed)
-	@$(DOCKER_COMP) exec -T php php bin/console doctrine:database:create --env=test --if-not-exists
-	@$(DOCKER_COMP) exec -T php php bin/console doctrine:migrations:migrate --env=test --no-interaction --allow-no-migration
-	@$(DOCKER_COMP) exec -T php php bin/console cache:clear --env=test --no-warmup
-	@$(DOCKER_COMP) exec -T php php bin/phpunit
+	@$(DOCKER_COMP) up -d php
+	@$(DOCKER_COMP) exec -T php sh -c 'php bin/console doctrine:database:create --env=test --if-not-exists && php bin/console doctrine:migrations:migrate --env=test --no-interaction --allow-no-migration && php bin/console cache:clear --env=test --no-warmup && php bin/phpunit'
 
 test-db: ## Recreates the test database from scratch and runs migrations
 	@$(DOCKER_COMP) exec -T php php bin/console doctrine:database:drop --env=test --force --if-exists

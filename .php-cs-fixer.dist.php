@@ -15,6 +15,10 @@ return (new Config())
     ->setRules([
         '@Symfony' => true,
         'concat_space' => ['spacing' => 'one'],
+        'types_spaces' => [
+            'space' => 'none',
+            'space_multiple_catch' => 'single',
+        ],
     ])
     ->setFinder($finder)
     ->setCacheFile(__DIR__ . '/.php-cs-fixer.cache')

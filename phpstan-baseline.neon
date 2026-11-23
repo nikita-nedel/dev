@@ -139,18 +139,6 @@ parameters:
 			path: src/Identity/Domain/Model/Seller.php
 
 		-
-			message: '#^Property App\\Identity\\Domain\\Model\\SellerProfile\:\:\$seller type mapping mismatch\: property can contain App\\Identity\\Domain\\Model\\Seller\|null but database expects App\\Identity\\Domain\\Model\\Seller\.$#'
-			identifier: doctrine.associationType
-			count: 1
-			path: src/Identity/Domain/Model/SellerProfile.php
-
-		-
-			message: '#^Property App\\Identity\\Domain\\Model\\SellerProfile\:\:\$shopName type mapping mismatch\: property can contain string\|null but database expects string\.$#'
-			identifier: doctrine.columnType
-			count: 1
-			path: src/Identity/Domain/Model/SellerProfile.php
-
-		-
 			message: '#^Method App\\Identity\\Infrastructure\\Security\\AdminUserProvider\:\:upgradePassword\(\) overrides @final method Symfony\\Bridge\\Doctrine\\Security\\User\\EntityUserProvider\<Symfony\\Component\\Security\\Core\\User\\UserInterface\>\:\:upgradePassword\(\)\.$#'
 			identifier: method.parentMethodFinalByPhpDoc
 			count: 1

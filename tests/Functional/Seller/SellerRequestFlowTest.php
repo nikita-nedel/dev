@@ -7,6 +7,7 @@ namespace App\Tests\Functional\Seller;
 use App\Identity\Domain\Model\Admin;
 use App\Seller\Domain\Model\SellerRequest;
 use App\Seller\Domain\Model\SellerRequestStatus;
+use App\Seller\Domain\Model\Shop;
 use App\Tests\Functional\FunctionalTestCase;
 
 final class SellerRequestFlowTest extends FunctionalTestCase
@@ -55,6 +56,11 @@ final class SellerRequestFlowTest extends FunctionalTestCase
 
         $this->em()->clear();
         $approved = $this->em()->getRepository(SellerRequest::class)->find($sellerRequest->getId());
+
+        $shop = $this->em()->getRepository(Shop::class)->findOneBy(['seller' => $approved?->getSeller()]);
+        self::assertInstanceOf(Shop::class, $shop);
+        self::assertSame('Магазин Ивана', $shop->getName());
+
         self::assertSame(SellerRequestStatus::Approved, $approved?->getStatus());
         self::assertNotNull($approved?->getReviewedAt());
         self::assertInstanceOf(Admin::class, $approved?->getReviewedBy());

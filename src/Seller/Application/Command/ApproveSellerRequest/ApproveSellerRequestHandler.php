@@ -6,6 +6,8 @@ namespace App\Seller\Application\Command\ApproveSellerRequest;
 
 use App\Identity\Domain\Model\Seller;
 use App\Seller\Domain\Model\SellerRequestStatus;
+use App\Seller\Domain\Model\Shop;
+use App\Seller\Domain\Repository\ShopRepositoryInterface;
 use App\Shared\Domain\Port\ClockInterface;
 use App\Shared\Domain\Port\TransactionManagerInterface;
 
@@ -15,6 +17,7 @@ final readonly class ApproveSellerRequestHandler
 
     public function __construct(
         private ClockInterface $clock,
+        private ShopRepositoryInterface $shops,
         private TransactionManagerInterface $transactions,
     ) {
     }
@@ -46,6 +49,15 @@ final readonly class ApproveSellerRequestHandler
                 ->setApprovedAt($now)
                 ->setActivationToken(bin2hex(random_bytes(32)))
                 ->setActivationTokenExpiresAt($now->modify(self::ACTIVATION_TOKEN_TTL));
+
+            $this->shops->add(Shop::open(
+                seller: $seller,
+                name: (string) $request->getShopName(),
+                legalName: $request->getLegalName(),
+                inn: $request->getInn(),
+                description: $request->getDescription(),
+                contactPhone: $request->getContactPhone(),
+            ));
 
             return $seller;
         });

@@ -20,12 +20,17 @@ final class ApproveSellerRequestHandlerTest extends TestCase
     public function testApprovalIssuesActivationTokenForSevenDays(): void
     {
         $clock = new FixedClock(new \DateTimeImmutable('2026-02-01 09:30:00'));
-        $handler = new ApproveSellerRequestHandler($clock, new PassthroughTransactionManager());
+        $shops = new InMemoryShopRepository();
+        $handler = new ApproveSellerRequestHandler($clock, $shops, new PassthroughTransactionManager());
 
         [$request, $seller] = $this->pendingRequest();
         $admin = new Admin()->setEmail('admin@example.com');
 
         $approvedSeller = $handler(new ApproveSellerRequest($request, $admin));
+
+        self::assertCount(1, $shops->shops);
+        self::assertSame('Магазин', $shops->shops[0]->getName());
+        self::assertSame($seller, $shops->shops[0]->getSeller());
 
         self::assertSame($seller, $approvedSeller);
         self::assertSame(SellerRequestStatus::Approved, $request->getStatus());
@@ -40,8 +45,11 @@ final class ApproveSellerRequestHandlerTest extends TestCase
 
     public function testAlreadyProcessedRequestCannotBeApprovedTwice(): void
     {
+        $shops = new InMemoryShopRepository();
+
         $handler = new ApproveSellerRequestHandler(
             new FixedClock(new \DateTimeImmutable('2026-02-01 09:30:00')),
+            $shops,
             new PassthroughTransactionManager(),
         );
 
@@ -56,8 +64,11 @@ final class ApproveSellerRequestHandlerTest extends TestCase
 
     public function testRequestWithoutSellerCannotBeApproved(): void
     {
+        $shops = new InMemoryShopRepository();
+
         $handler = new ApproveSellerRequestHandler(
             new FixedClock(new \DateTimeImmutable('2026-02-01 09:30:00')),
+            $shops,
             new PassthroughTransactionManager(),
         );
 

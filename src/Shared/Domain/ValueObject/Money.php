@@ -29,6 +29,19 @@ final readonly class Money
         return new self(0, $currency);
     }
 
+    public static function fromDecimalString(string $value, string $currency): self
+    {
+        $value = trim($value);
+
+        if (1 !== preg_match('/^(\d{1,10})(?:\.(\d{1,2}))?$/', $value, $matches)) {
+            throw new \InvalidArgumentException(sprintf('"%s" is not a valid decimal amount.', $value));
+        }
+
+        $cents = (int) str_pad($matches[2] ?? '0', 2, '0');
+
+        return new self((int) $matches[1] * 100 + $cents, $currency);
+    }
+
     public function amount(): int
     {
         return $this->amount;
