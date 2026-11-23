@@ -62,6 +62,9 @@ services:
     App\Export\Domain\Repository\ExportFileRepositoryInterface:
         alias: App\Export\Infrastructure\Doctrine\Repository\DoctrineExportFileRepository
 
+    App\Catalog\Domain\Repository\ProductRepositoryInterface:
+        alias: App\Catalog\Infrastructure\Doctrine\Repository\DoctrineProductRepository
+
     _instanceof:
         App\Export\Application\Port\ExportDataProviderInterface:
             tags: [ 'app.export.data_provider' ]
