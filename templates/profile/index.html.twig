@@ -57,18 +57,19 @@
                     <nav class="profile-nav">
                         <a class="is-active" href="{{ path('app_profile') }}"><i class="bi bi-person"></i>Профиль</a>
                         <a href="{{ path('app_orders') }}"><i class="bi bi-box-seam"></i>Мои заказы<span class="profile-nav__count profile-nav__count--alert">1</span></a>
-                        <a href="#" data-wb-demo="Избранное"><i class="bi bi-heart"></i>Избранное<span class="profile-nav__count">34</span></a>
+                        <a class="is-soon" href="#" data-wb-demo="Избранное" aria-disabled="true" tabindex="-1"><i class="bi bi-heart"></i>Избранное<span class="profile-nav__count">34</span><span class="profile-nav__soon">Скоро</span></a>
                         <a href="#profile-address"><i class="bi bi-geo-alt"></i>Адреса доставки</a>
-                        <button type="button" data-wb-demo="Платежи"><i class="bi bi-credit-card"></i>Платежи</button>
-                        <button type="button" data-wb-demo="Уведомления"><i class="bi bi-bell"></i>Уведомления<span class="profile-nav__count profile-nav__count--alert">2</span></button>
-                        <button type="button" data-wb-demo="Безопасность"><i class="bi bi-lock"></i>Безопасность</button>
+                        <button class="is-soon" type="button" data-wb-demo="Платежи" aria-disabled="true" tabindex="-1"><i class="bi bi-credit-card"></i>Платежи<span class="profile-nav__soon">Скоро</span></button>
+                        <button class="is-soon" type="button" data-wb-demo="Уведомления" aria-disabled="true" tabindex="-1"><i class="bi bi-bell"></i>Уведомления<span class="profile-nav__count profile-nav__count--alert">2</span><span class="profile-nav__soon">Скоро</span></button>
+                        <button class="is-soon" type="button" data-wb-demo="Безопасность" aria-disabled="true" tabindex="-1"><i class="bi bi-lock"></i>Безопасность<span class="profile-nav__soon">Скоро</span></button>
                         <div class="profile-nav__sep"></div>
                         <a class="is-danger" href="{{ path('app_logout') }}"><i class="bi bi-box-arrow-right"></i>Выйти</a>
                     </nav>
                 </div>
-                <a class="profile-side__help" href="#" data-wb-demo="Чат поддержки">
+                <a class="profile-side__help is-soon" href="#" data-wb-demo="Чат поддержки" aria-disabled="true" tabindex="-1">
                     <i class="bi bi-question-circle"></i>
                     <span><strong>Нужна помощь?</strong><span>Поддержка 24/7</span></span>
+                    <span class="profile-nav__soon">Скоро</span>
                 </a>
             </aside>
 

@@ -162,7 +162,85 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('[data-wb-demo]').forEach((element) => {
         element.addEventListener('click', (event) => {
             if (element.tagName === 'A') event.preventDefault();
+            if (element.matches('.is-soon, .is-disabled, [aria-disabled="true"]')) {
+                showToast('Раздел скоро появится');
+                return;
+            }
             showToast(element.dataset.wbDemo || 'Раздел в разработке');
         });
     });
+
+    /* Копирование контактов продавца */
+    document.addEventListener('click', (event) => {
+        const button = event.target.closest('[data-wb-copy]');
+        if (!button) return;
+        event.preventDefault();
+
+        const value = button.dataset.wbCopy || '';
+        if (!value) return;
+
+        const done = () => showToast('Скопировано: ' + value, 'success');
+        const fallback = () => {
+            const field = document.createElement('textarea');
+            field.value = value;
+            field.setAttribute('readonly', 'readonly');
+            field.style.position = 'fixed';
+            field.style.left = '-9999px';
+            document.body.appendChild(field);
+            field.select();
+
+            try {
+                document.execCommand('copy');
+                done();
+            } catch (error) {
+                showToast('Не удалось скопировать', 'error');
+            } finally {
+                field.remove();
+            }
+        };
+
+        if (navigator.clipboard && window.isSecureContext) {
+            navigator.clipboard.writeText(value).then(done).catch(fallback);
+        } else {
+            fallback();
+        }
+    });
+
+    /* Редактирование профиля продавца */
+    const profileEditor = document.querySelector('[data-profile-editor]');
+    const openProfileEditor = () => {
+        if (!profileEditor) return;
+        profileEditor.hidden = false;
+        profileEditor.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        const firstInput = profileEditor.querySelector('input:not([type="hidden"]), textarea');
+        if (firstInput) window.setTimeout(() => firstInput.focus({ preventScroll: true }), 250);
+    };
+
+    document.querySelectorAll('[data-profile-edit-toggle]').forEach((button) => {
+        button.addEventListener('click', openProfileEditor);
+    });
+
+    document.querySelectorAll('[data-profile-edit-close]').forEach((button) => {
+        button.addEventListener('click', () => {
+            if (profileEditor) profileEditor.hidden = true;
+        });
+    });
+
+    /* Конфетти после сохранения профиля */
+    const confettiHost = document.querySelector('[data-profile-confetti]');
+    if (confettiHost) {
+        const colors = ['#d4a373', '#4d6572', '#5c7864', '#f5c26b', '#ffffff'];
+
+        for (let index = 0; index < 34; index += 1) {
+            const piece = document.createElement('span');
+            piece.className = 'wb-confetti';
+            piece.style.left = Math.random() * 100 + '%';
+            piece.style.background = colors[index % colors.length];
+            piece.style.animationDelay = Math.random() * 0.25 + 's';
+            piece.style.setProperty('--x', (Math.random() - 0.5) * 260 + 'px');
+            piece.style.setProperty('--r', Math.random() * 720 - 360 + 'deg');
+            confettiHost.appendChild(piece);
+            window.setTimeout(() => piece.remove(), 2200);
+        }
+    }
 });
