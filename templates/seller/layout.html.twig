@@ -31,10 +31,14 @@
             <a href="{{ path('app_seller_products_new') }}" class="admin-nav-link">
                 <i class="bi bi-plus-square"></i><span class="admin-nav-link-label">Новый товар</span>
             </a>
-            <a href="#" class="admin-nav-link" data-wb-demo="Категории продавца">
+            <span class="admin-nav-link is-disabled" title="Скоро" aria-disabled="true">
                 <i class="bi bi-tags"></i><span class="admin-nav-link-label">Категории</span>
-            </a>
+                <span class="export-format-badge">Скоро</span>
+            </span>
             <div class="admin-nav-section">Аккаунт</div>
+            <a href="{{ path('app_seller_profile') }}" class="admin-nav-link {{ app.request.attributes.get('_route') starts with 'app_seller_profile' ? 'active' : '' }}">
+                <i class="bi bi-person-gear"></i><span class="admin-nav-link-label">Профиль продавца</span>
+            </a>
             <a href="{{ path('app_home') }}" class="admin-nav-link">
                 <i class="bi bi-arrow-left-circle"></i><span class="admin-nav-link-label">На сайт</span>
             </a>
@@ -53,15 +57,31 @@
                 <h1>{% block page_title %}Обзор{% endblock %}</h1>
             </div>
             {% if app.user %}
+                {% set sellerCustomerProfile = app.user.customer is not null ? app.user.customer.profile : null %}
+                {% set sellerDisplayName = sellerCustomerProfile is not null ? sellerCustomerProfile.fullName : app.user.email %}
                 <div class="admin-topbar-actions">
-                    <div class="admin-user-badge">
-                        <span class="avatar">{{ app.user.userIdentifier|first|upper }}</span>
-                        <span>{{ app.user.userIdentifier }}</span>
-                    </div>
+                    <a href="{{ path('app_seller_profile') }}" class="admin-user-badge" title="Профиль продавца">
+                        <span class="avatar">{{ sellerDisplayName|first|upper }}</span>
+                        <span>{{ sellerDisplayName }}</span>
+                    </a>
                 </div>
             {% endif %}
         </header>
         <div class="admin-content">
+            {% set flashes = app.flashes %}
+            {% if flashes|length %}
+                <div class="admin-flash-stack">
+                    {% for type, messages in flashes %}
+                        {% for message in messages %}
+                            <div class="wb-flash wb-flash--{{ type == 'error' ? 'error' : (type == 'success' ? 'success' : 'info') }}" role="status">
+                                <i class="bi {{ type == 'error' ? 'bi-exclamation-circle' : (type == 'success' ? 'bi-check-circle' : 'bi-info-circle') }}"></i>
+                                <span>{{ message }}</span>
+                                <button class="wb-flash__close" type="button" aria-label="Закрыть" data-wb-flash-close>&times;</button>
+                            </div>
+                        {% endfor %}
+                    {% endfor %}
+                </div>
+            {% endif %}
             {% block seller_body %}{% endblock %}
         </div>
     </div>

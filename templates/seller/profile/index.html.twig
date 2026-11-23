@@ -1,0 +1,441 @@
+{% extends 'seller/layout.html.twig' %}
+
+{% block title %}Профиль продавца{% endblock %}
+{% block page_title %}Профиль продавца{% endblock %}
+
+{% block seller_body %}
+    {% set personalPhone = customerProfile is not null ? customerProfile.phone : null %}
+    {% set storeLegalName = sellerRequest is not null ? sellerRequest.legalName : null %}
+    {% set storeInn = sellerRequest is not null ? sellerRequest.inn : null %}
+    {% set storeDescription = sellerRequest is not null ? sellerRequest.description : null %}
+    {% set storeContactPhone = sellerRequest is not null ? sellerRequest.contactPhone : null %}
+    {% set storePhone = storeContactPhone ?: (sellerRequest is not null ? sellerRequest.contactPhone : null) %}
+    {% set registrationDate = seller.createdAt ? seller.createdAt|date('d.m.Y') : '—' %}
+    {% set approvalDate = seller.approvedAt ? seller.approvedAt|date('d.m.Y') : null %}
+    {% set activeShare = stats.total > 0 ? (stats.active / stats.total * 100)|round : 0 %}
+    {% set hiddenShare = stats.total > 0 ? (stats.inactive / stats.total * 100)|round : 0 %}
+
+    {% if app.request.query.get('updated') %}
+        <div class="wb-confetti-host" data-profile-confetti aria-hidden="true"></div>
+    {% endif %}
+
+    <div class="seller-profile">
+        <section class="seller-hero">
+            <div class="seller-hero__main">
+                <div class="seller-avatar" aria-hidden="true">{{ initials }}</div>
+                <div class="seller-hero__identity">
+                    <span class="seller-hero__eyebrow">Личный кабинет продавца</span>
+                    <h2>{{ fullName }}</h2>
+                    <p class="seller-hero__shop"><i class="bi bi-shop"></i> {{ storeName }}</p>
+                    <div class="seller-hero__chips">
+                        <span class="seller-chip seller-chip--status {{ seller.isActive ? 'is-active' : 'is-pending' }}">
+                            <span class="seller-chip__dot"></span>
+                            {{ seller.isActive ? 'Магазин активен' : 'Магазин на проверке' }}
+                        </span>
+                        <span class="seller-chip"><i class="bi bi-envelope"></i> {{ seller.email }}</span>
+                        <span class="seller-chip"><i class="bi bi-calendar3"></i> с {{ registrationDate }}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="seller-hero__side">
+                <div class="seller-completeness">
+                    <div class="seller-completeness__ring" style="--value: {{ completion.percent }}%">
+                        <span>{{ completion.percent }}%</span>
+                    </div>
+                    <div class="seller-completeness__text">
+                        <strong>Профиль заполнен</strong>
+                        <span>{{ completion.done }} из {{ completion.total }} пунктов</span>
+                    </div>
+                </div>
+                <button class="btn-admin-primary seller-hero__edit" type="button" data-profile-edit-toggle>
+                    <i class="bi bi-pencil-square"></i> Редактировать профиль
+                </button>
+            </div>
+        </section>
+
+        <section class="admin-panel seller-editor" id="sellerProfileEditor" data-profile-editor {% if not editOpen %}hidden{% endif %}>
+            <div class="seller-card__head">
+                <div>
+                    <span class="seller-card__kicker">Редактирование</span>
+                    <h2>Данные профиля и магазина</h2>
+                    <p>Изменения сразу появятся в карточке продавца и в контактах магазина.</p>
+                </div>
+                <button class="btn-icon" type="button" data-profile-edit-close aria-label="Закрыть форму">
+                    <i class="bi bi-x-lg"></i>
+                </button>
+            </div>
+
+            {{ form_start(form, {attr: {class: 'seller-form', novalidate: 'novalidate'}}) }}
+            {% if form.vars.errors|length %}
+                <div class="seller-form__error">{{ form_errors(form) }}</div>
+            {% endif %}
+
+            <div class="seller-form__section">
+                <h3><i class="bi bi-person"></i> Личные данные</h3>
+                <div class="seller-form__grid">
+                    <div class="seller-field">
+                        {{ form_label(form.firstName) }}
+                        {{ form_widget(form.firstName) }}
+                        {{ form_errors(form.firstName) }}
+                    </div>
+                    <div class="seller-field">
+                        {{ form_label(form.lastName) }}
+                        {{ form_widget(form.lastName) }}
+                        {{ form_errors(form.lastName) }}
+                    </div>
+                    <div class="seller-field">
+                        {{ form_label(form.phone) }}
+                        {{ form_widget(form.phone) }}
+                        {{ form_errors(form.phone) }}
+                    </div>
+                    <div class="seller-field seller-field--readonly">
+                        <label class="form-label">E-mail</label>
+                        <input class="admin-input" type="email" value="{{ seller.email }}" readonly>
+                        <span class="seller-field__hint"><i class="bi bi-lock"></i> E-mail — логин продавца, меняется через поддержку</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="seller-form__section">
+                <h3><i class="bi bi-shop"></i> Магазин</h3>
+                <div class="seller-form__grid">
+                    <div class="seller-field">
+                        {{ form_label(form.shopName) }}
+                        {{ form_widget(form.shopName) }}
+                        {{ form_errors(form.shopName) }}
+                    </div>
+                    <div class="seller-field">
+                        {{ form_label(form.legalName) }}
+                        {{ form_widget(form.legalName) }}
+                        {{ form_errors(form.legalName) }}
+                    </div>
+                    <div class="seller-field">
+                        {{ form_label(form.inn) }}
+                        {{ form_widget(form.inn) }}
+                        {{ form_errors(form.inn) }}
+                    </div>
+                    <div class="seller-field">
+                        {{ form_label(form.contactPhone) }}
+                        {{ form_widget(form.contactPhone) }}
+                        {{ form_errors(form.contactPhone) }}
+                    </div>
+                    <div class="seller-field seller-field--full">
+                        {{ form_label(form.description) }}
+                        {{ form_widget(form.description) }}
+                        {{ form_errors(form.description) }}
+                        <span class="seller-field__hint">Пара предложений о магазине помогут покупателям решиться на заказ.</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="seller-form__actions">
+                <button class="btn-admin-primary" type="submit"><i class="bi bi-check2"></i> Сохранить изменения</button>
+                <button class="btn-admin-outline" type="button" data-profile-edit-close>Отмена</button>
+                <span class="seller-form__hint"><i class="bi bi-shield-check"></i> Данные защищены и видны только вам</span>
+            </div>
+            {{ form_end(form) }}
+        </section>
+
+        <div class="seller-profile-grid">
+            <div class="seller-profile-column">
+                <section class="admin-panel seller-card" id="seller-personal" aria-labelledby="seller-personal-title">
+                    <div class="seller-card__head">
+                        <div>
+                            <span class="seller-card__kicker">Личные данные</span>
+                            <h2 id="seller-personal-title">Как к вам обращаться</h2>
+                        </div>
+                        <button class="btn-admin-outline btn-sm" type="button" data-profile-edit-toggle>
+                            <i class="bi bi-pencil"></i> Изменить
+                        </button>
+                    </div>
+                    <div class="seller-info-grid">
+                        <div class="seller-info-item">
+                            <span>Имя</span>
+                            <strong>{{ customerProfile is not null and customerProfile.firstName ? customerProfile.firstName : 'Не указано' }}</strong>
+                        </div>
+                        <div class="seller-info-item">
+                            <span>Фамилия</span>
+                            <strong>{{ customerProfile is not null and customerProfile.lastName ? customerProfile.lastName : 'Не указано' }}</strong>
+                        </div>
+                        <div class="seller-info-item">
+                            <span>Телефон</span>
+                            <strong>{{ personalPhone ?: 'Не указан' }}</strong>
+                        </div>
+                        <div class="seller-info-item">
+                            <span>E-mail</span>
+                            <strong>{{ seller.email }}</strong>
+                        </div>
+                        <div class="seller-info-item">
+                            <span>Аккаунт создан</span>
+                            <strong>{{ registrationDate }}</strong>
+                        </div>
+                        <div class="seller-info-item">
+                            <span>Заявка одобрена</span>
+                            <strong>{{ approvalDate ?: 'Ожидает проверки' }}</strong>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="admin-panel seller-card" id="seller-stores" aria-labelledby="seller-stores-title">
+                    <div class="seller-card__head">
+                        <div>
+                            <span class="seller-card__kicker">Магазины</span>
+                            <h2 id="seller-stores-title">{{ storeName }}</h2>
+                        </div>
+                        <span class="seller-chip seller-chip--light {{ seller.isActive ? 'is-active' : 'is-pending' }}">
+                            {{ seller.isActive ? 'Активен' : 'На проверке' }}
+                        </span>
+                    </div>
+
+                    <div class="seller-store">
+                        <div class="seller-store__cover">
+                            <span class="seller-store__mark">{{ storeName|first|upper }}</span>
+                            <div class="seller-store__cover-text">
+                                <strong>{{ storeName }}</strong>
+                                <span>{{ storeLegalName ?: 'Юридическое название пока не указано' }}</span>
+                            </div>
+                            <a class="seller-store__link" href="{{ path('app_home') }}">
+                                Открыть витрину <i class="bi bi-arrow-up-right"></i>
+                            </a>
+                        </div>
+
+                        <div class="seller-store__stats">
+                            <div class="seller-store-stat">
+                                <strong>{{ stats.total }}</strong>
+                                <span>товаров</span>
+                            </div>
+                            <div class="seller-store-stat">
+                                <strong>{{ stats.active }}</strong>
+                                <span>активных</span>
+                            </div>
+                            <div class="seller-store-stat">
+                                <strong>{{ stats.inactive }}</strong>
+                                <span>скрытых</span>
+                            </div>
+                            <div class="seller-store-stat {{ stats.outOfStock > 0 ? 'is-warning' : '' }}">
+                                <strong>{{ stats.outOfStock }}</strong>
+                                <span>без остатка</span>
+                            </div>
+                        </div>
+
+                        <div class="seller-stockbar" aria-label="Состав витрины">
+                            <span class="is-active" style="width: {{ activeShare }}%"></span>
+                            <span class="is-hidden" style="width: {{ hiddenShare }}%"></span>
+                        </div>
+                        <div class="seller-stockbar__legend">
+                            <span><i class="is-active"></i> Активные — {{ stats.active }}</span>
+                            <span><i class="is-hidden"></i> Скрытые — {{ stats.inactive }}</span>
+                            <span class="seller-stockbar__total">Остаток на складе: {{ stats.stockTotal }} шт.</span>
+                        </div>
+
+                        <div class="seller-products">
+                            <div class="seller-products__head">
+                                <strong>Последние товары</strong>
+                                <a href="{{ path('app_seller_products') }}">Все товары <i class="bi bi-arrow-right"></i></a>
+                            </div>
+                            {% for product in products|slice(0, 3) %}
+                                <div class="seller-product-row">
+                                    <span class="seller-product-row__icon"><i class="bi {{ product.active ? 'bi-box-seam' : 'bi-box' }}"></i></span>
+                                    <div class="seller-product-row__main">
+                                        <strong>{{ product.name }}</strong>
+                                        <span>Арт. {{ product.sku }} · {{ product.category.name }}</span>
+                                    </div>
+                                    <div class="seller-product-row__price">
+                                        <strong>{{ product.price|number_format(0, ',', ' ') }} ₽</strong>
+                                        <span>{{ product.stock }} шт.</span>
+                                    </div>
+                                    <span class="seller-product-row__status {{ product.active ? 'is-active' : 'is-hidden' }}">
+                                        {{ product.active ? 'Активен' : 'Скрыт' }}
+                                    </span>
+                                </div>
+                            {% else %}
+                                <div class="seller-products__empty">
+                                    <i class="bi bi-box"></i>
+                                    <span>В магазине пока нет товаров</span>
+                                </div>
+                            {% endfor %}
+                        </div>
+
+                        <div class="seller-store__footer">
+                            <a class="btn-admin-primary" href="{{ path('app_seller_products') }}">
+                                <i class="bi bi-box-seam"></i> Управлять товарами
+                            </a>
+                            <span class="seller-soon-btn" title="Скоро" aria-disabled="true">
+                                <i class="bi bi-plus-lg"></i> Добавить магазин
+                                <span class="export-format-badge">Скоро</span>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="seller-store__requisites">
+                        <div class="seller-info-item">
+                            <span>Юридическое название</span>
+                            <strong>{{ storeLegalName ?: 'Не указано' }}</strong>
+                        </div>
+                        <div class="seller-info-item">
+                            <span>ИНН</span>
+                            <strong>{{ storeInn ?: 'Не указан' }}</strong>
+                        </div>
+                        <div class="seller-info-item">
+                            <span>Телефон магазина</span>
+                            <strong>{{ storePhone ?: 'Не указан' }}</strong>
+                        </div>
+                        <div class="seller-info-item">
+                            <span>Категорий в витрине</span>
+                            <strong>{{ stats.categories }}</strong>
+                        </div>
+                    </div>
+
+                    <div class="seller-store__description">
+                        <span>О магазине</span>
+                        <p>{{ storeDescription ?: 'Добавьте описание — оно появится в карточке магазина и поможет покупателям вас выбрать.' }}</p>
+                        {% if not storeDescription %}
+                            <button class="seller-link-button" type="button" data-profile-edit-toggle>
+                                Добавить описание <i class="bi bi-arrow-right"></i>
+                            </button>
+                        {% endif %}
+                    </div>
+                </section>
+
+                <section class="admin-panel seller-card" aria-labelledby="seller-checklist-title">
+                    <div class="seller-card__head">
+                        <div>
+                            <span class="seller-card__kicker">Запуск магазина</span>
+                            <h2 id="seller-checklist-title">Чек-лист продавца</h2>
+                            <p>Соберите всё необходимое, чтобы витрина вызывала доверие.</p>
+                        </div>
+                        <span class="seller-progress-pill">{{ completion.done }}/{{ completion.total }}</span>
+                    </div>
+                    <ul class="seller-checklist">
+                        {% for check in completion.checks %}
+                            <li class="{{ check.done ? 'is-done' : 'is-todo' }}">
+                                <span class="seller-checklist__icon"><i class="bi {{ check.done ? 'bi-check-lg' : check.icon }}"></i></span>
+                                <span class="seller-checklist__label">{{ check.label }}</span>
+                                {% if check.done %}
+                                    <span class="seller-checklist__state"><i class="bi bi-check2"></i> Готово</span>
+                                {% else %}
+                                    <button class="seller-checklist__action" type="button" data-profile-edit-toggle>Заполнить</button>
+                                {% endif %}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </section>
+            </div>
+
+            <aside class="seller-profile-column">
+                <section class="admin-panel seller-card seller-contact-card" aria-labelledby="seller-contacts-title">
+                    <div class="seller-card__head">
+                        <div>
+                            <span class="seller-card__kicker">Контакты</span>
+                            <h2 id="seller-contacts-title">Связаться с вами</h2>
+                        </div>
+                        <i class="bi bi-chat-dots seller-card__head-icon" aria-hidden="true"></i>
+                    </div>
+                    <div class="seller-contact-list">
+                        <div class="seller-contact-row">
+                            <span class="seller-contact-row__icon"><i class="bi bi-envelope"></i></span>
+                            <div>
+                                <span>E-mail продавца</span>
+                                <strong>{{ seller.email }}</strong>
+                            </div>
+                            <button class="seller-copy" type="button" data-wb-copy="{{ seller.email }}" aria-label="Скопировать e-mail">
+                                <i class="bi bi-copy"></i>
+                            </button>
+                        </div>
+                        <div class="seller-contact-row">
+                            <span class="seller-contact-row__icon"><i class="bi bi-telephone"></i></span>
+                            <div>
+                                <span>Личный телефон</span>
+                                <strong>{{ personalPhone ?: 'Не указан' }}</strong>
+                            </div>
+                            {% if personalPhone %}
+                                <button class="seller-copy" type="button" data-wb-copy="{{ personalPhone }}" aria-label="Скопировать телефон">
+                                    <i class="bi bi-copy"></i>
+                                </button>
+                            {% endif %}
+                        </div>
+                        <div class="seller-contact-row">
+                            <span class="seller-contact-row__icon"><i class="bi bi-headset"></i></span>
+                            <div>
+                                <span>Телефон магазина</span>
+                                <strong>{{ storePhone ?: 'Не указан' }}</strong>
+                            </div>
+                            {% if storePhone %}
+                                <button class="seller-copy" type="button" data-wb-copy="{{ storePhone }}" aria-label="Скопировать телефон магазина">
+                                    <i class="bi bi-copy"></i>
+                                </button>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <button class="seller-contact-card__edit" type="button" data-profile-edit-toggle>
+                        <i class="bi bi-pencil-square"></i> Обновить контакты
+                    </button>
+                </section>
+                <section class="admin-panel seller-card" aria-labelledby="seller-achievements-title">
+                    <div class="seller-card__head">
+                        <div>
+                            <span class="seller-card__kicker">Прогресс</span>
+                            <h2 id="seller-achievements-title">Достижения</h2>
+                        </div>
+                        <span class="seller-progress-pill">{{ achievements|filter(item => item.unlocked)|length }}/{{ achievements|length }}</span>
+                    </div>
+                    <div class="seller-achievements">
+                        {% for achievement in achievements %}
+                            <div class="seller-achievement {{ achievement.unlocked ? 'is-unlocked' : 'is-locked' }}">
+                                <span class="seller-achievement__icon"><i class="bi {{ achievement.unlocked ? achievement.icon : 'bi-lock' }}"></i></span>
+                                <div>
+                                    <strong>{{ achievement.title }}</strong>
+                                    <span>{{ achievement.text }}</span>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </section>
+
+                <section class="admin-panel seller-card" aria-labelledby="seller-security-title">
+                    <div class="seller-card__head">
+                        <div>
+                            <span class="seller-card__kicker">Аккаунт</span>
+                            <h2 id="seller-security-title">Безопасность</h2>
+                        </div>
+                    </div>
+                    <div class="seller-security">
+                        <div class="seller-security__row">
+                            <span class="seller-security__icon"><i class="bi bi-envelope-check"></i></span>
+                            <div>
+                                <strong>E-mail</strong>
+                                <span>{{ seller.email }}</span>
+                            </div>
+                            <span class="seller-chip seller-chip--light is-active">Основной</span>
+                        </div>
+                        <div class="seller-security__row">
+                            <span class="seller-security__icon"><i class="bi bi-key"></i></span>
+                            <div>
+                                <strong>Пароль</strong>
+                                <span>Задан при активации аккаунта</span>
+                            </div>
+                            <span class="seller-soon-text" title="Скоро">Скоро</span>
+                        </div>
+                        <div class="seller-security__row">
+                            <span class="seller-security__icon"><i class="bi bi-shield-lock"></i></span>
+                            <div>
+                                <strong>Двухфакторная защита</strong>
+                                <span>Дополнительный код при входе</span>
+                            </div>
+                            <span class="seller-soon-text" title="Скоро">Скоро</span>
+                        </div>
+                    </div>
+                </section>
+
+                <a class="seller-support" href="#" data-wb-demo="Чат поддержки">
+                    <span class="seller-support__icon"><i class="bi bi-question-circle"></i></span>
+                    <span>
+                        <strong>Нужна помощь?</strong>
+                        <span>Поддержка продавцов на связи</span>
+                    </span>
+                    <span class="export-format-badge">Скоро</span>
+                </a>
+            </aside>
+        </div>
+    </div>
+{% endblock %}

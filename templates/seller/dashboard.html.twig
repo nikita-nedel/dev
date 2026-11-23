@@ -32,11 +32,24 @@
                 <div class="stat-card-icon orders"><i class="bi bi-envelope"></i></div>
             </div>
         </div>
+        <div class="stat-card">
+            <div class="stat-card-header">
+                <div>
+                    <div class="stat-card-label">Товаров в магазине</div>
+                    <div class="stat-card-value">{{ productStats.total }}</div>
+                    <div class="stat-card-trend up">
+                        <i class="bi bi-check2-circle"></i>
+                        {{ productStats.active }} активных
+                    </div>
+                </div>
+                <div class="stat-card-icon sales"><i class="bi bi-box-seam"></i></div>
+            </div>
+        </div>
     </div>
 
     <div class="admin-panel" style="margin-bottom: 1.25rem;">
         <div class="admin-panel-header">
-            <h2>{{ seller.profile.shopName }}</h2>
+            <h2>{{ sellerRequest ? sellerRequest.shopName : 'Мой магазин' }}</h2>
             <a href="{{ path('app_seller_products_new') }}"><i class="bi bi-plus-lg"></i> Добавить товар</a>
         </div>
         <div style="padding: 1.25rem 1.5rem;">
@@ -59,6 +72,10 @@
             <a class="admin-quick" href="{{ path('app_seller_products_new') }}">
                 <span class="admin-quick-icon"><i class="bi bi-plus-lg"></i></span>
                 <span><strong>Новый товар</strong><span>Добавить позицию в витрину</span></span>
+            </a>
+            <a class="admin-quick" href="{{ path('app_seller_profile') }}">
+                <span class="admin-quick-icon"><i class="bi bi-person-gear"></i></span>
+                <span><strong>Профиль продавца</strong><span>Контакты, магазин и данные аккаунта</span></span>
             </a>
             <a class="admin-quick" href="{{ path('app_home') }}">
                 <span class="admin-quick-icon"><i class="bi bi-arrow-up-right"></i></span>

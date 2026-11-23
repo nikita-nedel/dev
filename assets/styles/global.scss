@@ -2332,3 +2332,37 @@ body { font-size: 15.5px; }
   margin-bottom: 0;
 }
 .profile-seller-card .btn .bi { font-size: 14px; line-height: 1; }
+
+/* ---------- «Скоро» в разделах профиля ---------- */
+.profile-nav a.is-soon,
+.profile-nav button.is-soon {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.profile-nav a.is-soon *,
+.profile-nav button.is-soon * {
+  cursor: not-allowed;
+}
+
+.profile-nav a.is-soon:hover,
+.profile-nav button.is-soon:hover {
+  background: transparent;
+  color: var(--wb-ink-soft);
+}
+
+.profile-nav__soon {
+  margin-left: auto;
+  padding: 2px 5px;
+  border-radius: 4px;
+  background: #eef1f0;
+  color: #8a9997;
+  font-size: 0.54rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.profile-side__help .profile-nav__soon {
+  margin-left: auto;
+}

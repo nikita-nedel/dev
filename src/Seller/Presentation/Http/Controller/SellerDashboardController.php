@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Seller\Presentation\Http\Controller;
 
+use App\Catalog\Application\Query\SellerCatalogQueryInterface;
 use App\Identity\Domain\Model\Seller;
 use App\Seller\Domain\Repository\SellerRequestRepositoryInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -16,6 +17,7 @@ final class SellerDashboardController extends AbstractController
 {
     public function __construct(
         private readonly SellerRequestRepositoryInterface $requests,
+        private readonly SellerCatalogQueryInterface $catalog,
     ) {
     }
 
@@ -31,6 +33,7 @@ final class SellerDashboardController extends AbstractController
         return $this->render('seller/dashboard.html.twig', [
             'seller' => $seller,
             'sellerRequest' => $this->requests->findBySeller($seller),
+            'productStats' => $this->catalog->stats(),
         ]);
     }
 }
