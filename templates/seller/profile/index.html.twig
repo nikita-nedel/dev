@@ -5,15 +5,21 @@
 
 {% block seller_body %}
     {% set personalPhone = customerProfile is not null ? customerProfile.phone : null %}
-    {% set storeLegalName = sellerRequest is not null ? sellerRequest.legalName : null %}
-    {% set storeInn = sellerRequest is not null ? sellerRequest.inn : null %}
-    {% set storeDescription = sellerRequest is not null ? sellerRequest.description : null %}
-    {% set storeContactPhone = sellerRequest is not null ? sellerRequest.contactPhone : null %}
-    {% set storePhone = storeContactPhone ?: (sellerRequest is not null ? sellerRequest.contactPhone : null) %}
+    {% set storeLegalName = activeShop is not null ? activeShop.legalName : null %}
+    {% set storeInn = activeShop is not null ? activeShop.inn : null %}
+    {% set storeDescription = activeShop is not null ? activeShop.description : null %}
+    {% set storePhone = activeShop is not null ? activeShop.contactPhone : null %}
     {% set registrationDate = seller.createdAt ? seller.createdAt|date('d.m.Y') : '—' %}
     {% set approvalDate = seller.approvedAt ? seller.approvedAt|date('d.m.Y') : null %}
-    {% set activeShare = stats.total > 0 ? (stats.active / stats.total * 100)|round : 0 %}
-    {% set hiddenShare = stats.total > 0 ? (stats.inactive / stats.total * 100)|round : 0 %}
+    {% set activeShare = activeShopStats.total > 0 ? (activeShopStats.active / activeShopStats.total * 100)|round : 0 %}
+    {% set draftShare = activeShopStats.total > 0 ? (activeShopStats.draft / activeShopStats.total * 100)|round : 0 %}
+    {% set archivedShare = activeShopStats.total > 0 ? (activeShopStats.archived / activeShopStats.total * 100)|round : 0 %}
+    {% set personalFormAction = path('app_seller_profile_personal_update') %}
+    {% set shopFormAction = path('app_seller_profile_shop_update') %}
+    {% if activeShop is not null %}
+        {% set personalFormAction = path('app_seller_profile_personal_update', {shop: activeShop.id}) %}
+        {% set shopFormAction = path('app_seller_profile_shop_update', {shop: activeShop.id}) %}
+    {% endif %}
 
     {% if app.request.query.get('updated') %}
         <div class="wb-confetti-host" data-profile-confetti aria-hidden="true"></div>
@@ -47,46 +53,59 @@
                         <span>{{ completion.done }} из {{ completion.total }} пунктов</span>
                     </div>
                 </div>
-                <button class="btn-admin-primary seller-hero__edit" type="button" data-profile-edit-toggle>
+                <button class="btn-admin-primary seller-hero__edit" type="button" data-profile-edit-toggle="personal">
                     <i class="bi bi-pencil-square"></i> Редактировать профиль
                 </button>
             </div>
         </section>
 
-        <section class="admin-panel seller-editor" id="sellerProfileEditor" data-profile-editor {% if not editOpen %}hidden{% endif %}>
+        {% if overview.shops|length > 1 %}
+            <div class="seller-shop-switcher">
+                <span class="seller-shop-switcher__label"><i class="bi bi-shop"></i> Магазины</span>
+                {% for item in overview.shops %}
+                    <a class="seller-shop-chip {{ activeShop is not null and item.shop.id == activeShop.id ? 'is-active' : '' }}"
+                       href="{{ path('app_seller_profile', {shop: item.shop.id}) }}">
+                        {{ item.shop.name }}
+                        <span>{{ item.total }}</span>
+                    </a>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <section class="admin-panel seller-editor" id="sellerPersonalEditor" data-profile-editor="personal" {% if openEditor != 'personal' %}hidden{% endif %}>
             <div class="seller-card__head">
                 <div>
-                    <span class="seller-card__kicker">Редактирование</span>
-                    <h2>Данные профиля и магазина</h2>
-                    <p>Изменения сразу появятся в карточке продавца и в контактах магазина.</p>
+                    <span class="seller-card__kicker">Личные данные</span>
+                    <h2>Как к вам обращаться</h2>
+                    <p>Имя, фамилия и телефон для связи. E-mail — логин продавца.</p>
                 </div>
                 <button class="btn-icon" type="button" data-profile-edit-close aria-label="Закрыть форму">
                     <i class="bi bi-x-lg"></i>
                 </button>
             </div>
 
-            {{ form_start(form, {attr: {class: 'seller-form', novalidate: 'novalidate'}}) }}
-            {% if form.vars.errors|length %}
-                <div class="seller-form__error">{{ form_errors(form) }}</div>
+            {{ form_start(personalForm, {attr: {class: 'seller-form', novalidate: 'novalidate'}, action: personalFormAction}) }}
+            {% if personalForm.vars.errors|length %}
+                <div class="seller-form__error">{{ form_errors(personalForm) }}</div>
             {% endif %}
 
             <div class="seller-form__section">
                 <h3><i class="bi bi-person"></i> Личные данные</h3>
                 <div class="seller-form__grid">
                     <div class="seller-field">
-                        {{ form_label(form.firstName) }}
-                        {{ form_widget(form.firstName) }}
-                        {{ form_errors(form.firstName) }}
+                        {{ form_label(personalForm.firstName) }}
+                        {{ form_widget(personalForm.firstName) }}
+                        {{ form_errors(personalForm.firstName) }}
                     </div>
                     <div class="seller-field">
-                        {{ form_label(form.lastName) }}
-                        {{ form_widget(form.lastName) }}
-                        {{ form_errors(form.lastName) }}
+                        {{ form_label(personalForm.lastName) }}
+                        {{ form_widget(personalForm.lastName) }}
+                        {{ form_errors(personalForm.lastName) }}
                     </div>
                     <div class="seller-field">
-                        {{ form_label(form.phone) }}
-                        {{ form_widget(form.phone) }}
-                        {{ form_errors(form.phone) }}
+                        {{ form_label(personalForm.phone) }}
+                        {{ form_widget(personalForm.phone) }}
+                        {{ form_errors(personalForm.phone) }}
                     </div>
                     <div class="seller-field seller-field--readonly">
                         <label class="form-label">E-mail</label>
@@ -96,44 +115,69 @@
                 </div>
             </div>
 
+            <div class="seller-form__actions">
+                <button class="btn-admin-primary" type="submit"><i class="bi bi-check2"></i> Сохранить личные данные</button>
+                <button class="btn-admin-outline" type="button" data-profile-edit-close>Отмена</button>
+                <span class="seller-form__hint"><i class="bi bi-shield-check"></i> Данные защищены и видны только вам</span>
+            </div>
+            {{ form_end(personalForm) }}
+        </section>
+
+        <section class="admin-panel seller-editor" id="sellerShopEditor" data-profile-editor="shop" {% if openEditor != 'shop' %}hidden{% endif %}>
+            <div class="seller-card__head">
+                <div>
+                    <span class="seller-card__kicker">Магазин</span>
+                    <h2>{% if activeShop %}{{ activeShop.name }}{% else %}Новый магазин{% endif %}</h2>
+                    <p>{% if activeShop %}Реквизиты и описание выбранного магазина.{% else %}После сохранения создадим первый магазин.{% endif %}</p>
+                </div>
+                <button class="btn-icon" type="button" data-profile-edit-close aria-label="Закрыть форму">
+                    <i class="bi bi-x-lg"></i>
+                </button>
+            </div>
+
+            {{ form_start(shopForm, {attr: {class: 'seller-form', novalidate: 'novalidate'}, action: shopFormAction}) }}
+            {% if shopForm.vars.errors|length %}
+                <div class="seller-form__error">{{ form_errors(shopForm) }}</div>
+            {% endif %}
+
             <div class="seller-form__section">
-                <h3><i class="bi bi-shop"></i> Магазин</h3>
+                <h3><i class="bi bi-shop"></i> Данные магазина</h3>
                 <div class="seller-form__grid">
                     <div class="seller-field">
-                        {{ form_label(form.shopName) }}
-                        {{ form_widget(form.shopName) }}
-                        {{ form_errors(form.shopName) }}
+                        {{ form_label(shopForm.shopName) }}
+                        {{ form_widget(shopForm.shopName) }}
+                        {{ form_errors(shopForm.shopName) }}
                     </div>
                     <div class="seller-field">
-                        {{ form_label(form.legalName) }}
-                        {{ form_widget(form.legalName) }}
-                        {{ form_errors(form.legalName) }}
+                        {{ form_label(shopForm.legalName) }}
+                        {{ form_widget(shopForm.legalName) }}
+                        {{ form_errors(shopForm.legalName) }}
                     </div>
                     <div class="seller-field">
-                        {{ form_label(form.inn) }}
-                        {{ form_widget(form.inn) }}
-                        {{ form_errors(form.inn) }}
+                        {{ form_label(shopForm.inn) }}
+                        {{ form_widget(shopForm.inn) }}
+                        {{ form_errors(shopForm.inn) }}
                     </div>
                     <div class="seller-field">
-                        {{ form_label(form.contactPhone) }}
-                        {{ form_widget(form.contactPhone) }}
-                        {{ form_errors(form.contactPhone) }}
+                        {{ form_label(shopForm.contactPhone) }}
+                        {{ form_widget(shopForm.contactPhone) }}
+                        {{ form_errors(shopForm.contactPhone) }}
                     </div>
                     <div class="seller-field seller-field--full">
-                        {{ form_label(form.description) }}
-                        {{ form_widget(form.description) }}
-                        {{ form_errors(form.description) }}
+                        {{ form_label(shopForm.description) }}
+                        {{ form_widget(shopForm.description) }}
+                        {{ form_errors(shopForm.description) }}
                         <span class="seller-field__hint">Пара предложений о магазине помогут покупателям решиться на заказ.</span>
                     </div>
                 </div>
             </div>
 
             <div class="seller-form__actions">
-                <button class="btn-admin-primary" type="submit"><i class="bi bi-check2"></i> Сохранить изменения</button>
+                <button class="btn-admin-primary" type="submit"><i class="bi bi-check2"></i> Сохранить магазин</button>
                 <button class="btn-admin-outline" type="button" data-profile-edit-close>Отмена</button>
-                <span class="seller-form__hint"><i class="bi bi-shield-check"></i> Данные защищены и видны только вам</span>
+                <span class="seller-form__hint"><i class="bi bi-shield-check"></i> Изменения появятся в карточке магазина</span>
             </div>
-            {{ form_end(form) }}
+            {{ form_end(shopForm) }}
         </section>
 
         <div class="seller-profile-grid">
@@ -144,7 +188,7 @@
                             <span class="seller-card__kicker">Личные данные</span>
                             <h2 id="seller-personal-title">Как к вам обращаться</h2>
                         </div>
-                        <button class="btn-admin-outline btn-sm" type="button" data-profile-edit-toggle>
+                        <button class="btn-admin-outline btn-sm" type="button" data-profile-edit-toggle="personal">
                             <i class="bi bi-pencil"></i> Изменить
                         </button>
                     </div>
@@ -182,9 +226,18 @@
                             <span class="seller-card__kicker">Магазины</span>
                             <h2 id="seller-stores-title">{{ storeName }}</h2>
                         </div>
-                        <span class="seller-chip seller-chip--light {{ seller.isActive ? 'is-active' : 'is-pending' }}">
-                            {{ seller.isActive ? 'Активен' : 'На проверке' }}
-                        </span>
+                        <div class="seller-card__head-actions">
+                            {% if activeShop %}
+                                <span class="seller-chip seller-chip--light {{ seller.isActive ? 'is-active' : 'is-pending' }}">
+                                    {{ seller.isActive ? 'Активен' : 'На проверке' }}
+                                </span>
+                            {% else %}
+                                <span class="seller-chip seller-chip--light is-pending">Не создан</span>
+                            {% endif %}
+                            <button class="btn-admin-outline btn-sm" type="button" data-profile-edit-toggle="shop">
+                                <i class="bi bi-pencil"></i> {{ activeShop ? 'Изменить' : 'Создать' }}
+                            </button>
+                        </div>
                     </div>
 
                     <div class="seller-store">
@@ -201,31 +254,32 @@
 
                         <div class="seller-store__stats">
                             <div class="seller-store-stat">
-                                <strong>{{ stats.total }}</strong>
+                                <strong>{{ activeShopStats.total }}</strong>
                                 <span>товаров</span>
                             </div>
                             <div class="seller-store-stat">
-                                <strong>{{ stats.active }}</strong>
+                                <strong>{{ activeShopStats.active }}</strong>
                                 <span>активных</span>
                             </div>
                             <div class="seller-store-stat">
-                                <strong>{{ stats.inactive }}</strong>
-                                <span>скрытых</span>
+                                <strong>{{ activeShopStats.draft }}</strong>
+                                <span>черновиков</span>
                             </div>
-                            <div class="seller-store-stat {{ stats.outOfStock > 0 ? 'is-warning' : '' }}">
-                                <strong>{{ stats.outOfStock }}</strong>
-                                <span>без остатка</span>
+                            <div class="seller-store-stat">
+                                <strong>{{ activeShopStats.archived }}</strong>
+                                <span>в архиве</span>
                             </div>
                         </div>
 
                         <div class="seller-stockbar" aria-label="Состав витрины">
                             <span class="is-active" style="width: {{ activeShare }}%"></span>
-                            <span class="is-hidden" style="width: {{ hiddenShare }}%"></span>
+                            <span class="is-draft" style="width: {{ draftShare }}%"></span>
+                            <span class="is-archived" style="width: {{ archivedShare }}%"></span>
                         </div>
                         <div class="seller-stockbar__legend">
-                            <span><i class="is-active"></i> Активные — {{ stats.active }}</span>
-                            <span><i class="is-hidden"></i> Скрытые — {{ stats.inactive }}</span>
-                            <span class="seller-stockbar__total">Остаток на складе: {{ stats.stockTotal }} шт.</span>
+                            <span><i class="is-active"></i> Активные — {{ activeShopStats.active }}</span>
+                            <span><i class="is-draft"></i> Черновики — {{ activeShopStats.draft }}</span>
+                            <span><i class="is-archived"></i> В архиве — {{ activeShopStats.archived }}</span>
                         </div>
 
                         <div class="seller-products">
@@ -233,19 +287,20 @@
                                 <strong>Последние товары</strong>
                                 <a href="{{ path('app_seller_products') }}">Все товары <i class="bi bi-arrow-right"></i></a>
                             </div>
-                            {% for product in products|slice(0, 3) %}
+                            {% for product in activeShopStats.recentProducts %}
                                 <div class="seller-product-row">
-                                    <span class="seller-product-row__icon"><i class="bi {{ product.active ? 'bi-box-seam' : 'bi-box' }}"></i></span>
+                                    <span class="seller-product-row__icon">
+                                        <i class="bi {{ product.status.value == 'active' ? 'bi-box-seam' : (product.status.value == 'archived' ? 'bi-archive' : 'bi-box') }}"></i>
+                                    </span>
                                     <div class="seller-product-row__main">
                                         <strong>{{ product.name }}</strong>
-                                        <span>Арт. {{ product.sku }} · {{ product.category.name }}</span>
+                                        <span>Арт. {{ product.sku }}</span>
                                     </div>
                                     <div class="seller-product-row__price">
-                                        <strong>{{ product.price|number_format(0, ',', ' ') }} ₽</strong>
-                                        <span>{{ product.stock }} шт.</span>
+                                        <strong>{{ product.priceFormatted }}</strong>
                                     </div>
-                                    <span class="seller-product-row__status {{ product.active ? 'is-active' : 'is-hidden' }}">
-                                        {{ product.active ? 'Активен' : 'Скрыт' }}
+                                    <span class="seller-product-row__status is-{{ product.status.value }}">
+                                        {{ product.status.label }}
                                     </span>
                                 </div>
                             {% else %}
@@ -281,8 +336,8 @@
                             <strong>{{ storePhone ?: 'Не указан' }}</strong>
                         </div>
                         <div class="seller-info-item">
-                            <span>Категорий в витрине</span>
-                            <strong>{{ stats.categories }}</strong>
+                            <span>Товаров в магазине</span>
+                            <strong>{{ activeShopStats.total }}</strong>
                         </div>
                     </div>
 
@@ -290,7 +345,7 @@
                         <span>О магазине</span>
                         <p>{{ storeDescription ?: 'Добавьте описание — оно появится в карточке магазина и поможет покупателям вас выбрать.' }}</p>
                         {% if not storeDescription %}
-                            <button class="seller-link-button" type="button" data-profile-edit-toggle>
+                            <button class="seller-link-button" type="button" data-profile-edit-toggle="shop">
                                 Добавить описание <i class="bi bi-arrow-right"></i>
                             </button>
                         {% endif %}
@@ -313,8 +368,10 @@
                                 <span class="seller-checklist__label">{{ check.label }}</span>
                                 {% if check.done %}
                                     <span class="seller-checklist__state"><i class="bi bi-check2"></i> Готово</span>
+                                {% elseif check.target is not null %}
+                                    <button class="seller-checklist__action" type="button" data-profile-edit-toggle="{{ check.target }}">Заполнить</button>
                                 {% else %}
-                                    <button class="seller-checklist__action" type="button" data-profile-edit-toggle>Заполнить</button>
+                                    <a class="seller-checklist__action" href="{{ path('app_seller_products') }}">Добавить товар</a>
                                 {% endif %}
                             </li>
                         {% endfor %}
@@ -367,8 +424,8 @@
                             {% endif %}
                         </div>
                     </div>
-                    <button class="seller-contact-card__edit" type="button" data-profile-edit-toggle>
-                        <i class="bi bi-pencil-square"></i> Обновить контакты
+                    <button class="seller-contact-card__edit" type="button" data-profile-edit-toggle="personal">
+                        <i class="bi bi-pencil-square"></i> Изменить личные контакты
                     </button>
                 </section>
                 <section class="admin-panel seller-card" aria-labelledby="seller-achievements-title">

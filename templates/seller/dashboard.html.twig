@@ -32,6 +32,19 @@
                 <div class="stat-card-icon orders"><i class="bi bi-envelope"></i></div>
             </div>
         </div>
+        <div class="stat-card">
+            <div class="stat-card-header">
+                <div>
+                    <div class="stat-card-label">Товаров в магазинах</div>
+                    <div class="stat-card-value">{{ overview.totals.total }}</div>
+                    <div class="stat-card-trend up">
+                        <i class="bi bi-check2-circle"></i>
+                        {{ overview.totals.active }} активных
+                    </div>
+                </div>
+                <div class="stat-card-icon sales"><i class="bi bi-box-seam"></i></div>
+            </div>
+        </div>
     </div>
 
     <div class="admin-panel" style="margin-bottom: 1.25rem;">
@@ -45,7 +58,7 @@
             <a href="{{ path('app_seller_products_new') }}"><i class="bi bi-plus-lg"></i> Добавить товар</a>
         </div>
         <div style="padding: 1.25rem 1.5rem;">
-            <p class="text-secondary mb-2">Это демонстрационный кабинет продавца. Управляйте витриной, товарами и заявками в разделах слева.</p>
+            <p class="text-secondary mb-2">Управляйте витриной, товарами и магазинами — всё в одном месте.</p>
             {% if sellerRequest and sellerRequest.reviewedAt %}
                 <p class="text-secondary mb-0" style="font-size: 0.78rem;">Заявка рассмотрена: {{ sellerRequest.reviewedAt|date('d.m.Y H:i') }}</p>
             {% endif %}
@@ -64,6 +77,10 @@
             <a class="admin-quick" href="{{ path('app_seller_products_new') }}">
                 <span class="admin-quick-icon"><i class="bi bi-plus-lg"></i></span>
                 <span><strong>Новый товар</strong><span>Добавить позицию в витрину</span></span>
+            </a>
+            <a class="admin-quick" href="{{ path('app_seller_profile') }}">
+                <span class="admin-quick-icon"><i class="bi bi-person-gear"></i></span>
+                <span><strong>Профиль продавца</strong><span>Контакты, магазин и данные аккаунта</span></span>
             </a>
             <a class="admin-quick" href="{{ path('app_home') }}">
                 <span class="admin-quick-icon"><i class="bi bi-arrow-up-right"></i></span>

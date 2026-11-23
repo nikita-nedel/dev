@@ -206,23 +206,33 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    /* Редактирование профиля продавца */
-    const profileEditor = document.querySelector('[data-profile-editor]');
-    const openProfileEditor = () => {
-        if (!profileEditor) return;
-        profileEditor.hidden = false;
-        profileEditor.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        const firstInput = profileEditor.querySelector('input:not([type="hidden"]), textarea');
+    /* Редактирование профиля продавца: личные данные и магазин — отдельно */
+    const profileEditors = document.querySelectorAll('[data-profile-editor]');
+    const openProfileEditor = (target) => {
+        if (!profileEditors.length) return;
+
+        profileEditors.forEach((editor) => {
+            editor.hidden = editor.dataset.profileEditor !== target;
+        });
+
+        const editor = document.querySelector(`[data-profile-editor="${target}"]`);
+        if (!editor) return;
+
+        editor.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        const firstInput = editor.querySelector('input:not([type="hidden"]), textarea');
         if (firstInput) window.setTimeout(() => firstInput.focus({ preventScroll: true }), 250);
     };
 
     document.querySelectorAll('[data-profile-edit-toggle]').forEach((button) => {
-        button.addEventListener('click', openProfileEditor);
+        button.addEventListener('click', () => {
+            openProfileEditor(button.dataset.profileEditToggle || 'personal');
+        });
     });
 
     document.querySelectorAll('[data-profile-edit-close]').forEach((button) => {
         button.addEventListener('click', () => {
-            if (profileEditor) profileEditor.hidden = true;
+            const editor = button.closest('[data-profile-editor]');
+            if (editor) editor.hidden = true;
         });
     });
 

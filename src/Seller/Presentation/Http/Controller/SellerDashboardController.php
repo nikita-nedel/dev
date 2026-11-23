@@ -5,8 +5,9 @@ declare(strict_types=1);
 namespace App\Seller\Presentation\Http\Controller;
 
 use App\Identity\Domain\Model\Seller;
+use App\Seller\Application\Service\SellerOverviewProvider;
+use App\Seller\Domain\Model\Shop;
 use App\Seller\Domain\Repository\SellerRequestRepositoryInterface;
-use App\Seller\Domain\Repository\ShopRepositoryInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -17,7 +18,7 @@ final class SellerDashboardController extends AbstractController
 {
     public function __construct(
         private readonly SellerRequestRepositoryInterface $requests,
-        private readonly ShopRepositoryInterface $shops,
+        private readonly SellerOverviewProvider $overview,
     ) {
     }
 
@@ -30,10 +31,14 @@ final class SellerDashboardController extends AbstractController
             throw $this->createAccessDeniedException();
         }
 
+        $overview = $this->overview->forSeller($seller);
+        $shops = array_map(static fn (array $row): Shop => $row['shop'], $overview['shops']);
+
         return $this->render('seller/dashboard.html.twig', [
             'seller' => $seller,
             'sellerRequest' => $this->requests->findBySeller($seller),
-            'shops' => $this->shops->findBySeller($seller),
+            'shops' => $shops,
+            'overview' => $overview,
         ]);
     }
 }

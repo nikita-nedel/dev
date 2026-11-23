@@ -6,15 +6,14 @@ namespace App\Tests\Functional\Seller;
 
 use App\Identity\Domain\Model\CustomerProfile;
 use App\Identity\Domain\Model\Seller;
-use App\Seller\Domain\Model\SellerRequest;
-use App\Seller\Domain\Model\SellerRequestStatus;
+use App\Seller\Domain\Model\Shop;
 use App\Tests\Functional\FunctionalTestCase;
 
 final class SellerProfileTest extends FunctionalTestCase
 {
-    public function testSellerSeesOwnProfileAndStore(): void
+    public function testSellerSeesOwnProfileAndShop(): void
     {
-        $seller = $this->createSellerWithRequest();
+        [$seller] = $this->createSellerWithShop();
         $this->client->loginUser($seller, 'seller_context');
 
         $this->client->request('GET', '/seller/profile');
@@ -24,23 +23,20 @@ final class SellerProfileTest extends FunctionalTestCase
         self::assertSelectorTextContains('.seller-hero', 'Тестовый магазин');
         self::assertSelectorTextContains('#seller-personal', '+375291111111');
         self::assertSelectorTextContains('#seller-stores', 'Тестовый магазин');
+        self::assertSelectorExists('[data-profile-editor="personal"]');
+        self::assertSelectorExists('[data-profile-editor="shop"]');
     }
 
-    public function testSellerCanUpdatePersonalAndStoreData(): void
+    public function testSellerCanUpdatePersonalDataWithoutChangingShop(): void
     {
-        $seller = $this->createSellerWithRequest();
+        [$seller, $shop] = $this->createSellerWithShop();
         $this->client->loginUser($seller, 'seller_context');
 
-        $this->client->request('POST', '/seller/profile', [
-            'seller_profile_form' => [
+        $this->client->request('POST', '/seller/profile/personal?shop=' . $shop->getId(), [
+            'seller_personal_form' => [
                 'firstName' => 'Пётр',
                 'lastName' => 'Сидоров',
                 'phone' => '+375292222222',
-                'shopName' => 'Новый магазин',
-                'legalName' => 'ООО Новый',
-                'inn' => '1234567890',
-                'contactPhone' => '+375293333333',
-                'description' => 'Новое описание магазина.',
             ],
         ]);
 
@@ -59,14 +55,45 @@ final class SellerProfileTest extends FunctionalTestCase
         self::assertSame('Сидоров', $customerProfile->getLastName());
         self::assertSame('+375292222222', $customerProfile->getPhone());
 
-        $request = $this->em()->getRepository(SellerRequest::class)->findOneBy(['seller' => $updated]);
-        self::assertInstanceOf(SellerRequest::class, $request);
-        self::assertSame('Новый магазин', $request->getShopName());
-        self::assertSame('1234567890', $request->getInn());
-        self::assertSame('Новое описание магазина.', $request->getDescription());
+        $unchangedShop = $this->em()->getRepository(Shop::class)->find($shop->getId());
+        self::assertInstanceOf(Shop::class, $unchangedShop);
+        self::assertSame('Тестовый магазин', $unchangedShop->getName());
+        self::assertSame('+375292222222', $unchangedShop->getContactPhone());
     }
 
-    public function testSellerWithoutStoreRequestCreatesItOnSave(): void
+    public function testSellerCanUpdateShopWithoutChangingPersonalData(): void
+    {
+        [$seller, $shop] = $this->createSellerWithShop();
+        $this->client->loginUser($seller, 'seller_context');
+
+        $this->client->request('POST', '/seller/profile/shop?shop=' . $shop->getId(), [
+            'seller_shop_form' => [
+                'shopName' => 'Новый магазин',
+                'legalName' => 'ООО Новый',
+                'inn' => '1234567890',
+                'contactPhone' => '+375293333333',
+                'description' => 'Новое описание магазина.',
+            ],
+        ]);
+
+        $this->assertRedirectedTo('/seller/profile');
+
+        $this->em()->clear();
+        $updatedShop = $this->em()->getRepository(Shop::class)->find($shop->getId());
+        self::assertInstanceOf(Shop::class, $updatedShop);
+        self::assertSame('Новый магазин', $updatedShop->getName());
+        self::assertSame('1234567890', $updatedShop->getInn());
+        self::assertSame('Новое описание магазина.', $updatedShop->getDescription());
+
+        $updated = $this->em()->getRepository(Seller::class)->find($seller->getId());
+        self::assertInstanceOf(Seller::class, $updated);
+        $customerProfile = $updated->getCustomer()?->getProfile();
+        self::assertNotNull($customerProfile);
+        self::assertSame('Иван', $customerProfile->getFirstName());
+        self::assertSame('+375291111111', $customerProfile->getPhone());
+    }
+
+    public function testSellerWithoutShopCreatesItOnSave(): void
     {
         $customer = $this->createCustomer('no-store@example.com');
         $customer->setProfile(
@@ -83,11 +110,8 @@ final class SellerProfileTest extends FunctionalTestCase
         self::assertResponseIsSuccessful();
         self::assertSelectorTextContains('#seller-stores', 'Магазин без названия');
 
-        $this->client->request('POST', '/seller/profile', [
-            'seller_profile_form' => [
-                'firstName' => 'Без',
-                'lastName' => 'Магазина',
-                'phone' => '+375294444444',
+        $this->client->request('POST', '/seller/profile/shop', [
+            'seller_shop_form' => [
                 'shopName' => 'Первый магазин',
                 'contactPhone' => '+375295555555',
             ],
@@ -98,22 +122,18 @@ final class SellerProfileTest extends FunctionalTestCase
         $this->em()->clear();
         $updated = $this->em()->getRepository(Seller::class)->find($seller->getId());
         self::assertInstanceOf(Seller::class, $updated);
-        $request = $this->em()->getRepository(SellerRequest::class)->findOneBy(['seller' => $updated]);
-        self::assertInstanceOf(SellerRequest::class, $request);
-        self::assertSame('Первый магазин', $request->getShopName());
-        self::assertSame(SellerRequestStatus::Approved, $request->getStatus());
+        $shop = $this->em()->getRepository(Shop::class)->findOneBy(['seller' => $updated]);
+        self::assertInstanceOf(Shop::class, $shop);
+        self::assertSame('Первый магазин', $shop->getName());
     }
 
-    public function testInvalidInnKeepsSellerOnEditForm(): void
+    public function testInvalidInnKeepsSellerOnShopEditForm(): void
     {
-        $seller = $this->createSellerWithRequest();
+        [$seller, $shop] = $this->createSellerWithShop();
         $this->client->loginUser($seller, 'seller_context');
 
-        $this->client->request('POST', '/seller/profile', [
-            'seller_profile_form' => [
-                'firstName' => 'Иван',
-                'lastName' => 'Петров',
-                'phone' => '+375291111111',
+        $this->client->request('POST', '/seller/profile/shop?shop=' . $shop->getId(), [
+            'seller_shop_form' => [
                 'shopName' => 'Тестовый магазин',
                 'inn' => '123',
             ],
@@ -123,14 +143,15 @@ final class SellerProfileTest extends FunctionalTestCase
         self::assertSelectorTextContains('.seller-form__error, .seller-field .invalid-feedback', 'ИНН');
 
         $this->em()->clear();
-        $unchanged = $this->em()->getRepository(Seller::class)->find($seller->getId());
-        self::assertInstanceOf(Seller::class, $unchanged);
-        $request = $this->em()->getRepository(SellerRequest::class)->findOneBy(['seller' => $unchanged]);
-        self::assertInstanceOf(SellerRequest::class, $request);
-        self::assertSame('Тестовый магазин', $request->getShopName());
+        $unchangedShop = $this->em()->getRepository(Shop::class)->find($shop->getId());
+        self::assertInstanceOf(Shop::class, $unchangedShop);
+        self::assertSame('Тестовый магазин', $unchangedShop->getName());
     }
 
-    private function createSellerWithRequest(): Seller
+    /**
+     * @return array{Seller, Shop}
+     */
+    private function createSellerWithShop(): array
     {
         $customer = $this->createCustomer('seller-profile@example.com');
         $customer->setProfile(
@@ -141,19 +162,18 @@ final class SellerProfileTest extends FunctionalTestCase
         );
 
         $seller = $this->createSeller($customer);
+        $shop = Shop::open(
+            seller: $seller,
+            name: 'Тестовый магазин',
+            legalName: 'ООО Тест',
+            inn: '1234567890',
+            description: 'Магазин для тестов.',
+            contactPhone: '+375292222222',
+        );
 
-        $request = new SellerRequest()
-            ->setSeller($seller)
-            ->setStatus(SellerRequestStatus::Approved)
-            ->setShopName('Тестовый магазин')
-            ->setLegalName('ООО Тест')
-            ->setInn('1234567890')
-            ->setContactPhone('+375292222222')
-            ->setDescription('Магазин для тестов.');
-
-        $this->em()->persist($request);
+        $this->em()->persist($shop);
         $this->em()->flush();
 
-        return $seller;
+        return [$seller, $shop];
     }
 }

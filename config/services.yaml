@@ -53,9 +53,6 @@ services:
     App\Catalog\Application\Query\CatalogQueryInterface:
         alias: App\Catalog\Infrastructure\Demo\DemoCatalogQuery
 
-    App\Catalog\Application\Query\SellerCatalogQueryInterface:
-        alias: App\Catalog\Infrastructure\Demo\DemoSellerCatalogQuery
-
     App\Cart\Application\Query\CartQueryInterface:
         alias: App\Cart\Infrastructure\Demo\DemoCartQuery
 
