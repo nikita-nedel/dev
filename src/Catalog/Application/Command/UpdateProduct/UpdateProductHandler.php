@@ -33,6 +33,10 @@ final readonly class UpdateProductHandler
             $product->changeSku($sku);
             $product->changePrice($command->price);
             $product->changeDescription($command->description);
+
+            if ($product->getCategory()->getId() !== $command->category->getId()) {
+                $product->changeCategory($command->category);
+            }
         });
 
         return $product;

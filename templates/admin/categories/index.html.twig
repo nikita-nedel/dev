@@ -1,0 +1,141 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block title %}Категории{% endblock %}
+{% block page_title %}Категории{% endblock %}
+
+{% block admin_body %}
+    <div class="admin-panel clients-panel">
+        <div class="admin-panel-header">
+            <h2>Дерево категорий</h2>
+            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                <a href="{{ path('app_admin_category_request_index') }}" class="btn-admin-outline btn-sm">
+                    <i class="bi bi-inbox"></i>
+                    Заявки
+                    {% if pendingRequests %}
+                        <span class="badge-status pending">{{ pendingRequests }}</span>
+                    {% endif %}
+                </a>
+                <a href="{{ path('app_admin_category_new') }}" class="btn-admin-primary" style="color: #fff;">
+                    <i class="bi bi-plus-lg"></i> Новая категория
+                </a>
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table class="orders-table">
+                <thead>
+                <tr>
+                    <th>Категория</th>
+                    <th>Slug</th>
+                    <th>Товаров</th>
+                    <th>Статус</th>
+                    <th style="text-align: right;">Действия</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for root in roots %}
+                    <tr>
+                        <td>
+                            <strong>
+                                {% if root.icon %}<i class="bi {{ root.icon }}"></i>{% endif %}
+                                {{ root.name }}
+                            </strong>
+                        </td>
+                        <td><code>{{ root.slug }}</code></td>
+                        <td>{{ rootTotals[root.id]|default(0) }}</td>
+                        <td>
+                            <span class="badge-status {{ root.active ? 'delivered' : 'cancelled' }}">
+                                {{ root.active ? 'Активна' : 'Отключена' }}
+                            </span>
+                        </td>
+                        <td style="text-align: right;">
+                            <div class="client-actions" style="justify-content: flex-end;">
+                                <a href="{{ path('app_admin_category_edit', {id: root.id}) }}"
+                                   class="btn-icon" title="Редактировать">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                {% if root.active %}
+                                    <form method="post"
+                                          action="{{ path('app_admin_category_deactivate', {id: root.id}) }}"
+                                          style="display: inline;"
+                                          onsubmit="return confirm('Отключить категорию?');">
+                                        <input type="hidden" name="_token"
+                                               value="{{ csrf_token('category_activation_' ~ root.id) }}">
+                                        <button class="btn-icon" type="submit" title="Отключить">
+                                            <i class="bi bi-pause-circle"></i>
+                                        </button>
+                                    </form>
+                                {% else %}
+                                    <form method="post"
+                                          action="{{ path('app_admin_category_activate', {id: root.id}) }}"
+                                          style="display: inline;">
+                                        <input type="hidden" name="_token"
+                                               value="{{ csrf_token('category_activation_' ~ root.id) }}">
+                                        <button class="btn-icon" type="submit" title="Включить">
+                                            <i class="bi bi-play-circle"></i>
+                                        </button>
+                                    </form>
+                                {% endif %}
+                            </div>
+                        </td>
+                    </tr>
+
+                    {% for child in root.children %}
+                        <tr>
+                            <td style="padding-left: 2.5rem;">
+                                <i class="bi bi-arrow-return-right text-secondary"></i>
+                                {{ child.name }}
+                            </td>
+                            <td><code>{{ child.slug }}</code></td>
+                            <td>{{ productCounts[child.id]|default(0) }}</td>
+                            <td>
+                                <span class="badge-status {{ child.active ? 'delivered' : 'cancelled' }}">
+                                    {{ child.active ? 'Активна' : 'Отключена' }}
+                                </span>
+                            </td>
+                            <td style="text-align: right;">
+                                <div class="client-actions" style="justify-content: flex-end;">
+                                    <a href="{{ path('app_admin_category_edit', {id: child.id}) }}"
+                                       class="btn-icon" title="Редактировать">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    {% if child.active %}
+                                        <form method="post"
+                                              action="{{ path('app_admin_category_deactivate', {id: child.id}) }}"
+                                              style="display: inline;"
+                                              onsubmit="return confirm('Отключить категорию?');">
+                                            <input type="hidden" name="_token"
+                                                   value="{{ csrf_token('category_activation_' ~ child.id) }}">
+                                            <button class="btn-icon" type="submit" title="Отключить">
+                                                <i class="bi bi-pause-circle"></i>
+                                            </button>
+                                        </form>
+                                    {% else %}
+                                        <form method="post"
+                                              action="{{ path('app_admin_category_activate', {id: child.id}) }}"
+                                              style="display: inline;">
+                                            <input type="hidden" name="_token"
+                                                   value="{{ csrf_token('category_activation_' ~ child.id) }}">
+                                            <button class="btn-icon" type="submit" title="Включить">
+                                                <i class="bi bi-play-circle"></i>
+                                            </button>
+                                        </form>
+                                    {% endif %}
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="5" class="clients-empty">
+                            <i class="bi bi-tags"></i>
+                            <p>Категорий пока нет</p>
+                            <span>Создайте первую категорию</span>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}

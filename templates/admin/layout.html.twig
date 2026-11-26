@@ -35,11 +35,14 @@
                 <span class="admin-nav-link-label">Заявки продавцов</span>
             </a>
             <div class="admin-nav-section">Каталог</div>
-            <span class="admin-nav-link is-disabled" title="Скоро" aria-disabled="true">
+            <a href="{{ path('app_admin_category_index') }}" class="admin-nav-link {{ admin_menu|default('') == 'categories' ? 'active' : '' }}">
                 <i class="bi bi-folder2-open"></i>
                 <span class="admin-nav-link-label">Категории</span>
-                <span class="export-format-badge">Скоро</span>
-            </span>
+            </a>
+            <a href="{{ path('app_admin_category_request_index') }}" class="admin-nav-link {{ admin_menu|default('') == 'category_requests' ? 'active' : '' }}">
+                <i class="bi bi-inbox"></i>
+                <span class="admin-nav-link-label">Заявки на категории</span>
+            </a>
             <span class="admin-nav-link is-disabled" title="Скоро" aria-disabled="true">
                 <i class="bi bi-box-seam"></i>
                 <span class="admin-nav-link-label">Товары</span>

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Functional;
 
+use App\Catalog\Domain\Model\Category;
 use App\Identity\Domain\Model\Admin;
 use App\Identity\Domain\Model\AdminProfile;
 use App\Identity\Domain\Model\Customer;
@@ -92,6 +93,21 @@ abstract class FunctionalTestCase extends WebTestCase
         $em->flush();
 
         return $seller;
+    }
+
+    protected function createCategory(string $name = 'Одежда', ?Category $parent = null): Category
+    {
+        $category = Category::create(
+            parent: $parent,
+            name: $name,
+            slug: 'test-' . bin2hex(random_bytes(4)),
+        );
+
+        $em = $this->em();
+        $em->persist($category);
+        $em->flush();
+
+        return $category;
     }
 
     protected function assertRedirectedTo(string $path): void

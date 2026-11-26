@@ -1,0 +1,92 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block title %}Заявки на категории{% endblock %}
+{% block page_title %}Заявки на категории{% endblock %}
+
+{% block admin_body %}
+    <div class="admin-panel">
+        <div class="mb-3">
+            <a href="{{ path('app_admin_category_request_index') }}"
+               class="btn btn-sm {{ currentStatus is empty ? 'btn-admin-primary' : 'btn-admin-outline' }}">Все</a>
+            <a href="{{ path('app_admin_category_request_index', {status: 'pending'}) }}"
+               class="btn btn-sm {{ currentStatus == 'pending' ? 'btn-admin-primary' : 'btn-admin-outline' }}">На рассмотрении</a>
+            <a href="{{ path('app_admin_category_request_index', {status: 'approved'}) }}"
+               class="btn btn-sm {{ currentStatus == 'approved' ? 'btn-admin-primary' : 'btn-admin-outline' }}">Одобренные</a>
+            <a href="{{ path('app_admin_category_request_index', {status: 'rejected'}) }}"
+               class="btn btn-sm {{ currentStatus == 'rejected' ? 'btn-admin-primary' : 'btn-admin-outline' }}">Отклонённые</a>
+        </div>
+
+        <div class="table-responsive">
+            <table class="orders-table">
+                <thead>
+                <tr>
+                    <th>Название</th>
+                    <th>Родитель</th>
+                    <th>Селлер</th>
+                    <th>Статус</th>
+                    <th>Дата</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for request in pagination %}
+                    <tr>
+                        <td>
+                            <strong>{{ request.name }}</strong>
+                            {% if request.comment %}
+                                <div class="client-id">{{ request.comment }}</div>
+                            {% endif %}
+                        </td>
+                        <td>{{ request.parent ? request.parent.name : '— корневая —' }}</td>
+                        <td>
+                            {% if request.seller.customer %}
+                                {{ request.seller.customer.fullName }}<br>
+                            {% endif %}
+                            <small class="text-secondary">{{ request.seller.email }}</small>
+                        </td>
+                        <td>
+                            <span class="badge-status {{ request.status.value == 'approved' ? 'delivered' : (request.status.value == 'rejected' ? 'cancelled' : 'pending') }}">
+                                {{ request.status.label }}
+                            </span>
+                            {% if request.rejectionReason %}
+                                <div class="client-id">{{ request.rejectionReason }}</div>
+                            {% endif %}
+                        </td>
+                        <td>{{ request.createdAt ? request.createdAt|date('d.m.Y H:i') : '—' }}</td>
+                        <td>
+                            {% if request.status.value == 'pending' %}
+                                <div style="display: flex; gap: 0.4rem; flex-wrap: wrap;">
+                                    <form method="post"
+                                          action="{{ path('app_admin_category_request_approve', {id: request.id}) }}">
+                                        <input type="hidden" name="_token"
+                                               value="{{ csrf_token('category_request_' ~ request.id) }}">
+                                        <button class="btn btn-sm btn-admin-primary">Одобрить</button>
+                                    </form>
+                                    <form method="post"
+                                          action="{{ path('app_admin_category_request_reject', {id: request.id}) }}"
+                                          style="display: flex; gap: 0.4rem;">
+                                        <input type="hidden" name="_token"
+                                               value="{{ csrf_token('category_request_' ~ request.id) }}">
+                                        <input type="text" name="reason" class="admin-input"
+                                               style="width: 140px;" placeholder="Причина" required>
+                                        <button class="btn btn-sm btn-admin-outline">Отклонить</button>
+                                    </form>
+                                </div>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr><td colspan="6">Заявок нет</td></tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        {% if pagination.totalItemCount > 0 %}
+            <div class="clients-pagination">
+                <span>Показано {{ pagination|length }} из {{ pagination.totalItemCount }}</span>
+                {{ knp_pagination_render(pagination, 'admin/_pagination.html.twig') }}
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}

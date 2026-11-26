@@ -13,7 +13,9 @@ use App\Catalog\Application\Command\PublishProduct\PublishProductHandler;
 use App\Catalog\Application\Command\UpdateProduct\UpdateProduct;
 use App\Catalog\Application\Command\UpdateProduct\UpdateProductHandler;
 use App\Catalog\Application\Service\GenerateSkuService;
+use App\Catalog\Domain\Model\Category;
 use App\Catalog\Domain\Model\Product;
+use App\Catalog\Domain\Repository\CategoryRepositoryInterface;
 use App\Catalog\Domain\Repository\ProductRepositoryInterface;
 use App\Catalog\Presentation\Http\Form\ProductFormData;
 use App\Catalog\Presentation\Http\Form\ProductFormType;
@@ -38,6 +40,7 @@ final class SellerProductsController extends AbstractController
     public function __construct(
         private readonly ProductRepositoryInterface $products,
         private readonly ShopRepositoryInterface $shops,
+        private readonly CategoryRepositoryInterface $categories,
         private readonly CreateProductHandler $createProduct,
         private readonly UpdateProductHandler $updateProduct,
         private readonly PublishProductHandler $publishProduct,
@@ -110,6 +113,7 @@ final class SellerProductsController extends AbstractController
 
         $form = $this->createForm(ProductFormType::class, $data, [
             'shops' => $shops,
+            'categories' => $this->categoryChoices(),
         ]);
         $form->handleRequest($request);
 
@@ -120,9 +124,16 @@ final class SellerProductsController extends AbstractController
                 throw $this->createNotFoundException('Магазин не найден.');
             }
 
+            $category = $data->category;
+
+            if (null === $category) {
+                throw new \LogicException('Категория не выбрана.');
+            }
+
             try {
                 ($this->createProduct)(new CreateProduct(
                     shopId: (int) $shop->getId(),
+                    category: $category,
                     name: $data->name,
                     sku: $data->sku,
                     price: Money::fromDecimalString($data->price, Product::CURRENCY),
@@ -159,13 +170,21 @@ final class SellerProductsController extends AbstractController
         $form = $this->createForm(ProductFormType::class, $data, [
             'shops' => [$shop],
             'shopLocked' => true,
+            'categories' => $this->categoryChoices($product->getCategory()),
         ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $category = $data->category;
+
+            if (null === $category) {
+                throw new \LogicException('Категория не выбрана.');
+            }
+
             try {
                 ($this->updateProduct)(new UpdateProduct(
                     product: $product,
+                    category: $category,
                     name: $data->name,
                     sku: $data->sku,
                     price: Money::fromDecimalString($data->price, Product::CURRENCY),
@@ -235,6 +254,58 @@ final class SellerProductsController extends AbstractController
         }
 
         return $seller;
+    }
+
+    /**
+     * @return array<string, list<Category>>
+     */
+    private function categoryChoices(?Category $current = null): array
+    {
+        $choices = [];
+
+        foreach ($this->categories->findRootsWithChildren(true) as $root) {
+            $children = $root->getChildren()->toArray();
+
+            if ([] === $children) {
+                $choices[$root->getName()] = [$root];
+
+                continue;
+            }
+
+            $activeChildren = array_values(array_filter(
+                $children,
+                static fn (Category $child): bool => $child->isActive(),
+            ));
+
+            // У корня есть только отключённые дети: он не лист и предлагать его нельзя.
+            if ([] === $activeChildren) {
+                continue;
+            }
+
+            $choices[$root->getName()] = $activeChildren;
+        }
+
+        if (null !== $current && !$this->containsCategory($choices, $current)) {
+            $choices = ['Отключённые категории' => [$current]] + $choices;
+        }
+
+        return $choices;
+    }
+
+    /**
+     * @param array<string, list<Category>> $choices
+     */
+    private function containsCategory(array $choices, Category $category): bool
+    {
+        foreach ($choices as $group) {
+            foreach ($group as $choice) {
+                if ($choice->getId() === $category->getId()) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     /**

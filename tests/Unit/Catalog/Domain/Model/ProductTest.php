@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Unit\Catalog\Domain\Model;
 
+use App\Catalog\Domain\Model\Category;
 use App\Catalog\Domain\Model\Product;
 use App\Catalog\Domain\Model\ProductStatus;
 use App\Catalog\Domain\ValueObject\Sku;
@@ -17,6 +18,7 @@ final class ProductTest extends TestCase
     {
         $product = Product::create(
             shopId: 7,
+            category: $this->category(),
             name: '  Футболка  ',
             sku: Sku::fromString('cl-001'),
             price: Money::of(1299, 'BYN'),
@@ -67,14 +69,14 @@ final class ProductTest extends TestCase
     {
         $this->expectException(DomainException::class);
 
-        Product::create(1, 'Товар', Sku::fromString('SKU-001'), Money::zero('BYN'));
+        Product::create(1, $this->category(), 'Товар', Sku::fromString('SKU-001'), Money::zero('BYN'));
     }
 
     public function testRejectsForeignCurrency(): void
     {
         $this->expectException(DomainException::class);
 
-        Product::create(1, 'Товар', Sku::fromString('SKU-001'), Money::of(1000, 'USD'));
+        Product::create(1, $this->category(), 'Товар', Sku::fromString('SKU-001'), Money::of(1000, 'USD'));
     }
 
     public function testChangesPriceAndDescription(): void
@@ -88,10 +90,32 @@ final class ProductTest extends TestCase
         self::assertSame('Новое описание', $product->getDescription());
     }
 
+    public function testRejectsInactiveCategory(): void
+    {
+        $category = $this->category();
+        $category->deactivate();
+
+        $this->expectException(DomainException::class);
+
+        Product::create(
+            shopId: 1,
+            category: $category,
+            name: 'Товар',
+            sku: Sku::fromString('SKU-001'),
+            price: Money::of(1000, 'BYN'),
+        );
+    }
+
+    private function category(): Category
+    {
+        return Category::create(null, 'Одежда', 'odezhda');
+    }
+
     private function product(): Product
     {
         return Product::create(
             shopId: 1,
+            category: $this->category(),
             name: 'Товар',
             sku: Sku::fromString('SKU-001'),
             price: Money::of(1000, 'BYN'),

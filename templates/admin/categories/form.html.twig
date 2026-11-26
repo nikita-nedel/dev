@@ -1,0 +1,42 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block title %}{{ category ? 'Редактирование категории' : 'Новая категория' }}{% endblock %}
+{% block page_title %}{{ category ? 'Редактирование категории' : 'Новая категория' }}{% endblock %}
+
+{% block admin_body %}
+    <div class="admin-panel">
+        <div class="admin-panel-header">
+            <h2>{{ category ? 'Категория «' ~ category.name ~ '»' : 'Создание категории' }}</h2>
+            <a href="{{ path('app_admin_category_index') }}" class="btn-admin-outline btn-sm">
+                <i class="bi bi-arrow-left"></i> Назад
+            </a>
+        </div>
+
+        {{ form_start(form, {attr: {class: 'admin-form'}}) }}
+        <div style="padding: 1.25rem 1.5rem;">
+            {{ form_errors(form) }}
+            <div class="admin-form-grid">
+                {% if withParent %}
+                    <div class="form-group">{{ form_row(form.parent) }}</div>
+                {% endif %}
+                <div class="form-group">{{ form_row(form.name) }}</div>
+                <div class="form-group">{{ form_row(form.icon) }}</div>
+                <div class="form-group">{{ form_row(form.sortOrder) }}</div>
+                <div class="form-group" style="grid-column: 1 / -1;">
+                    {{ form_row(form.description) }}
+                </div>
+            </div>
+            {% if category and category.parent %}
+                <p class="text-secondary" style="margin-top: 0.75rem;">
+                    Родительская категория: <strong>{{ category.parent.name }}</strong>. Перенести категорию в другого
+                    родителя нельзя.
+                </p>
+            {% endif %}
+        </div>
+        <div class="admin-form-actions">
+            <button class="btn-admin-primary" type="submit">Сохранить</button>
+            <a class="btn-admin-outline" href="{{ path('app_admin_category_index') }}">Отмена</a>
+        </div>
+        {{ form_end(form) }}
+    </div>
+{% endblock %}

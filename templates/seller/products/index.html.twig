@@ -29,6 +29,7 @@
                     <tr>
                         <th>Название / Артикул</th>
                         <th>Магазин</th>
+                        <th>Категория</th>
                         <th>Цена</th>
                         <th>Статус</th>
                         <th style="text-align: right;">Действия</th>
@@ -46,6 +47,7 @@
                                 </div>
                             </td>
                             <td>{{ shopNames[product.shopId]|default('—') }}</td>
+                            <td>{{ product.category.name }}</td>
                             <td>{{ product.priceFormatted }}</td>
                             <td>
                                 <span class="badge-status {{ product.status.badgeClass }}">{{ product.status.label }}</span>
@@ -88,7 +90,7 @@
                         </tr>
                     {% else %}
                         <tr>
-                            <td colspan="5" class="clients-empty">
+                            <td colspan="6" class="clients-empty">
                                 <i class="bi bi-box"></i>
                                 <p>Товаров пока нет</p>
                                 <span>Добавьте первый товар</span>

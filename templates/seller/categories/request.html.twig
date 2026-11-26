@@ -1,0 +1,41 @@
+{% extends 'seller/layout.html.twig' %}
+
+{% block title %}Заявка на категорию{% endblock %}
+{% block page_title %}Заявка на категорию{% endblock %}
+
+{% block seller_body %}
+    <div class="admin-panel">
+        <div class="admin-panel-header">
+            <h2>Предложить категорию</h2>
+            <a href="{{ path('app_seller_category_index') }}" class="btn-admin-outline btn-sm">
+                <i class="bi bi-arrow-left"></i> Назад
+            </a>
+        </div>
+
+        {{ form_start(form, {attr: {class: 'admin-form'}}) }}
+        <div style="padding: 1.25rem 1.5rem;">
+            {{ form_errors(form) }}
+
+            <p class="text-secondary">
+                Если оставить родительскую категорию пустой, будет создана новая корневая категория.
+                Заявка появится в дереве только после одобрения админом.
+                {% if pendingCount %}
+                    <br><strong>Сейчас на рассмотрении: {{ pendingCount }} из 3.</strong>
+                {% endif %}
+            </p>
+
+            <div class="admin-form-grid">
+                <div class="form-group">{{ form_row(form.parent) }}</div>
+                <div class="form-group">{{ form_row(form.name) }}</div>
+                <div class="form-group" style="grid-column: 1 / -1;">
+                    {{ form_row(form.comment) }}
+                </div>
+            </div>
+        </div>
+        <div class="admin-form-actions">
+            <button class="btn-admin-primary" type="submit">Отправить на проверку</button>
+            <a class="btn-admin-outline" href="{{ path('app_seller_category_index') }}">Отмена</a>
+        </div>
+        {{ form_end(form) }}
+    </div>
+{% endblock %}

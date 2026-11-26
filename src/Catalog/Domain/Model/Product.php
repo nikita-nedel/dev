@@ -14,6 +14,7 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Table(name: 'product')]
 #[ORM\UniqueConstraint(name: 'uniq_product_shop_sku', columns: ['shop_id', 'sku'])]
 #[ORM\Index(name: 'idx_product_shop_status', columns: ['shop_id', 'status'])]
+#[ORM\Index(name: 'idx_product_category_status', columns: ['category_id', 'status'])]
 class Product
 {
     public const string CURRENCY = 'BYN';
@@ -25,6 +26,10 @@ class Product
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
+
+    #[ORM\ManyToOne(targetEntity: Category::class)]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'RESTRICT')]
+    private Category $category;
 
     #[ORM\Column(length: 200)]
     private string $name;
@@ -53,12 +58,16 @@ class Product
     private function __construct(
         #[ORM\Column]
         private int $shopId,
+        Category $category,
         string $name,
         Sku $sku,
         Money $price,
         ?string $description,
     ) {
         self::guardPrice($price);
+        self::guardCategory($category);
+
+        $this->category = $category;
 
         $now = new \DateTimeImmutable();
 
@@ -73,12 +82,13 @@ class Product
 
     public static function create(
         int $shopId,
+        Category $category,
         string $name,
         Sku $sku,
         Money $price,
         ?string $description = null,
     ): self {
-        return new self($shopId, $name, $sku, $price, $description);
+        return new self($shopId, $category, $name, $sku, $price, $description);
     }
 
     public function rename(string $name): void
@@ -109,6 +119,15 @@ class Product
     {
         $this->assertEditable();
         $this->description = self::normalizeDescription($description);
+        $this->touch();
+    }
+
+    public function changeCategory(Category $category): void
+    {
+        $this->assertEditable();
+        self::guardCategory($category);
+
+        $this->category = $category;
         $this->touch();
     }
 
@@ -154,6 +173,11 @@ class Product
     public function getShopId(): int
     {
         return $this->shopId;
+    }
+
+    public function getCategory(): Category
+    {
+        return $this->category;
     }
 
     public function getName(): string
@@ -204,6 +228,17 @@ class Product
     private function touch(): void
     {
         $this->updatedAt = new \DateTimeImmutable();
+    }
+
+    private static function guardCategory(Category $category): void
+    {
+        if (!$category->isActive()) {
+            throw new DomainException('Нельзя привязать товар к отключённой категории.');
+        }
+
+        if ($category->hasChildren()) {
+            throw new DomainException('Товар можно привязать только к категории без подкатегорий.');
+        }
     }
 
     private static function guardPrice(Money $price): void
