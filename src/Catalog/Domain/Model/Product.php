@@ -14,6 +14,7 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Table(name: 'product')]
 #[ORM\UniqueConstraint(name: 'uniq_product_shop_sku', columns: ['shop_id', 'sku'])]
 #[ORM\Index(name: 'idx_product_shop_status', columns: ['shop_id', 'status'])]
+#[ORM\Index(name: 'idx_product_category_status', columns: ['category_id', 'status'])]
 class Product
 {
     public const string CURRENCY = 'BYN';
