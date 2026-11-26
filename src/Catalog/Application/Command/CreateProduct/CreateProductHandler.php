@@ -27,6 +27,7 @@ final readonly class CreateProductHandler
 
         $product = Product::create(
             shopId: $command->shopId,
+            category: $command->category,
             name: $command->name,
             sku: $sku,
             price: $command->price,

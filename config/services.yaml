@@ -65,8 +65,17 @@ services:
     App\Catalog\Domain\Repository\ProductRepositoryInterface:
         alias: App\Catalog\Infrastructure\Doctrine\Repository\DoctrineProductRepository
 
+    App\Catalog\Domain\Repository\CategoryRepositoryInterface:
+        alias: App\Catalog\Infrastructure\Doctrine\Repository\DoctrineCategoryRepository
+
+    App\Catalog\Domain\Repository\CategoryRequestRepositoryInterface:
+        alias: App\Catalog\Infrastructure\Doctrine\Repository\DoctrineCategoryRequestRepository
+
     App\Catalog\Domain\Service\SkuGeneratorInterface:
         alias: App\Catalog\Infrastructure\Service\RandomSkuGenerator
+
+    App\Catalog\Domain\Service\CategorySlugGeneratorInterface:
+        alias: App\Catalog\Infrastructure\Service\AsciiCategorySlugGenerator
 
     _instanceof:
         App\Export\Application\Port\ExportDataProviderInterface:

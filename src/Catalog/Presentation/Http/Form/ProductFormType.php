@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Catalog\Presentation\Http\Form;
 
+use App\Catalog\Domain\Model\Category;
 use App\Catalog\Domain\Model\Product;
 use App\Catalog\Presentation\Validation\ValidSku;
 use App\Seller\Domain\Model\Shop;
@@ -15,6 +16,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\NotNull;
 use Symfony\Component\Validator\Constraints\Positive;
 use Symfony\Component\Validator\Constraints\Regex;
 
@@ -31,6 +33,17 @@ final class ProductFormType extends AbstractType
                 'disabled' => $options['shopLocked'],
                 'attr' => ['class' => 'admin-select'],
                 'constraints' => [new NotBlank(message: 'Выберите магазин')],
+            ])
+            ->add('category', ChoiceType::class, [
+                'label' => 'Категория',
+                'choices' => $options['categories'],
+                'choice_label' => static fn (Category $category): string => $category->getName(),
+                'choice_value' => static fn (?Category $category): string => null === $category
+                    ? ''
+                    : (string) $category->getId(),
+                'placeholder' => 'Выберите категорию',
+                'attr' => ['class' => 'admin-select'],
+                'constraints' => [new NotNull(message: 'Выберите категорию')],
             ])
             ->add('name', TextType::class, [
                 'label' => 'Название',
@@ -82,8 +95,10 @@ final class ProductFormType extends AbstractType
                 'data_class' => ProductFormData::class,
                 'shops' => [],
                 'shopLocked' => false,
+                'categories' => [],
             ])
             ->setAllowedTypes('shops', 'array')
-            ->setAllowedTypes('shopLocked', 'bool');
+            ->setAllowedTypes('shopLocked', 'bool')
+            ->setAllowedTypes('categories', 'array');
     }
 }

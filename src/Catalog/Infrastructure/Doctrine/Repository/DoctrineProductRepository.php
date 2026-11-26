@@ -34,6 +34,8 @@ final class DoctrineProductRepository extends ServiceEntityRepository implements
     {
         $qb = $this
             ->createQueryBuilder('p')
+            ->leftJoin('p.category', 'c')
+            ->addSelect('c')
             ->orderBy('p.createdAt', 'DESC');
 
         if ([] === $shopIds) {

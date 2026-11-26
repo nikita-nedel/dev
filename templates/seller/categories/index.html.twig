@@ -1,13 +1,72 @@
 {% extends 'seller/layout.html.twig' %}
 
 {% block title %}Категории{% endblock %}
-{% block page_title %}Управление категориями{% endblock %}
+{% block page_title %}Категории{% endblock %}
 
 {% block seller_body %}
     <div class="admin-panel clients-panel">
         <div class="admin-panel-header">
-            <h2>Список категорий</h2>
-            <a href="" class="btn-admin-primary">+ Новая категория</a>
+            <h2>Дерево категорий</h2>
+            <a href="{{ path('app_seller_category_request') }}" class="btn-admin-primary" style="color: #fff;">
+                <i class="bi bi-plus-lg"></i> Предложить категорию
+            </a>
+        </div>
+
+        <p class="text-secondary" style="padding: 0 1.5rem;">
+            Категории общие для всех продавцов. Новая категория или подкатегория появится в списке только после
+            проверки администратором.
+            {% if pendingCount %}
+                <strong>На рассмотрении: {{ pendingCount }}.</strong>
+            {% endif %}
+        </p>
+
+        <div class="table-responsive">
+            <table class="orders-table">
+                <thead>
+                <tr>
+                    <th>Категория</th>
+                    <th>Slug</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for root in roots %}
+                    <tr>
+                        <td>
+                            <strong>
+                                {% if root.icon %}<i class="bi {{ root.icon }}"></i>{% endif %}
+                                {{ root.name }}
+                            </strong>
+                        </td>
+                        <td><code>{{ root.slug }}</code></td>
+                    </tr>
+                    {% for child in root.children %}
+                        {% if child.active %}
+                            <tr>
+                                <td style="padding-left: 2.5rem;">
+                                    <i class="bi bi-arrow-return-right text-secondary"></i>
+                                    {{ child.name }}
+                                </td>
+                                <td><code>{{ child.slug }}</code></td>
+                            </tr>
+                        {% endif %}
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="2" class="clients-empty">
+                            <i class="bi bi-tags"></i>
+                            <p>Категорий пока нет</p>
+                            <span>Админ ещё не создал ни одной категории</span>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="admin-panel clients-panel" style="margin-top: 1rem;">
+        <div class="admin-panel-header">
+            <h2>Мои заявки</h2>
         </div>
 
         <div class="table-responsive">
@@ -15,29 +74,41 @@
                 <thead>
                 <tr>
                     <th>Название</th>
-                    <th>Родительская категория</th>
-                    <th>Товаров</th>
-                    <th style="text-align: right;">Действия</th>
+                    <th>Родитель</th>
+                    <th>Статус</th>
+                    <th>Дата</th>
+                    <th>Комментарий админа</th>
                 </tr>
                 </thead>
                 <tbody>
-                {% for category in categories %}
+                {% for categoryRequest in requests %}
                     <tr>
-                        <td><strong>{{ category.name }}</strong></td>
-                        <td>{{ category.parent ? category.parent.name : '—' }}</td>
-                        <td>{{ category.products|length }}</td>
-                        <td style="text-align: right;">
-                            <div class="client-actions" style="justify-content: flex-end;">
-                                <a href="" class="btn-icon"><i class="bi bi-pencil"></i></a>
-                                <button class="btn-icon" onclick="if(confirm('Удалить?')){ document.getElementById('delete-cat-{{ category.id }}').submit(); }"><i class="bi bi-trash"></i></button>
-                                <form id="delete-cat-{{ category.id }}" action="" method="post" style="display:none;">
-                                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ category.id) }}">
-                                </form>
-                            </div>
+                        <td><strong>{{ categoryRequest.name }}</strong></td>
+                        <td>{{ categoryRequest.parent ? categoryRequest.parent.name : '— корневая —' }}</td>
+                        <td>
+                            <span class="badge-status {{ categoryRequest.status.value == 'approved' ? 'delivered' : (categoryRequest.status.value == 'rejected' ? 'cancelled' : 'pending') }}">
+                                {{ categoryRequest.status.label }}
+                            </span>
+                        </td>
+                        <td>{{ categoryRequest.createdAt ? categoryRequest.createdAt|date('d.m.Y H:i') : '—' }}</td>
+                        <td>
+                            {% if categoryRequest.status.value == 'rejected' %}
+                                {{ categoryRequest.rejectionReason }}
+                            {% elseif categoryRequest.status.value == 'approved' and categoryRequest.createdCategory %}
+                                Создана категория «{{ categoryRequest.createdCategory.name }}»
+                            {% else %}
+                                —
+                            {% endif %}
                         </td>
                     </tr>
                 {% else %}
-                    <tr><td colspan="4" class="clients-empty"><i class="bi bi-tags"></i><p>Категорий пока нет</p><span>Создайте первую категорию</span></td></tr>
+                    <tr>
+                        <td colspan="5" class="clients-empty">
+                            <i class="bi bi-inbox"></i>
+                            <p>Заявок пока нет</p>
+                            <span>Предложите категорию, если нужной нет в дереве</span>
+                        </td>
+                    </tr>
                 {% endfor %}
                 </tbody>
             </table>

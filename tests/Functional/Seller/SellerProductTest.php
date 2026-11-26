@@ -19,6 +19,7 @@ final class SellerProductTest extends FunctionalTestCase
     {
         [$seller, $shop] = $this->sellerWithShop('seller@example.com');
         $shopId = (int) $shop->getId();
+        $category = $this->createCategory('Одежда');
 
         $this->client->loginUser($seller, 'seller_context');
 
@@ -27,6 +28,7 @@ final class SellerProductTest extends FunctionalTestCase
 
         $form = $crawler->selectButton('Сохранить')->form([
             'product_form[shop]' => (string) $shopId,
+            'product_form[category]' => (string) $category->getId(),
             'product_form[name]' => 'Футболка oversize',
             'product_form[sku]' => 'cl-001',
             'product_form[price]' => '12.99',
@@ -94,6 +96,7 @@ final class SellerProductTest extends FunctionalTestCase
 
         $product = Product::create(
             shopId: (int) $shop->getId(),
+            category: $this->createCategory('Одежда'),
             name: 'Чужой товар',
             sku: Sku::fromString('OWN-001'),
             price: Money::of(1000, 'BYN'),

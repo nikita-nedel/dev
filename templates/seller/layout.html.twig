@@ -31,10 +31,9 @@
             <a href="{{ path('app_seller_products_new') }}" class="admin-nav-link">
                 <i class="bi bi-plus-square"></i><span class="admin-nav-link-label">Новый товар</span>
             </a>
-            <span class="admin-nav-link is-disabled" title="Скоро" aria-disabled="true">
+            <a href="{{ path('app_seller_category_index') }}" class="admin-nav-link {{ app.request.attributes.get('_route') starts with 'app_seller_category' ? 'active' : '' }}">
                 <i class="bi bi-tags"></i><span class="admin-nav-link-label">Категории</span>
-                <span class="export-format-badge">Скоро</span>
-            </span>
+            </a>
             <div class="admin-nav-section">Аккаунт</div>
             <a href="{{ path('app_seller_profile') }}" class="admin-nav-link {{ app.request.attributes.get('_route') starts with 'app_seller_profile' ? 'active' : '' }}">
                 <i class="bi bi-person-gear"></i><span class="admin-nav-link-label">Профиль продавца</span>
